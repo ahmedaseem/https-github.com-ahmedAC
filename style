@@ -1,0 +1,22 @@
+*{
+box-sizing:border-box;
+}
+
+body{
+min-height:100vh;
+}
+
+.intro{
+width:100%;
+padding:60px 20px;
+}
+
+.projects{
+width:100%;
+}
+
+.grid{
+width:100%;
+max-width:1400px;
+margin:auto;
+}

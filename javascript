@@ -65,3 +65,5 @@ function addProject() {
     // إضافة الكارد
     document.getElementById("projectsGrid").prepend(card);
 }
+<script src="script.js"></script>
+</body>
