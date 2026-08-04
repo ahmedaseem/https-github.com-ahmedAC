@@ -147,8 +147,7 @@ applyLanguage(this.value);
 
 
 
-const darkButton =
-document.getElementById("dark-btn");
+const darkButton = document.getElementById("themeToggle");
 
 
 
