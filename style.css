@@ -1,5 +1,9 @@
-/* Basic Reset */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: Arial, sans-serif;
@@ -8,6 +12,7 @@ body {
     transition: 0.3s;
 }
 
+/* Theme */
 :root {
     --bg: #ffffff;
     --text: #222;
@@ -20,38 +25,96 @@ body {
     --card: #1e1e1e;
 }
 
+/* Header */
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 20px;
+    align-items: center;
+    padding: 20px 40px;
+    background: var(--card);
 }
 
+.nav {
+    display: flex;
+    gap: 20px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: var(--text);
+}
+
+/* Hero */
 .hero {
-    padding: 120px 20px;
     text-align: center;
+    padding: 80px 20px;
 }
 
+/* All sections */
 .services-grid,
 .projects-grid,
 .portfolio-grid,
 .payments-grid {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
-    padding: 20px;
+    padding: 30px;
 }
 
+/* Cards */
 .service-card,
 .project-card {
     background: var(--card);
-    padding: 20px;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+/* Images */
+.portfolio-grid img {
+    width: 100%;
     border-radius: 10px;
 }
 
+/* Dark button */
 .theme-toggle {
     position: fixed;
     right: 20px;
     bottom: 20px;
-    padding: 10px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    border: none;
     cursor: pointer;
+    font-size: 20px;
+}
+
+/* Mobile */
+@media(max-width:700px){
+
+.header {
+    flex-direction: column;
+    gap:20px;
+}
+
+.nav {
+    flex-direction: column;
+}
+
+}
+.header {
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+}
+
+.nav {
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.nav a {
+    font-weight:bold;
 }
