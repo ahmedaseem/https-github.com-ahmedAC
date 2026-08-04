@@ -1,110 +1,43 @@
 const translations = {
 
 ar: {
-
-"title":"مرحبًا بك في ASEM",
-"subtitle":"asem@gov-server | حلول رقمية وتقنية",
-
-"nav-home":"الرئيسية",
-"nav-projects":"المشاريع",
-"nav-works":"الأعمال",
-"nav-about":"عن ASEM",
-"nav-contact":"تواصل",
-
-"explore":"استكشف",
-
-"sec-projects":"المشاريع",
-"sec-works":"الأعمال",
-"sec-about":"ASEM",
-"sec-contact":"تواصل",
-
-"skills-title":"المهارات",
-
-"works-text":"أعمال رقمية، أنظمة، وبرمجيات حديثة.",
-
-"about-text":"ASEM منصة تقنية تهتم ببناء حلول ذكية."
-
+projects: "المشاريع",
+contact: "تواصل معنا",
+why: "لماذا ASEM؟",
+start: "ابدأ مشروعك مجانًا",
+contactBtn: "تواصل معنا",
+description: "مشاريع رقمية مجانية وحلول برمجية مخصصة للأفراد والشركات حول العالم",
+email: "البريد الرسمي"
 },
-
 
 en: {
-
-"title":"Welcome to ASEM",
-"subtitle":"asem@gov-server | Digital Solutions",
-
-"nav-home":"Home",
-"nav-projects":"Projects",
-"nav-works":"Works",
-"nav-about":"About ASEM",
-"nav-contact":"Contact",
-
-"explore":"Explore",
-
-"sec-projects":"Projects",
-"sec-works":"Works",
-"sec-about":"ASEM",
-"sec-contact":"Contact",
-
-"skills-title":"Skills",
-
-"works-text":"Digital works, systems and modern software.",
-
-"about-text":"ASEM creates smart technical solutions."
-
+projects: "Projects",
+contact: "Contact Us",
+why: "Why ASEM?",
+start: "Start Your Free Project",
+contactBtn: "Contact Us",
+description: "Free digital projects and custom software solutions for individuals and companies worldwide",
+email: "Official Email"
 },
-
 
 fr: {
-
-"title":"Bienvenue chez ASEM",
-"subtitle":"asem@gov-server | Solutions numériques",
-
-"nav-home":"Accueil",
-"nav-projects":"Projets",
-"nav-works":"Travaux",
-"nav-about":"À propos de ASEM",
-"nav-contact":"Contact",
-
-"explore":"Explorer",
-
-"sec-projects":"Projets",
-"sec-works":"Travaux",
-"sec-about":"ASEM",
-"sec-contact":"Contact",
-
-"skills-title":"Compétences",
-
-"works-text":"Projets numériques modernes.",
-
-"about-text":"ASEM développe des solutions intelligentes."
-
+projects: "Projets",
+contact: "Contact",
+why: "Pourquoi ASEM ?",
+start: "Commencez votre projet gratuitement",
+contactBtn: "Nous contacter",
+description: "Projets numériques gratuits et solutions logicielles personnalisées",
+email: "Email officiel"
 },
 
-
-es: {
-
-"title":"Bienvenido a ASEM",
-"subtitle":"asem@gov-server | Soluciones digitales",
-
-"nav-home":"Inicio",
-"nav-projects":"Proyectos",
-"nav-works":"Trabajos",
-"nav-about":"Acerca de ASEM",
-"nav-contact":"Contacto",
-
-"explore":"Explorar",
-
-"sec-projects":"Proyectos",
-"sec-works":"Trabajos",
-"sec-about":"ASEM",
-"sec-contact":"Contacto",
-
-"skills-title":"Habilidades",
-
-"works-text":"Proyectos digitales modernos.",
-
-"about-text":"ASEM crea soluciones inteligentes."
-
+ja: {
+projects: "プロジェクト",
+contact: "お問い合わせ",
+why: "なぜASEMなのか",
+start: "無料でプロジェクトを開始",
+contactBtn: "お問い合わせ",
+description: "個人や企業向けの無料デジタルプロジェクトとカスタムソリューション",
+email: "公式メール"
 }
 
 };
@@ -124,17 +57,41 @@ lang === "ar" ? "rtl" : "ltr";
 
 
 
-Object.keys(t).forEach(key=>{
+const projectsTitle =
+document.querySelector("#projects h2");
 
-const element = document.getElementById(key);
+if(projectsTitle)
+projectsTitle.textContent=t.projects;
 
-if(element){
 
-element.textContent = t[key];
 
-}
+const contactTitle =
+document.querySelector("#contact h2");
 
-});
+if(contactTitle)
+contactTitle.textContent=t.contact;
+
+
+
+const heroText =
+document.querySelector(".hero p");
+
+if(heroText)
+heroText.textContent=t.description;
+
+
+
+const buttons =
+document.querySelectorAll(".btn");
+
+
+if(buttons[0])
+buttons[0].textContent=t.start;
+
+
+if(buttons[1])
+buttons[1].textContent=t.contactBtn;
+
 
 
 localStorage.setItem("lang",lang);
@@ -143,34 +100,37 @@ localStorage.setItem("lang",lang);
 
 
 
-// اختيار اللغة تلقائيا
+const browserLang =
+navigator.language
+.split("-")[0]
+.toLowerCase();
 
-const browserLanguage =
-navigator.language.split("-")[0];
 
 
-let language =
-localStorage.getItem("lang") ||
+let savedLang =
+localStorage.getItem("lang");
 
-(translations[browserLanguage]
-? browserLanguage
+
+
+let currentLang =
+savedLang ||
+(translations[browserLang]
+? browserLang
 : "en");
 
 
 
-applyLanguage(language);
+applyLanguage(currentLang);
 
 
-
-// زر تغيير اللغة
 
 const langSwitch =
-document.getElementById("lang-switch");
+document.getElementById("langSwitch");
 
 
 if(langSwitch){
 
-langSwitch.value = language;
+langSwitch.value=currentLang;
 
 
 langSwitch.addEventListener(
@@ -186,17 +146,16 @@ applyLanguage(this.value);
 
 
 
-// الوضع الليلي
-
 
 const darkButton =
 document.getElementById("dark-btn");
 
 
 
-function updateDarkIcon(){
+function updateDark(){
 
-if(!darkButton) return;
+if(!darkButton)
+return;
 
 
 if(document.body.classList.contains("dark")){
@@ -213,7 +172,6 @@ darkButton.textContent="🌙";
 
 
 
-
 if(localStorage.getItem("dark")==="true"){
 
 document.body.classList.add("dark");
@@ -221,7 +179,7 @@ document.body.classList.add("dark");
 }
 
 
-updateDarkIcon();
+updateDark();
 
 
 
@@ -233,15 +191,13 @@ darkButton.addEventListener("click",()=>{
 document.body.classList.toggle("dark");
 
 
-
 localStorage.setItem(
 "dark",
 document.body.classList.contains("dark")
 );
 
 
-
-updateDarkIcon();
+updateDark();
 
 
 });

@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Contact — ASEM Digital Solutions</title>
+    <title>About — ASEM Digital Solutions</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <section class="hero">
-        <h1>Contact Us</h1>
-        <p>Email: contact@asemdigital.com</p>
+        <h1>About ASEM Digital Solutions</h1>
+        <p>We are a global technology company delivering modern digital solutions.</p>
     </section>
 </body>
 </html>
