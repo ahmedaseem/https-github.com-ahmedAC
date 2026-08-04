@@ -1,420 +1,140 @@
 <!DOCTYPE html>
-<html lang="auto" dir="auto">
-
+<html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ASEM Digital Solutions</title>
+    <title>ASEM Digital Solutions</title>
 
-<style>
+    <!-- SEO -->
+    <meta name="description" content="ASEM Digital Solutions — Global Technology Company delivering modern digital services, software, and enterprise solutions.">
+    <meta name="keywords" content="ASEM, Digital Solutions, Software, Technology, Web Development, AI, Cloud">
 
-*{
-box-sizing:border-box;
-}
+    <!-- Open Graph -->
+    <meta property="og:title" content="ASEM Digital Solutions">
+    <meta property="og:description" content="Global Technology Company delivering modern digital services.">
+    <meta property="og:image" content="assets/images/og-image.jpg">
+    <meta property="og:type" content="website">
 
-body{
-font-family:Tahoma, Arial, sans-serif;
-margin:0;
-background:#f5f6fa;
-color:#222;
-transition:.3s;
-}
+    <!-- Twitter Cards -->
+    <meta name="twitter:title" content="ASEM Digital Solutions">
+    <meta name="twitter:description" content="Global Technology Company delivering modern digital services.">
+    <meta name="twitter:image" content="assets/images/og-image.jpg">
 
-body.dark{
-background:#111;
-color:#eee;
-}
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
 
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 30px;
-background:#111;
-color:white;
-position:sticky;
-top:0;
-z-index:10;
-}
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
 
-nav a{
-color:white;
-text-decoration:none;
-margin:0 8px;
-}
-
-.controls{
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-button,select{
-padding:8px 12px;
-border-radius:8px;
-border:none;
-cursor:pointer;
-}
-
-
-.hero{
-text-align:center;
-padding:70px 20px;
-background:#111;
-color:white;
-}
-
-
-.hero h1{
-font-size:42px;
-margin:10px;
-}
-
-
-.hero p{
-font-size:20px;
-max-width:700px;
-margin:auto;
-line-height:1.8;
-}
-
-
-.btn{
-display:inline-block;
-margin:20px 5px;
-padding:14px 25px;
-background:white;
-color:#111;
-border-radius:10px;
-text-decoration:none;
-}
-
-
-section{
-max-width:1200px;
-margin:auto;
-padding:50px 20px;
-}
-
-
-.cards{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(300px,1fr));
-gap:25px;
-}
-
-
-.card{
-background:white;
-padding:25px;
-border-radius:15px;
-box-shadow:0 10px 25px rgba(0,0,0,.08);
-}
-
-
-.dark .card{
-background:#222;
-color:white;
-}
-
-
-.card img{
-width:100%;
-border-radius:10px;
-}
-
-
-.card h2{
-margin-top:15px;
-}
-
-
-.status{
-background:#2ecc71;
-color:white;
-padding:6px 12px;
-border-radius:20px;
-display:inline-block;
-}
-
-
-.features li{
-margin:8px;
-}
-
-
-.contact{
-text-align:center;
-}
-
-
-.contact a{
-display:inline-block;
-margin:8px;
-padding:12px 20px;
-background:#111;
-color:white;
-border-radius:10px;
-text-decoration:none;
-}
-
-
-footer{
-text-align:center;
-padding:25px;
-background:#111;
-color:white;
-}
-
-
-</style>
-
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico">
 </head>
-
 
 <body>
 
+    <!-- Dark Mode Toggle -->
+    <button id="themeToggle" class="theme-toggle">🌙</button>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">ASEM Digital Solutions</div>
+        <nav class="nav">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="about.html" data-i18n="nav_about">About</a>
+            <a href="contact.html" data-i18n="nav_contact">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 data-i18n="hero_title">We Build The Future of Digital Solutions</h1>
+        <p data-i18n="hero_subtitle">Enterprise-grade technology, global expertise, and modern innovation.</p>
+        <a href="#services" class="btn" data-i18n="hero_button">Explore Services</a>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="services">
+        <h2 data-i18n="services_title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3 data-i18n="service_web">Web Development</h3>
+                <p data-i18n="service_web_desc">Modern, fast, secure websites and platforms.</p>
+            </div>
+            <div class="service-card">
+                <h3 data-i18n="service_ai">AI & Automation</h3>
+                <p data-i18n="service_ai_desc">Smart solutions powered by machine learning.</p>
+            </div>
+            <div class="service-card">
+                <h3 data-i18n="service_cloud">Cloud Solutions</h3>
+                <p data-i18n="service_cloud_desc">Scalable cloud infrastructure for enterprises.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="projects">
+        <h2 data-i18n="projects_title">Projects</h2>
+        <div id="projectsContainer" class="projects-grid"></div>
+    </section>
+
+    <!-- Portfolio -->
+    <section class="portfolio">
+        <h2 data-i18n="portfolio_title">Portfolio</h2>
+        <div class="portfolio-grid">
+            <img src="assets/images/portfolio1.jpg" alt="">
+            <img src="assets/images/portfolio2.jpg" alt="">
+            <img src="assets/images/portfolio3.jpg" alt="">
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why">
+        <h2 data-i18n="why_title">Why Choose ASEM</h2>
+        <ul>
+            <li data-i18n="why_1">Global Expertise</li>
+            <li data-i18n="why_2">High Performance</li>
+            <li data-i18n="why_3">Enterprise Security</li>
+            <li data-i18n="why_4">Modern Technology</li>
+        </ul>
+    </section>
+
+    <!-- Trusted Worldwide -->
+    <section class="trusted">
+        <h2 data-i18n="trusted_title">Trusted Worldwide</h2>
+        <p data-i18n="trusted_desc">Our solutions are used by companies across 40+ countries.</p>
+    </section>
+
+    <!-- Payment Methods -->
+    <section class="payments">
+        <h2 data-i18n="payments_title">Supported Payment Methods</h2>
+        <div class="payments-grid">
+            <img src="assets/icons/visa.svg" alt="Visa">
+            <img src="assets/icons/mastercard.svg" alt="Mastercard">
+            <img src="assets/icons/paypal.svg" alt="PayPal">
+            <img src="assets/icons/googlepay.svg" alt="Google Pay">
+            <img src="assets/icons/applepay.svg" alt="Apple Pay">
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact">
+        <h2 data-i18n="contact_title">Contact Us</h2>
+        <p>Email: contact@asemdigital.com</p>
+        <div class="social">
+            <a href="#">Twitter</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">GitHub</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 ASEM Digital Solutions</p>
+        <a href="privacy.html" data-i18n="footer_privacy">Privacy Policy</a>
+        <a href="terms.html" data-i18n="footer_terms">Terms & Conditions</a>
+    </footer>
 
-<nav>
-
-<strong>ASEM</strong>
-
-
-<div>
-
-<a href="#projects">Projects</a>
-<a href="#contact">Contact</a>
-
-</div>
-
-
-<div class="controls">
-
-
-<select id="langSwitch">
-
-<option value="ar">العربية</option>
-<option value="en">English</option>
-<option value="fr">Français</option>
-<option value="ja">日本語</option>
-
-</select>
-
-
-<button id="dark-btn">
-🌙
-</button>
-
-
-</div>
-
-</nav>
-
-
-
-<header class="hero">
-
-<h1>ASEM Digital Solutions</h1>
-
-
-<p>
-مشاريع رقمية مجانية وحلول برمجية مخصصة للأفراد والشركات حول العالم
-</p>
-
-
-<a class="btn" href="#projects">
-ابدأ مشروعك مجانًا
-</a>
-
-
-<a class="btn" href="#contact">
-تواصل معنا
-</a>
-
-
-</header>
-
-
-
-<section id="projects">
-
-
-<h2>
-المشاريع
-</h2>
-
-
-<div class="cards" id="projectsGrid">
-
-</div>
-
-
-</section>
-
-
-
-
-<section>
-
-
-<h2>
-لماذا ASEM؟
-</h2>
-
-
-<ul>
-
-<li>حلول رقمية وتقنية حديثة</li>
-
-<li>مشاريع مجانية للتعلم والاستخدام</li>
-
-<li>تصميم يعمل على الهاتف والكمبيوتر</li>
-
-<li>دعم لغات متعددة</li>
-
-</ul>
-
-
-</section>
-
-
-
-
-<section id="contact" class="contact">
-
-
-<h2>
-تواصل معنا
-</h2>
-
-
-<p>
-البريد الرسمي:
-<br>
-asem@gov-server.com
-</p>
-
-
-<a href="https://github.com/gov-server">
-GitHub
-</a>
-
-
-<a href="#">
-WhatsApp Business
-</a>
-
-
-<a href="#">
-Google Play
-</a>
-
-
-<a href="#">
-Instagram
-</a>
-
-
-<a href="#">
-LinkedIn
-</a>
-
-
-<a href="#">
-YouTube
-</a>
-
-
-</section>
-
-
-
-
-<footer>
-
-© ASEM Digital Solutions
-
-</footer>
-
-
-
-
-<script>
-
-
-fetch("projects.json")
-
-.then(r=>r.json())
-
-.then(data=>{
-
-
-let grid=document.getElementById("projectsGrid");
-
-
-data.forEach(project=>{
-
-
-let card=document.createElement("div");
-
-card.className="card";
-
-
-card.innerHTML=`
-
-<span class="status">
-${project.status}
-</span>
-
-
-<img src="${project.image}">
-
-
-<h2>
-${project.name}
-</h2>
-
-
-<p>
-الإصدار: ${project.version}
-</p>
-
-
-<p>
-الترخيص: ${project.license}
-</p>
-
-
-<ul>
-
-${project.features.map(x=>`<li>${x}</li>`).join("")}
-
-</ul>
-
-
-<a class="btn" href="${project.page}">
-عرض المشروع
-</a>
-
-`;
-
-grid.appendChild(card);
-
-
-});
-
-
-});
-
-
-</script>
-
-
-<script src="script.js"></script>
-
-
+    <script src="app.js"></script>
 </body>
-
 </html>
