@@ -1,7 +1,8 @@
 {
     "name": "ASEM Digital Solutions",
     "short_name": "ASEM",
-    "start_url": "/",
+    "start_url": "/asem.digital-solutions/",
+"scope": "/asem.digital-solutions/",
     "display": "standalone",
     "background_color": "#e8f8ff",
     "theme_color": "#00aeea",
