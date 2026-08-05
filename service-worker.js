@@ -1,12 +1,16 @@
 const CACHE_NAME = "asem-v1";
 
+const BASE = "/asem.digital-solutions";
+
 const FILES = [
-    "/",
-    "/index.html",
-    "/style.css",
-    "/app.js",
-    "/manifest.json",
-    "/assets/logos/asem-logo.png"
+    BASE + "/",
+    BASE + "/index.html",
+    BASE + "/style.css",
+    BASE + "/app.js",
+    BASE + "/manifest.json",
+    BASE + "/assets/logos/asem-logo.png",
+    BASE + "/assets/icons/icon-192.png",
+    BASE + "/assets/icons/icon-512.png"
 ];
 
 
