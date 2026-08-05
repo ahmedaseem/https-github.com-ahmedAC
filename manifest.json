@@ -3,8 +3,8 @@
     "short_name": "ASEM",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#000000",
+    "background_color": "#e8f8ff",
+"theme_color": "#00aeea"
     "icons": [
         {
             "src": "assets/icons/icon-192.png",
