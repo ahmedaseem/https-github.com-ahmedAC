@@ -307,6 +307,8 @@ card.style.display="none";
 }
 if ("serviceWorker" in navigator) {
 
-navigator.serviceWorker.register(
-"/asem.digital-solutions/service-worker.js"
-);
+    navigator.serviceWorker.register(
+        "/asem.digital-solutions/service-worker.js"
+    );
+
+}
