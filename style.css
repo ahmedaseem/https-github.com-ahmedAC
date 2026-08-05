@@ -26,12 +26,10 @@ body {
 }
 
 /* Header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background: var(--card);
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
 .nav {
@@ -61,12 +59,10 @@ body {
     padding: 30px;
 }
 
-/* Cards */
-.service-card,
-.project-card {
-    background: var(--card);
-    padding: 25px;
-    border-radius: 12px;
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
 }
 
 /* Images */
@@ -118,12 +114,11 @@ body {
 .nav a {
     font-weight:bold;
 }
-.payments-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 25px;
-    align-items: center;
-    padding: 30px;
+.payments{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
 }
 
 .payments-grid img {
@@ -181,10 +176,10 @@ body {
     font-weight:bold;
 }
 
-.search-box {
-    padding:8px 12px;
-    border-radius:8px;
-    border:1px solid #ccc;
+.search-box{
+    width:220px;
+    padding:10px 14px;
+    border-radius:30px;
 }
 
 .logo {
@@ -257,8 +252,7 @@ body {
     height:80px;
     object-fit:contain;
 }
-.logo img {
-    height: 48px;
-    width: auto;
-    display: block;
+.logo img{
+    height:60px;
+    width:auto;
 }

@@ -65,12 +65,13 @@
 
 <body>
 
-<nav aria-label="Main Navigation">
-    <a href="index.html" class="logo">
-    <img src="assets/logos/asem-logo.png" alt="ASEM Digital Solutions">
-</a>
+<nav class="navbar" aria-label="Main Navigation">
 
-    <div>
+    <a href="index.html" class="logo">
+        <img src="assets/logos/asem-logo.png" alt="ASEM Digital Solutions">
+    </a>
+
+    <div class="nav-links">
         <a href="#services" data-i18n="services">Services</a>
         <a href="#projects" data-i18n="projects">Projects</a>
         <a href="about.html" data-i18n="about">About</a>
@@ -78,6 +79,13 @@
     </div>
 
     <div class="controls">
+
+        <input
+            type="search"
+            id="searchBox"
+            class="search-box"
+            placeholder="🔍 Search...">
+
         <select id="langSwitch">
             <option value="auto">Auto</option>
             <option value="ar">العربية</option>
@@ -86,8 +94,12 @@
             <option value="ja">日本語</option>
         </select>
 
-        <button id="dark-btn">🌙</button>
+        <button id="themeToggle" aria-label="Toggle Dark Mode">
+            🌙
+        </button>
+
     </div>
+
 </nav>
 
 <header class="hero">
