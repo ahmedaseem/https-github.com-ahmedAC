@@ -13,7 +13,7 @@ from .business import Business
 from .tourism import Tourism
 from .product import Product
 from .user import User, UserRole, UserStatus
-
+from .role import Role
 
 __all__ = [
     "Country",
