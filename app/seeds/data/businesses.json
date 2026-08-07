@@ -1,0 +1,72 @@
+{
+  "source": "ASEM Global Platform",
+  "version": "1.0.0",
+  "entity": "businesses",
+  "schema": "global-business-v1",
+  "businesses": [
+    {
+      "city_code": "PAR",
+      "business_code": "ASEM-PAR-001",
+      "name": "Paris Digital Studio",
+      "category": "Technology",
+      "description": "Digital products, web platforms and software solutions for businesses.",
+      "address": "Paris, France",
+      "phone": "",
+      "email": "",
+      "website": "",
+      "logo": "",
+      "cover_image": "",
+      "rating": 4.8,
+      "verified": true,
+      "is_active": true
+    },
+    {
+      "city_code": "LON",
+      "business_code": "ASEM-LON-001",
+      "name": "London Technology Hub",
+      "category": "Technology",
+      "description": "Technology services, software development and digital consulting.",
+      "address": "London, United Kingdom",
+      "phone": "",
+      "email": "",
+      "website": "",
+      "logo": "",
+      "cover_image": "",
+      "rating": 4.7,
+      "verified": true,
+      "is_active": true
+    },
+    {
+      "city_code": "DXB",
+      "business_code": "ASEM-DXB-001",
+      "name": "Dubai Business Solutions",
+      "category": "Business Services",
+      "description": "Digital transformation and technology solutions for modern enterprises.",
+      "address": "Dubai, UAE",
+      "phone": "",
+      "email": "",
+      "website": "",
+      "logo": "",
+      "cover_image": "",
+      "rating": 4.8,
+      "verified": true,
+      "is_active": true
+    },
+    {
+      "city_code": "TYO",
+      "business_code": "ASEM-TYO-001",
+      "name": "Tokyo Innovation Center",
+      "category": "Technology",
+      "description": "Innovation, software engineering and digital business services.",
+      "address": "Tokyo, Japan",
+      "phone": "",
+      "email": "",
+      "website": "",
+      "logo": "",
+      "cover_image": "",
+      "rating": 4.9,
+      "verified": true,
+      "is_active": true
+    }
+  ]
+}

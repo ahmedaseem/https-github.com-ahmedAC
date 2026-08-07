@@ -1,6 +1,5 @@
 """
 ASEM Global Platform
-
 Business Model
 """
 
@@ -8,9 +7,6 @@ from app.extensions import db
 
 
 class Business(db.Model):
-    """
-    Represents a business registered on the platform.
-    """
 
     __tablename__ = "businesses"
 
@@ -42,44 +38,37 @@ class Business(db.Model):
 
 
     description = db.Column(
-        db.Text,
-        nullable=True
+        db.Text
     )
 
 
     address = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     phone = db.Column(
-        db.String(50),
-        nullable=True
+        db.String(50)
     )
 
 
     email = db.Column(
-        db.String(120),
-        nullable=True
+        db.String(120)
     )
 
 
     website = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     logo = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     cover_image = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
@@ -91,15 +80,13 @@ class Business(db.Model):
 
     verified = db.Column(
         db.Boolean,
-        default=False,
-        nullable=False
+        default=False
     )
 
 
     is_active = db.Column(
         db.Boolean,
-        default=True,
-        nullable=False
+        default=True
     )
 
 
@@ -116,18 +103,21 @@ class Business(db.Model):
     )
 
 
-    # العلاقة مع المدينة
     city = db.relationship(
         "City",
         back_populates="businesses"
     )
 
 
-    def __repr__(self):
-        return f"<Business {self.name}>"
+    products = db.relationship(
+        "Product",
+        back_populates="business",
+        cascade="all, delete-orphan"
+    )
 
 
     def to_dict(self):
+
         return {
             "id": self.id,
             "city_id": self.city_id,
@@ -142,7 +132,5 @@ class Business(db.Model):
             "cover_image": self.cover_image,
             "rating": self.rating,
             "verified": self.verified,
-            "is_active": self.is_active,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "is_active": self.is_active
         }

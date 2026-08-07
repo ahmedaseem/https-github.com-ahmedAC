@@ -1,6 +1,5 @@
 """
 ASEM Global Platform
-
 Tourism Model
 """
 
@@ -8,9 +7,6 @@ from app.extensions import db
 
 
 class Tourism(db.Model):
-    """
-    Represents a tourism attraction or activity.
-    """
 
     __tablename__ = "tourism"
 
@@ -42,50 +38,42 @@ class Tourism(db.Model):
 
 
     description = db.Column(
-        db.Text,
-        nullable=True
+        db.Text
     )
 
 
     address = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     image = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     gallery = db.Column(
-        db.JSON,
-        nullable=True
+        db.JSON
     )
 
 
     latitude = db.Column(
-        db.Float,
-        nullable=True
+        db.Float
     )
 
 
     longitude = db.Column(
-        db.Float,
-        nullable=True
+        db.Float
     )
 
 
     opening_hours = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     ticket_price = db.Column(
-        db.Float,
-        nullable=True
+        db.Float
     )
 
 
@@ -97,15 +85,13 @@ class Tourism(db.Model):
 
     verified = db.Column(
         db.Boolean,
-        default=False,
-        nullable=False
+        default=False
     )
 
 
     is_active = db.Column(
         db.Boolean,
-        default=True,
-        nullable=False
+        default=True
     )
 
 
@@ -122,22 +108,14 @@ class Tourism(db.Model):
     )
 
 
-    # العلاقة مع المدينة
     city = db.relationship(
         "City",
-        backref=db.backref(
-            "tourism_places",
-            lazy=True,
-            cascade="all, delete-orphan"
-        )
+        back_populates="tourism_places"
     )
 
 
-    def __repr__(self):
-        return f"<Tourism {self.name}>"
-
-
     def to_dict(self):
+
         return {
             "id": self.id,
             "city_id": self.city_id,
@@ -153,7 +131,5 @@ class Tourism(db.Model):
             "ticket_price": self.ticket_price,
             "rating": self.rating,
             "verified": self.verified,
-            "is_active": self.is_active,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "is_active": self.is_active
         }

@@ -1,6 +1,5 @@
 """
 ASEM Global Platform
-
 Product Model
 """
 
@@ -8,9 +7,6 @@ from app.extensions import db
 
 
 class Product(db.Model):
-    """
-    Represents a product or service offered on the platform.
-    """
 
     __tablename__ = "products"
 
@@ -42,14 +38,12 @@ class Product(db.Model):
 
 
     description = db.Column(
-        db.Text,
-        nullable=True
+        db.Text
     )
 
 
     price = db.Column(
-        db.Float,
-        nullable=True
+        db.Float
     )
 
 
@@ -60,14 +54,12 @@ class Product(db.Model):
 
 
     image = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     gallery = db.Column(
-        db.JSON,
-        nullable=True
+        db.JSON
     )
 
 
@@ -79,7 +71,6 @@ class Product(db.Model):
 
     sku = db.Column(
         db.String(100),
-        nullable=True,
         unique=True
     )
 
@@ -92,15 +83,13 @@ class Product(db.Model):
 
     is_available = db.Column(
         db.Boolean,
-        default=True,
-        nullable=False
+        default=True
     )
 
 
     is_active = db.Column(
         db.Boolean,
-        default=True,
-        nullable=False
+        default=True
     )
 
 
@@ -117,22 +106,14 @@ class Product(db.Model):
     )
 
 
-    # العلاقة مع الأعمال
     business = db.relationship(
         "Business",
-        backref=db.backref(
-            "products",
-            lazy=True,
-            cascade="all, delete-orphan"
-        )
+        back_populates="products"
     )
 
 
-    def __repr__(self):
-        return f"<Product {self.name}>"
-
-
     def to_dict(self):
+
         return {
             "id": self.id,
             "business_id": self.business_id,
@@ -147,7 +128,5 @@ class Product(db.Model):
             "sku": self.sku,
             "rating": self.rating,
             "is_available": self.is_available,
-            "is_active": self.is_active,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "is_active": self.is_active
         }

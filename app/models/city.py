@@ -1,6 +1,5 @@
 """
 ASEM Global Platform
-
 City Model
 """
 
@@ -8,9 +7,6 @@ from app.extensions import db
 
 
 class City(db.Model):
-    """
-    Represents a city belonging to a country.
-    """
 
     __tablename__ = "cities"
 
@@ -36,45 +32,38 @@ class City(db.Model):
 
 
     code = db.Column(
-        db.String(20),
-        nullable=True
+        db.String(20)
     )
 
 
     description = db.Column(
-        db.Text,
-        nullable=True
+        db.Text
     )
 
 
     image = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
 
 
     latitude = db.Column(
-        db.Float,
-        nullable=True
+        db.Float
     )
 
 
     longitude = db.Column(
-        db.Float,
-        nullable=True
+        db.Float
     )
 
 
     population = db.Column(
-        db.Integer,
-        nullable=True
+        db.Integer
     )
 
 
     is_active = db.Column(
         db.Boolean,
-        default=True,
-        nullable=False
+        default=True
     )
 
 
@@ -91,14 +80,12 @@ class City(db.Model):
     )
 
 
-    # العلاقة مع الدولة
     country = db.relationship(
         "Country",
         back_populates="cities"
     )
 
 
-    # العلاقة مع الأعمال
     businesses = db.relationship(
         "Business",
         back_populates="city",
@@ -106,11 +93,15 @@ class City(db.Model):
     )
 
 
-    def __repr__(self):
-        return f"<City {self.name}>"
+    tourism_places = db.relationship(
+        "Tourism",
+        back_populates="city",
+        cascade="all, delete-orphan"
+    )
 
 
     def to_dict(self):
+
         return {
             "id": self.id,
             "country_id": self.country_id,
@@ -121,7 +112,5 @@ class City(db.Model):
             "latitude": self.latitude,
             "longitude": self.longitude,
             "population": self.population,
-            "is_active": self.is_active,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "is_active": self.is_active
         }

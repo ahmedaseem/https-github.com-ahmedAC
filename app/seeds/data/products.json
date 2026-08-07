@@ -1,0 +1,68 @@
+{
+  "source": "ASEM Global Platform",
+  "version": "1.0.0",
+  "entity": "products",
+  "schema": "global-product-v1",
+  "products": [
+    {
+      "business_code": "ASEM-PAR-001",
+      "name": "Business Website Package",
+      "category": "Web Development",
+      "description": "Professional responsive website package for businesses and organizations.",
+      "price": 0.0,
+      "currency": "USD",
+      "image": "",
+      "gallery": [],
+      "stock": 0,
+      "sku": "ASEM-WEB-001",
+      "rating": 5.0,
+      "is_available": true,
+      "is_active": true
+    },
+    {
+      "business_code": "ASEM-LON-001",
+      "name": "Custom Software Solution",
+      "category": "Software",
+      "description": "Custom software development solution designed around business requirements.",
+      "price": 0.0,
+      "currency": "USD",
+      "image": "",
+      "gallery": [],
+      "stock": 0,
+      "sku": "ASEM-SW-001",
+      "rating": 5.0,
+      "is_available": true,
+      "is_active": true
+    },
+    {
+      "business_code": "ASEM-DXB-001",
+      "name": "Digital Transformation Package",
+      "category": "Digital Transformation",
+      "description": "Digital transformation services combining software, automation and cloud technologies.",
+      "price": 0.0,
+      "currency": "USD",
+      "image": "",
+      "gallery": [],
+      "stock": 0,
+      "sku": "ASEM-DX-001",
+      "rating": 4.9,
+      "is_available": true,
+      "is_active": true
+    },
+    {
+      "business_code": "ASEM-TYO-001",
+      "name": "AI Automation Solution",
+      "category": "AI & Automation",
+      "description": "Automation solution designed to improve business workflows using modern AI technologies.",
+      "price": 0.0,
+      "currency": "USD",
+      "image": "",
+      "gallery": [],
+      "stock": 0,
+      "sku": "ASEM-AI-001",
+      "rating": 4.9,
+      "is_available": true,
+      "is_active": true
+    }
+  ]
+}
