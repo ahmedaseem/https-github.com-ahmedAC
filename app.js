@@ -739,26 +739,242 @@
        PROJECTS
        ===================================================== */
 
-    function loadProjects() {
+    async function loadProjects() {
 
-        const grid =
-            getElement(CONFIG.selectors.projectsGrid);
+        const grid = getElement(CONFIG.selectors.projectsGrid);
 
         if (!grid) {
-            openPageSection("projects");
+            console.warn("ASEM: projectsGrid not found.");
             return;
         }
 
-        openPageSection("projects");
+        grid.setAttribute("aria-busy", "true");
 
-        if (grid.children.length) {
-            return;
+        try {
+
+            const response = await fetch(
+                `${CONFIG.apiBase}${CONFIG.endpoints.projects}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    },
+                    credentials: "same-origin"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    `Projects API returned HTTP ${response.status}`
+                );
+            }
+
+            const projects = await response.json();
+
+            grid.innerHTML = "";
+
+            if (!Array.isArray(projects) || projects.length === 0) {
+
+                grid.innerHTML = `
+                    <article class="card project-card empty-card">
+                        <div class="card-content">
+                            <h3>Projects</h3>
+                            <p>No projects are currently available.</p>
+                        </div>
+                    </article>
+                `;
+
+                return;
+            }
+
+            const escapeHtml = value => {
+                const div = document.createElement("div");
+                div.textContent =
+                    value === null || value === undefined
+                        ? ""
+                        : String(value);
+                return div.innerHTML;
+            };
+
+            const safeUrl = value => {
+                if (!value) return "";
+
+                const url = String(value).trim();
+
+                if (
+                    url.startsWith("/") ||
+                    url.startsWith("./") ||
+                    url.startsWith("../") ||
+                    url.startsWith("#") ||
+                    url.startsWith("https://") ||
+                    url.startsWith("http://")
+                ) {
+                    return url;
+                }
+
+                return "";
+            };
+
+            projects.forEach(project => {
+
+                const features = Array.isArray(project.features)
+                    ? project.features
+                    : [];
+
+                const image = safeUrl(project.image);
+
+                const page = safeUrl(project.page);
+                const doc = safeUrl(project.doc);
+                const download = safeUrl(project.download);
+                const github = safeUrl(project.github);
+
+                const links = [];
+
+                if (page) {
+                    links.push(
+                        `<a class="project-link" href="${page}">
+                            View Project
+                        </a>`
+                    );
+                }
+
+                if (doc) {
+                    links.push(
+                        `<a class="project-link" href="${doc}">
+                            Documentation
+                        </a>`
+                    );
+                }
+
+                if (download) {
+                    links.push(
+                        `<a class="project-link" href="${download}">
+                            Download
+                        </a>`
+                    );
+                }
+
+                if (github) {
+                    links.push(
+                        `<a class="project-link"
+                           href="${github}"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            GitHub
+                        </a>`
+                    );
+                }
+
+                const featureMarkup = features.length
+                    ? `
+                        <ul class="project-features">
+                            ${features.map(feature =>
+                                `<li>${escapeHtml(feature)}</li>`
+                            ).join("")}
+                        </ul>
+                    `
+                    : "";
+
+                const imageMarkup = image
+                    ? `
+                        <div class="card-image">
+                            <img
+                                src="${image}"
+                                alt="${escapeHtml(project.name)}"
+                                loading="lazy"
+                                onerror="this.style.display='none'"
+                            >
+                        </div>
+                    `
+                    : "";
+
+                const card = document.createElement("article");
+
+                card.className = "card project-card";
+
+                card.innerHTML = `
+                    ${imageMarkup}
+
+                    <div class="card-content">
+
+                        <h3>
+                            ${escapeHtml(project.name)}
+                        </h3>
+
+                        ${
+                            project.status
+                                ? `<p class="project-status">
+                                    ${escapeHtml(project.status)}
+                                   </p>`
+                                : ""
+                        }
+
+                        ${
+                            project.version
+                                ? `<p>
+                                    <strong>Version:</strong>
+                                    ${escapeHtml(project.version)}
+                                   </p>`
+                                : ""
+                        }
+
+                        ${
+                            project.license
+                                ? `<p>
+                                    <strong>License:</strong>
+                                    ${escapeHtml(project.license)}
+                                   </p>`
+                                : ""
+                        }
+
+                        ${
+                            project.level
+                                ? `<p>
+                                    <strong>Level:</strong>
+                                    ${escapeHtml(project.level)}
+                                   </p>`
+                                : ""
+                        }
+
+                        ${featureMarkup}
+
+                        ${
+                            links.length
+                                ? `<div class="project-actions">
+                                    ${links.join("")}
+                                   </div>`
+                                : ""
+                        }
+
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+        } catch (error) {
+
+            console.error(
+                "ASEM: failed to load projects.",
+                error
+            );
+
+            grid.innerHTML = `
+                <article class="card project-card error-card">
+                    <div class="card-content">
+                        <h3>Projects</h3>
+                        <p>
+                            Projects are temporarily unavailable.
+                        </p>
+                    </div>
+                </article>
+            `;
+
+        } finally {
+
+            grid.setAttribute("aria-busy", "false");
+
         }
-
-        showEmpty(
-            grid,
-            "Projects will appear here as they are published."
-        );
     }
 
 
