@@ -2272,3 +2272,181 @@
 
 })();
 
+
+/* =========================================================
+   ASEM GLOBAL PLATFORM — FINAL ICON / SECTION INTEGRATION
+   ========================================================= */
+
+(function ASEMGlobalPlatformIntegration() {
+
+    "use strict";
+
+    const ROUTES = Object.freeze({
+
+        tourism: "#tourism",
+        businesses: "#businesses",
+        products: "#products",
+        projects: "#projects",
+        portfolio: "#portfolio",
+        services: "#services",
+        contact: "contact.html",
+        search: "#global-search"
+
+    });
+
+
+    function navigate(action) {
+
+        const target = ROUTES[action];
+
+        if (!target) {
+            return;
+        }
+
+
+        if (
+            target.endsWith(".html") ||
+            target.startsWith("http://") ||
+            target.startsWith("https://")
+        ) {
+            window.location.assign(target);
+            return;
+        }
+
+
+        const section = document.querySelector(target);
+
+        if (!section) {
+            console.error(
+                "ASEM: platform section missing:",
+                action,
+                target
+            );
+            return;
+        }
+
+
+        section.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+        /*
+         * Update URL without reloading the application.
+         */
+        if (window.history && window.history.replaceState) {
+
+            window.history.replaceState(
+                null,
+                "",
+                target
+            );
+
+        }
+    }
+
+
+    function bindIcons() {
+
+        document
+            .querySelectorAll("[data-platform-action]")
+            .forEach(button => {
+
+                if (
+                    button.dataset.asemGlobalBound === "true"
+                ) {
+                    return;
+                }
+
+                button.dataset.asemGlobalBound = "true";
+
+
+                button.addEventListener(
+                    "click",
+                    event => {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        navigate(
+                            button.getAttribute(
+                                "data-platform-action"
+                            )
+                        );
+
+                    }
+                );
+
+
+                button.addEventListener(
+                    "keydown",
+                    event => {
+
+                        if (
+                            event.key !== "Enter" &&
+                            event.key !== " "
+                        ) {
+                            return;
+                        }
+
+                        event.preventDefault();
+
+                        navigate(
+                            button.getAttribute(
+                                "data-platform-action"
+                            )
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    function initialize() {
+
+        bindIcons();
+
+        /*
+         * Load all platform data.
+         *
+         * These functions already use the real API endpoints.
+         */
+        if (typeof window.loadTourism === "function") {
+            window.loadTourism();
+        }
+
+        if (typeof window.loadBusinesses === "function") {
+            window.loadBusinesses();
+        }
+
+        if (typeof window.loadProducts === "function") {
+            window.loadProducts();
+        }
+
+        if (typeof window.loadProjects === "function") {
+            window.loadProjects();
+        }
+
+    }
+
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize,
+            { once: true }
+        );
+
+    } else {
+
+        initialize();
+
+    }
+
+})();
+
