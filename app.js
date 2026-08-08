@@ -40,10 +40,10 @@
     const ASEM = {
 
         api: {
-            tourism: "/api/tourism",
-            businesses: "/api/businesses",
-            products: "/api/products",
-            projects: "/api/projects"
+            tourism: "tourism.json",
+            businesses: "businesses.json",
+            products: "products.json",
+            projects: "projects.json"
         },
 
         storage: {
