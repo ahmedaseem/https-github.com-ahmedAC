@@ -1,11 +1,6 @@
-cd /root/my-site
-
-cat > app/seeds/tourism.py <<'PY'
 """
 ASEM Global Platform
 Global Tourism Seeder
-
-Idempotent seed for tourism destinations and attractions.
 """
 
 import json
@@ -16,22 +11,11 @@ from app.models import City, Tourism
 
 
 BASE_DIR = os.path.dirname(__file__)
-
-DATA_FILE = os.path.join(
-    BASE_DIR,
-    "data",
-    "tourism.json"
-)
+DATA_FILE = os.path.join(BASE_DIR, "data", "tourism.json")
 
 
 def seed_tourism():
-
-    with open(
-        DATA_FILE,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
+    with open(DATA_FILE, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     records = data.get("tourism", [])
@@ -40,15 +24,14 @@ def seed_tourism():
     skipped = 0
 
     for item in records:
+        city_code = item.get("city_code")
 
-        city = City.query.filter_by(
-            name=item["city_name"]
-        ).first()
+        city = City.query.filter_by(code=city_code).first()
 
         if not city:
             print(
-                "Tourism skipped - city not found:",
-                item["city_name"]
+                f"Tourism skipped - city not found: "
+                f"{item.get('name')} [{city_code}]"
             )
             skipped += 1
             continue
@@ -76,7 +59,7 @@ def seed_tourism():
             ticket_price=item.get("ticket_price"),
             rating=item.get("rating", 0),
             verified=item.get("verified", False),
-            is_active=item.get("is_active", True)
+            is_active=item.get("is_active", True),
         )
 
         db.session.add(tourism)
@@ -86,4 +69,3 @@ def seed_tourism():
 
     print("Tourism imported:", created)
     print("Tourism skipped:", skipped)
-PY

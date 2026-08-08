@@ -1,9 +1,6 @@
-cat > app/seeds/businesses.py <<'PY'
 """
 ASEM Global Platform
 Global Businesses Seeder
-
-Idempotent seed for businesses, restaurants and services.
 """
 
 import json
@@ -14,22 +11,11 @@ from app.models import City, Business
 
 
 BASE_DIR = os.path.dirname(__file__)
-
-DATA_FILE = os.path.join(
-    BASE_DIR,
-    "data",
-    "businesses.json"
-)
+DATA_FILE = os.path.join(BASE_DIR, "data", "businesses.json")
 
 
 def seed_businesses():
-
-    with open(
-        DATA_FILE,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
+    with open(DATA_FILE, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     records = data.get("businesses", [])
@@ -38,15 +24,14 @@ def seed_businesses():
     skipped = 0
 
     for item in records:
+        city_code = item.get("city_code")
 
-        city = City.query.filter_by(
-            name=item["city_name"]
-        ).first()
+        city = City.query.filter_by(code=city_code).first()
 
         if not city:
             print(
-                "Business skipped - city not found:",
-                item["city_name"]
+                f"Business skipped - city not found: "
+                f"{item.get('name')} [{city_code}]"
             )
             skipped += 1
             continue
@@ -73,7 +58,7 @@ def seed_businesses():
             cover_image=item.get("cover_image"),
             rating=item.get("rating", 0),
             verified=item.get("verified", False),
-            is_active=item.get("is_active", True)
+            is_active=item.get("is_active", True),
         )
 
         db.session.add(business)
@@ -83,4 +68,3 @@ def seed_businesses():
 
     print("Businesses imported:", created)
     print("Businesses skipped:", skipped)
-PY

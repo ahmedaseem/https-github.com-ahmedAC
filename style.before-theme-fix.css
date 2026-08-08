@@ -21,7 +21,7 @@ body {
     --secondary: #0077cc;
 }
 
-html[data-theme="dark"] {
+.dark {
     --bg: #121212;
     --text: #f1f1f1;
     --card: #1e1e1e;
@@ -75,22 +75,15 @@ html[data-theme="dark"] {
 
 /* Dark button */
 .theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    margin-left: 10px;
-    border: 1px solid var(--text);
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background: var(--card);
-    color: var(--text);
+    border: none;
     cursor: pointer;
     font-size: 20px;
-    line-height: 1;
-    flex-shrink: 0;
-    visibility: visible;
-    opacity: 1;
 }
 
 /* Mobile */
