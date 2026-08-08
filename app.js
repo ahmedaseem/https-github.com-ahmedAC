@@ -1732,3 +1732,328 @@
     }
 
 })();
+
+
+/* =========================================================
+   ASEM — ALL PROJECT ICONS FINAL HANDLERS
+   ========================================================= */
+
+(function enableAllProjectIcons() {
+
+    function scrollToSection(selector) {
+
+        if (!selector) {
+            return false;
+        }
+
+        const element = document.querySelector(selector);
+
+        if (!element) {
+            console.warn("ASEM: target not found:", selector);
+            return false;
+        }
+
+        element.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        try {
+            history.replaceState(null, "", selector);
+        } catch (_) {}
+
+        return true;
+    }
+
+    function openSearch() {
+
+        const searchBox =
+            document.querySelector(
+                "#searchBox, " +
+                "[name='search'], " +
+                "input[type='search'], " +
+                ".search-box"
+            );
+
+        if (searchBox) {
+            searchBox.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            try {
+                searchBox.focus();
+            } catch (_) {}
+
+            return;
+        }
+
+        /*
+         * If the project uses the existing global search
+         * implementation, let it handle the action.
+         */
+        if (typeof window.openSearch === "function") {
+            window.openSearch();
+            return;
+        }
+
+        if (typeof window.loadSearch === "function") {
+            window.loadSearch();
+        }
+    }
+
+    function executePlatformAction(action) {
+
+        switch (action) {
+
+            case "tourism":
+                return scrollToSection("#tourism");
+
+            case "businesses":
+                return scrollToSection("#businesses");
+
+            case "products":
+                return scrollToSection("#products");
+
+            case "projects":
+                return scrollToSection("#projects");
+
+            case "portfolio":
+                return scrollToSection("#portfolio");
+
+            case "services":
+                return scrollToSection("#services");
+
+            case "contact":
+                window.location.href = "contact.html";
+                return true;
+
+            case "search":
+                openSearch();
+                return true;
+
+            default:
+                console.warn(
+                    "ASEM: unknown platform action:",
+                    action
+                );
+                return false;
+        }
+    }
+
+    function bindPlatformActions() {
+
+        document
+            .querySelectorAll("[data-platform-action]")
+            .forEach(element => {
+
+                if (element.dataset.asemActionReady === "true") {
+                    return;
+                }
+
+                element.dataset.asemActionReady = "true";
+
+                const action =
+                    element.dataset.platformAction;
+
+                element.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.preventDefault();
+
+                        executePlatformAction(action);
+                    }
+                );
+
+                element.addEventListener(
+                    "keydown",
+                    function(event) {
+
+                        if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                        ) {
+
+                            event.preventDefault();
+
+                            executePlatformAction(action);
+                        }
+                    }
+                );
+
+            });
+    }
+
+    /*
+     * Services icons.
+     *
+     * These are visual cards, so make them useful:
+     * clicking a service takes the visitor to the
+     * services section and focuses the selected card.
+     */
+    function bindServiceIcons() {
+
+        const serviceIcons =
+            document.querySelectorAll(
+                "#services .platform-icon"
+            );
+
+        serviceIcons.forEach((icon, index) => {
+
+            if (icon.dataset.asemServiceReady === "true") {
+                return;
+            }
+
+            icon.dataset.asemServiceReady = "true";
+
+            const card =
+                icon.closest(
+                    ".card, article, .service-card, div"
+                );
+
+            if (card) {
+
+                card.setAttribute(
+                    "tabindex",
+                    "0"
+                );
+
+                card.addEventListener(
+                    "click",
+                    function(event) {
+
+                        /*
+                         * Do not interfere with links/buttons
+                         * that may later be added inside the card.
+                         */
+                        if (
+                            event.target.closest(
+                                "a, button"
+                            )
+                        ) {
+                            return;
+                        }
+
+                        scrollToSection("#services");
+                    }
+                );
+
+                card.addEventListener(
+                    "keydown",
+                    function(event) {
+
+                        if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                        ) {
+
+                            event.preventDefault();
+
+                            scrollToSection("#services");
+                        }
+                    }
+                );
+            }
+
+        });
+    }
+
+    /*
+     * Every project/portfolio card link should work.
+     * This does not replace real href values.
+     */
+    function bindCardLinks() {
+
+        document
+            .querySelectorAll(
+                "#projectsGrid a, " +
+                "#portfolioGrid a, " +
+                "#tourismGrid a, " +
+                "#businessesGrid a, " +
+                "#productsGrid a"
+            )
+            .forEach(link => {
+
+                if (link.dataset.asemLinkReady === "true") {
+                    return;
+                }
+
+                link.dataset.asemLinkReady = "true";
+
+                link.addEventListener(
+                    "click",
+                    function(event) {
+
+                        const href =
+                            link.getAttribute("href");
+
+                        if (!href || href === "#") {
+                            event.preventDefault();
+                        }
+
+                    }
+                );
+            });
+    }
+
+    /*
+     * Footer placeholder links (#) must not silently do nothing.
+     */
+    function bindPlaceholderLinks() {
+
+        document
+            .querySelectorAll("a[href='#']")
+            .forEach(link => {
+
+                if (link.dataset.asemPlaceholderReady === "true") {
+                    return;
+                }
+
+                link.dataset.asemPlaceholderReady = "true";
+
+                link.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.preventDefault();
+
+                        const target =
+                            link.dataset.target ||
+                            link.dataset.section;
+
+                        if (target) {
+                            scrollToSection(target);
+                        }
+                    }
+                );
+            });
+    }
+
+    function initialize() {
+
+        bindPlatformActions();
+        bindServiceIcons();
+        bindCardLinks();
+        bindPlaceholderLinks();
+
+        console.info(
+            "ASEM: ALL PROJECT ICONS AND INTERACTIVE ACTIONS ENABLED."
+        );
+    }
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize,
+            { once: true }
+        );
+
+    } else {
+
+        initialize();
+
+    }
+
+})();
