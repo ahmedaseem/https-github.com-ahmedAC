@@ -1538,3 +1538,197 @@
 
 
 })();
+
+/* =========================================================
+   ASEM PLATFORM ICONS — FINAL INTERACTION
+   ========================================================= */
+
+(function enablePlatformIcons() {
+
+    function initPlatformIcons() {
+
+        const icons = document.querySelectorAll(".platform-icon");
+
+        if (!icons.length) {
+            return;
+        }
+
+        /*
+         * Primary targets.
+         * If an icon already has data-target/href, that value wins.
+         * Otherwise the fallback order below is used.
+         */
+        const fallbackTargets = [
+            "#services",
+            "#tourism",
+            "#businesses",
+            "#products",
+            "#projects",
+            "#portfolio",
+            "#global-platform",
+            "#services",
+            "#tourism",
+            "#businesses",
+            "#products"
+        ];
+
+        const normalize = value =>
+            String(value || "")
+                .trim()
+                .toLowerCase();
+
+        function getTarget(button, index) {
+
+            const explicit =
+                button.dataset.target ||
+                button.getAttribute("data-section") ||
+                button.getAttribute("href");
+
+            if (explicit && explicit !== "#") {
+                return explicit;
+            }
+
+            const text = normalize(button.textContent);
+
+            const labels = [
+                ["service", "#services"],
+                ["خدمات", "#services"],
+                ["tourism", "#tourism"],
+                ["سياح", "#tourism"],
+                ["business", "#businesses"],
+                ["أعمال", "#businesses"],
+                ["product", "#products"],
+                ["منتج", "#products"],
+                ["project", "#projects"],
+                ["مشروع", "#projects"],
+                ["portfolio", "#portfolio"],
+                ["أعمالنا", "#portfolio"],
+                ["platform", "#global-platform"],
+                ["منصة", "#global-platform"]
+            ];
+
+            for (const [keyword, target] of labels) {
+                if (text.includes(keyword)) {
+                    return target;
+                }
+            }
+
+            return fallbackTargets[index] || "#global-platform";
+        }
+
+        function scrollToTarget(target) {
+
+            if (!target) {
+                return;
+            }
+
+            let element = null;
+
+            try {
+                element = document.querySelector(target);
+            } catch (_) {
+                return;
+            }
+
+            if (!element) {
+                return;
+            }
+
+            element.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+            /*
+             * Keep the URL synchronized without reloading the page.
+             */
+            if (target.startsWith("#")) {
+                try {
+                    history.replaceState(
+                        null,
+                        "",
+                        target
+                    );
+                } catch (_) {}
+            }
+        }
+
+        icons.forEach((button, index) => {
+
+            /*
+             * Prevent duplicate listeners if this initializer
+             * happens to run more than once.
+             */
+            if (button.dataset.asemIconReady === "true") {
+                return;
+            }
+
+            button.dataset.asemIconReady = "true";
+
+            const target = getTarget(button, index);
+
+            button.setAttribute("role", "button");
+            button.setAttribute("tabindex", "0");
+            button.setAttribute(
+                "aria-label",
+                button.getAttribute("aria-label") ||
+                button.textContent.trim() ||
+                "ASEM Platform"
+            );
+
+            button.addEventListener("click", function(event) {
+
+                /*
+                 * If the element is an actual link, let an explicit
+                 * external URL work normally.
+                 */
+                const href = button.getAttribute("href");
+
+                if (
+                    href &&
+                    href !== "#" &&
+                    !href.startsWith("#")
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                scrollToTarget(target);
+            });
+
+            button.addEventListener("keydown", function(event) {
+
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+
+                    event.preventDefault();
+
+                    scrollToTarget(target);
+                }
+            });
+
+        });
+
+        console.info(
+            `ASEM: ${icons.length} platform icons enabled.`
+        );
+    }
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initPlatformIcons,
+            { once: true }
+        );
+
+    } else {
+
+        initPlatformIcons();
+
+    }
+
+})();
