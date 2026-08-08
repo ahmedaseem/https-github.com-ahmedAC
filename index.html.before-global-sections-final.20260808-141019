@@ -621,7 +621,11 @@
         </div>
 
 
-
+        <div
+            id="tourismGrid"
+            class="cards"
+            aria-live="polite"
+        ></div>
 
     </section>
 
@@ -651,7 +655,11 @@
         </div>
 
 
-
+        <div
+            id="businessesGrid"
+            class="cards"
+            aria-live="polite"
+        ></div>
 
     </section>
 
@@ -681,7 +689,11 @@
         </div>
 
 
-
+        <div
+            id="productsGrid"
+            class="cards"
+            aria-live="polite"
+        ></div>
 
     </section>
 
@@ -787,57 +799,6 @@
 <!-- =========================================================
      PROJECTS
      ========================================================= -->
-
-
-<section id="tourism" class="content-section platform-section">
-    <div class="section-header">
-        <h2 data-i18n="tourism">Tourism</h2>
-        <p data-i18n="tourism_desc">
-            Explore tourism destinations and services.
-        </p>
-    </div>
-
-    <div
-        id="tourismGrid"
-        class="cards-grid"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
-</section>
-
-
-<section id="businesses" class="content-section platform-section">
-    <div class="section-header">
-        <h2 data-i18n="businesses">Businesses</h2>
-        <p data-i18n="businesses_desc">
-            Discover businesses and services.
-        </p>
-    </div>
-
-    <div
-        id="businessesGrid"
-        class="cards-grid"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
-</section>
-
-
-<section id="products" class="content-section platform-section">
-    <div class="section-header">
-        <h2 data-i18n="products">Products</h2>
-        <p data-i18n="products_desc">
-            Browse products and available offers.
-        </p>
-    </div>
-
-    <div
-        id="productsGrid"
-        class="cards-grid"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
-</section>
 
 <section id="projects">
 

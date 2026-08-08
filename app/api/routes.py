@@ -10,7 +10,8 @@ from app.models import (
     City,
     Business,
     Tourism,
-    Product
+    Product,
+    Project
 )
 
 
@@ -69,6 +70,19 @@ def tourism():
 def products():
 
     data = Product.query.all()
+
+    return jsonify([
+        item.to_dict()
+        for item in data
+    ])
+
+
+@api_bp.route("/projects", methods=["GET"])
+def projects():
+
+    data = Project.query.filter_by(
+        is_active=True
+    ).all()
 
     return jsonify([
         item.to_dict()

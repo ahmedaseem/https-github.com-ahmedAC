@@ -2,17 +2,14 @@
 <html lang="en" dir="ltr">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
     >
 
-    <title>
-        ASEM Digital Solutions | Global Digital Platform
-    </title>
+    <title>ASEM Digital Solutions | Global Digital Platform</title>
 
     <link
         rel="canonical"
@@ -44,8 +41,6 @@
         content="#00aeea"
     >
 
-    <!-- Open Graph -->
-
     <meta
         property="og:title"
         content="ASEM Digital Solutions"
@@ -71,8 +66,6 @@
         content="https://asemdigital.github.io/assets/og-image.png"
     >
 
-    <!-- Twitter -->
-
     <meta
         name="twitter:card"
         content="summary_large_image"
@@ -94,7 +87,6 @@
     >
 
     <!-- Security -->
-
     <meta
         http-equiv="Content-Security-Policy"
         content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https:;"
@@ -121,20 +113,39 @@
         href="manifest.json"
     >
 
-    <!-- Structured Data -->
+    <!-- Small compatibility layer.
+         This protects buttons/cards if an old CSS version
+         accidentally disables pointer interaction. -->
+    <style>
+        button.platform-card,
+        button.card,
+        [data-platform-action],
+        [data-section] {
+            pointer-events: auto;
+            cursor: pointer;
+        }
 
-    <script
-        type="application/ld+json"
-    >
+        button.platform-card {
+            font: inherit;
+            text-align: inherit;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "ASEM Digital Solutions",
         "url": "https://asemdigital.github.io/",
-        "logo": "https://asemdigital.github.io/assets/og-image.png"
+        "logo": "https://asemdigital.github.io/assets/og-image.png",
+        "description": "Global digital platform for software solutions, tourism, businesses, products and worldwide services."
     }
     </script>
-
 </head>
 
 
@@ -154,12 +165,10 @@
         class="logo"
         aria-label="ASEM Digital Solutions Home"
     >
-
         <img
             src="assets/logos/asem-logo.png"
             alt="ASEM Digital Solutions"
         >
-
     </a>
 
 
@@ -226,33 +235,16 @@
             id="langSwitch"
             aria-label="Language"
         >
-
-            <option value="auto">
-                Auto
-            </option>
-
-            <option value="ar">
-                العربية
-            </option>
-
-            <option value="en">
-                English
-            </option>
-
-            <option value="fr">
-                Français
-            </option>
-
-            <option value="ja">
-                日本語
-            </option>
-
+            <option value="auto">Auto</option>
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="ja">日本語</option>
         </select>
 
 
         <button
             id="themeToggle"
-            class="theme-toggle"
             type="button"
             aria-label="Toggle Dark Mode"
             title="Toggle Dark Mode"
@@ -275,14 +267,10 @@
         ASEM Digital Solutions
     </h1>
 
-
     <p data-i18n="hero_desc">
-
         Free digital projects and custom software solutions
         for individuals and companies worldwide.
-
     </p>
-
 
     <div class="hero-actions">
 
@@ -293,7 +281,6 @@
         >
             Start Your Free Project
         </a>
-
 
         <a
             class="btn"
@@ -312,24 +299,24 @@
      GLOBAL PLATFORM
      ========================================================= -->
 
-<section id="global-platform">
+<section
+    id="global-platform"
+    aria-labelledby="global-platform-title"
+>
 
-    <h2 data-i18n="global_platform">
-        ASEM Global Platform 🌏
-    </h2>
+    <div class="section-header">
 
+        <h2 id="global-platform-title" data-i18n="global_platform">
+            ASEM Global Platform 🌏
+        </h2>
 
-    <p data-i18n="global_platform_desc">
+        <p data-i18n="global_platform_desc">
+            Explore tourism destinations, global businesses,
+            products and digital services through one unified platform.
+        </p>
 
-        Explore tourism destinations, global businesses,
-        products and digital services through one unified platform.
+    </div>
 
-    </p>
-
-
-    <!-- =====================================================
-         PLATFORM ACTION CARDS
-         ===================================================== -->
 
     <div class="cards platform-cards">
 
@@ -340,6 +327,7 @@
             type="button"
             class="card platform-card"
             data-platform-action="tourism"
+            data-section="tourism-section"
             aria-controls="tourism-section"
             aria-label="Open Global Tourism"
         >
@@ -351,17 +339,13 @@
                 🏝️
             </span>
 
-
             <h3 data-i18n="tourism">
                 Tourism
             </h3>
 
-
             <p data-i18n="tourism_desc">
-
-                Discover destinations, attractions
-                and experiences around the world.
-
+                Discover destinations, attractions and
+                experiences around the world.
             </p>
 
         </button>
@@ -373,6 +357,7 @@
             type="button"
             class="card platform-card"
             data-platform-action="businesses"
+            data-section="businesses-section"
             aria-controls="businesses-section"
             aria-label="Open Global Businesses"
         >
@@ -384,17 +369,13 @@
                 🌍
             </span>
 
-
             <h3 data-i18n="businesses">
                 Global Businesses
             </h3>
 
-
             <p data-i18n="businesses_desc">
-
                 Explore businesses, restaurants,
                 services and organizations worldwide.
-
             </p>
 
         </button>
@@ -406,6 +387,7 @@
             type="button"
             class="card platform-card"
             data-platform-action="products"
+            data-section="products-section"
             aria-controls="products-section"
             aria-label="Open Global Products"
         >
@@ -417,17 +399,13 @@
                 🛒
             </span>
 
-
             <h3 data-i18n="products">
                 Global Products
             </h3>
 
-
             <p data-i18n="products_desc">
-
                 Discover products and offerings
-                from around the world.
-
+                from businesses around the world.
             </p>
 
         </button>
@@ -439,6 +417,7 @@
             type="button"
             class="card platform-card"
             data-platform-action="projects"
+            data-section="projects"
             aria-controls="projects"
             aria-label="Open Projects"
         >
@@ -450,17 +429,13 @@
                 💻
             </span>
 
-
             <h3 data-i18n="projects">
                 Projects
             </h3>
 
-
-            <p>
-
+            <p data-i18n="projects_desc">
                 Explore ASEM digital projects
                 and software solutions.
-
             </p>
 
         </button>
@@ -472,6 +447,7 @@
             type="button"
             class="card platform-card"
             data-platform-action="portfolio"
+            data-section="portfolio"
             aria-controls="portfolio"
             aria-label="Open Portfolio"
         >
@@ -483,17 +459,13 @@
                 🗂️
             </span>
 
-
             <h3 data-i18n="portfolio">
                 Portfolio
             </h3>
 
-
-            <p>
-
+            <p data-i18n="portfolio_desc">
                 Discover selected ASEM
                 digital solutions.
-
             </p>
 
         </button>
@@ -505,6 +477,7 @@
             type="button"
             class="card platform-card"
             data-platform-action="services"
+            data-section="services"
             aria-controls="services"
             aria-label="Open Services"
         >
@@ -516,17 +489,13 @@
                 ⚙️
             </span>
 
-
             <h3 data-i18n="services">
                 Services
             </h3>
 
-
-            <p>
-
+            <p data-i18n="services_desc">
                 Explore web development,
                 AI, automation and cloud services.
-
             </p>
 
         </button>
@@ -548,16 +517,12 @@
                 📩
             </span>
 
-
             <h3 data-i18n="contact">
                 Contact
             </h3>
 
-
-            <p>
-
+            <p data-i18n="contact_desc">
                 Contact ASEM Digital Solutions.
-
             </p>
 
         </button>
@@ -579,16 +544,12 @@
                 🔍
             </span>
 
-
             <h3 data-i18n="global_search">
                 Global Search
             </h3>
 
-
-            <p>
-
+            <p data-i18n="global_search_desc">
                 Search across the ASEM platform.
-
             </p>
 
         </button>
@@ -609,9 +570,9 @@
 
         <div class="section-header">
 
-            <h2 id="tourism-title">
+            <h3 id="tourism-title">
                 🏝️ Global Tourism
-            </h2>
+            </h3>
 
             <p>
                 Discover destinations and attractions
@@ -620,8 +581,12 @@
 
         </div>
 
-
-        
+        <div
+            id="tourismGrid"
+            class="cards"
+            aria-live="polite"
+            aria-busy="false"
+        ></div>
 
     </section>
 
@@ -639,9 +604,9 @@
 
         <div class="section-header">
 
-            <h2 id="businesses-title">
+            <h3 id="businesses-title">
                 🌍 Global Businesses
-            </h2>
+            </h3>
 
             <p>
                 Explore businesses, restaurants,
@@ -650,8 +615,12 @@
 
         </div>
 
-
-        
+        <div
+            id="businessesGrid"
+            class="cards"
+            aria-live="polite"
+            aria-busy="false"
+        ></div>
 
     </section>
 
@@ -669,19 +638,23 @@
 
         <div class="section-header">
 
-            <h2 id="products-title">
+            <h3 id="products-title">
                 🛒 Global Products
-            </h2>
+            </h3>
 
             <p>
                 Discover products and offerings
-                from around the world.
+                from businesses around the world.
             </p>
 
         </div>
 
-
-        
+        <div
+            id="productsGrid"
+            class="cards"
+            aria-live="polite"
+            aria-busy="false"
+        ></div>
 
     </section>
 
@@ -692,20 +665,23 @@
      SERVICES
      ========================================================= -->
 
-<section id="services">
+<section
+    id="services"
+    aria-labelledby="services-title"
+>
 
-    <h2 data-i18n="services">
-        Our Services
-    </h2>
+    <div class="section-header">
+
+        <h2 id="services-title" data-i18n="services">
+            Our Services
+        </h2>
+
+    </div>
 
 
     <div class="cards">
 
-
-        <article
-            class="card"
-            tabindex="0"
-        >
+        <article class="card">
 
             <span
                 class="platform-icon"
@@ -719,19 +695,14 @@
             </h3>
 
             <p data-i18n="web_dev_desc">
-
                 Modern, fast, secure websites
                 and digital platforms.
-
             </p>
 
         </article>
 
 
-        <article
-            class="card"
-            tabindex="0"
-        >
+        <article class="card">
 
             <span
                 class="platform-icon"
@@ -745,19 +716,14 @@
             </h3>
 
             <p data-i18n="ai_auto_desc">
-
                 Smart solutions powered by modern
                 artificial intelligence and automation.
-
             </p>
 
         </article>
 
 
-        <article
-            class="card"
-            tabindex="0"
-        >
+        <article class="card">
 
             <span
                 class="platform-icon"
@@ -771,10 +737,8 @@
             </h3>
 
             <p data-i18n="cloud_desc">
-
                 Scalable and reliable cloud
                 infrastructure for modern organizations.
-
             </p>
 
         </article>
@@ -788,68 +752,22 @@
      PROJECTS
      ========================================================= -->
 
+<section
+    id="projects"
+    aria-labelledby="projects-title"
+>
 
-<section id="tourism" class="content-section platform-section">
     <div class="section-header">
-        <h2 data-i18n="tourism">Tourism</h2>
-        <p data-i18n="tourism_desc">
-            Explore tourism destinations and services.
+
+        <h2 id="projects-title" data-i18n="projects">
+            Projects
+        </h2>
+
+        <p data-i18n="projects_desc">
+            Explore ASEM digital projects and software solutions.
         </p>
+
     </div>
-
-    <div
-        id="tourismGrid"
-        class="cards-grid"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
-</section>
-
-
-<section id="businesses" class="content-section platform-section">
-    <div class="section-header">
-        <h2 data-i18n="businesses">Businesses</h2>
-        <p data-i18n="businesses_desc">
-            Discover businesses and services.
-        </p>
-    </div>
-
-    <div
-        id="businessesGrid"
-        class="cards-grid"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
-</section>
-
-
-<section id="products" class="content-section platform-section">
-    <div class="section-header">
-        <h2 data-i18n="products">Products</h2>
-        <p data-i18n="products_desc">
-            Browse products and available offers.
-        </p>
-    </div>
-
-    <div
-        id="productsGrid"
-        class="cards-grid"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
-</section>
-
-<section id="projects">
-
-    <h2 data-i18n="projects">
-        Projects
-    </h2>
-
-
-    <p>
-        Explore ASEM digital projects and software solutions.
-    </p>
-
 
     <div
         class="cards"
@@ -864,19 +782,22 @@
      PORTFOLIO
      ========================================================= -->
 
-<section id="portfolio">
+<section
+    id="portfolio"
+    aria-labelledby="portfolio-title"
+>
 
-    <h2 data-i18n="portfolio">
-        Portfolio
-    </h2>
+    <div class="section-header">
 
+        <h2 id="portfolio-title" data-i18n="portfolio">
+            Portfolio
+        </h2>
 
-    <p data-i18n="portfolio_desc">
+        <p data-i18n="portfolio_desc">
+            A selection of our global digital solutions.
+        </p>
 
-        A selection of our global digital solutions.
-
-    </p>
-
+    </div>
 
     <div
         class="portfolio-grid"
@@ -891,12 +812,18 @@
      WHY ASEM
      ========================================================= -->
 
-<section id="why">
+<section
+    id="why"
+    aria-labelledby="why-title"
+>
 
-    <h2 data-i18n="why_asem">
-        Why Choose ASEM
-    </h2>
+    <div class="section-header">
 
+        <h2 id="why-title" data-i18n="why_asem">
+            Why Choose ASEM
+        </h2>
+
+    </div>
 
     <ul>
 
@@ -925,20 +852,24 @@
      GLOBAL REACH
      ========================================================= -->
 
-<section id="trusted">
+<section
+    id="trusted"
+    aria-labelledby="trusted-title"
+>
 
-    <h2 data-i18n="trusted_world">
-        Trusted Worldwide
-    </h2>
+    <div class="section-header">
 
+        <h2 id="trusted-title" data-i18n="trusted_world">
+            Trusted Worldwide
+        </h2>
 
-    <p data-i18n="trusted_desc">
+        <p data-i18n="trusted_desc">
+            ASEM is building a global digital ecosystem
+            connecting people, businesses, services,
+            tourism and technology.
+        </p>
 
-        ASEM is building a global digital ecosystem
-        connecting people, businesses, services,
-        tourism and technology.
-
-    </p>
+    </div>
 
 </section>
 
@@ -947,15 +878,20 @@
      PAYMENTS
      ========================================================= -->
 
-<section id="payments">
+<section
+    id="payments"
+    aria-labelledby="payments-title"
+>
 
-    <h2 data-i18n="payments">
-        Supported Payment Methods
-    </h2>
+    <div class="section-header">
 
+        <h2 id="payments-title" data-i18n="payments">
+            Supported Payment Methods
+        </h2>
+
+    </div>
 
     <div class="payments">
-
 
         <img
             src="assets/visa.png"
@@ -963,13 +899,11 @@
             alt="Visa"
         >
 
-
         <img
             src="assets/mastercard.png"
             loading="lazy"
             alt="Mastercard"
         >
-
 
         <img
             src="assets/paypal.png"
@@ -977,13 +911,11 @@
             alt="PayPal"
         >
 
-
         <img
             src="assets/googlepay.png"
             loading="lazy"
             alt="Google Pay"
         >
-
 
         <img
             src="assets/applepay.png"
@@ -1012,23 +944,19 @@
             GitHub
         </a>
 
-
         <a href="#">
             LinkedIn
         </a>
 
-
         <a href="#">
             Twitter
         </a>
-
 
         <a href="#">
             YouTube
         </a>
 
     </div>
-
 
     <p>
         © 2026 ASEM Digital Solutions
@@ -1038,7 +966,7 @@
 
 
 <!-- =========================================================
-     SCROLL TO TOP
+     SCROLL TOP
      ========================================================= -->
 
 <button
@@ -1052,16 +980,10 @@
 </button>
 
 
-<!-- =========================================================
-     APPLICATION
-     ========================================================= -->
-
 <script
     src="app.js"
     defer
 ></script>
 
-
 </body>
-
 </html>
