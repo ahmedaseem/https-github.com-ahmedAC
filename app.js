@@ -2057,3 +2057,218 @@
     }
 
 })();
+
+
+/* =========================================================
+   ASEM — ALL PROJECT ICONS FINAL ROUTING
+   ========================================================= */
+
+(function enableAllProjectIconsFinal() {
+
+    "use strict";
+
+    const targets = {
+        tourism: "#tourismGrid",
+        businesses: "#businessesGrid",
+        products: "#productsGrid",
+        projects: "#projectsGrid",
+        portfolio: "#portfolioGrid",
+        services: "#services",
+        contact: "contact.html",
+        search: "#global-search"
+    };
+
+    function goToTarget(action) {
+
+        const target = targets[action];
+
+        if (!target) {
+            console.warn("ASEM: unknown platform action:", action);
+            return;
+        }
+
+        /*
+         * Real page navigation.
+         */
+        if (
+            target.endsWith(".html") ||
+            target.startsWith("http://") ||
+            target.startsWith("https://")
+        ) {
+            window.location.href = target;
+            return;
+        }
+
+        const element = document.querySelector(target);
+
+        /*
+         * Some sections use a wrapper instead of the grid itself.
+         * If the exact target is absent, use the closest known section.
+         */
+        if (!element) {
+
+            const fallbacks = {
+                tourism: "#tourism",
+                businesses: "#businesses",
+                products: "#products",
+                projects: "#projects",
+                portfolio: "#portfolio",
+                services: "#services",
+                search: "#search"
+            };
+
+            const fallback = fallbacks[action];
+
+            if (fallback) {
+                const fallbackElement =
+                    document.querySelector(fallback);
+
+                if (fallbackElement) {
+                    fallbackElement.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+                    return;
+                }
+            }
+
+            console.warn(
+                "ASEM: target not found for:",
+                action,
+                target
+            );
+
+            return;
+        }
+
+        element.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+
+    function bindPlatformIcons() {
+
+        const buttons = document.querySelectorAll(
+            "[data-platform-action]"
+        );
+
+        buttons.forEach(button => {
+
+            /*
+             * Prevent duplicate handlers.
+             */
+            if (button.dataset.asemIconsBound === "true") {
+                return;
+            }
+
+            button.dataset.asemIconsBound = "true";
+
+            button.addEventListener(
+                "click",
+                function(event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const action =
+                        button.getAttribute(
+                            "data-platform-action"
+                        );
+
+                    goToTarget(action);
+                }
+            );
+
+            /*
+             * Keyboard accessibility.
+             */
+            button.addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
+
+                        event.preventDefault();
+
+                        const action =
+                            button.getAttribute(
+                                "data-platform-action"
+                            );
+
+                        goToTarget(action);
+                    }
+                }
+            );
+        });
+    }
+
+
+    function bindServiceIcons() {
+
+        const serviceIcons =
+            document.querySelectorAll(
+                ".service-card .platform-icon, " +
+                ".service-item .platform-icon, " +
+                "[data-service-action]"
+            );
+
+        serviceIcons.forEach(icon => {
+
+            if (icon.dataset.asemServiceBound === "true") {
+                return;
+            }
+
+            icon.dataset.asemServiceBound = "true";
+
+            icon.addEventListener(
+                "click",
+                function(event) {
+
+                    event.preventDefault();
+
+                    const action =
+                        icon.getAttribute(
+                            "data-service-action"
+                        );
+
+                    if (action) {
+                        goToTarget(action);
+                    }
+                }
+            );
+        });
+    }
+
+
+    function initializeAllIcons() {
+
+        bindPlatformIcons();
+        bindServiceIcons();
+
+        console.info(
+            "ASEM: all project icon handlers initialized."
+        );
+    }
+
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initializeAllIcons,
+            { once: true }
+        );
+
+    } else {
+
+        initializeAllIcons();
+
+    }
+
+})();
+
