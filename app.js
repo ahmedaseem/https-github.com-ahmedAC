@@ -1944,6 +1944,100 @@
 
 
     /* =========================================================
+       DIRECT PLATFORM BUTTON FALLBACK
+       ========================================================= */
+
+    function initializePlatformButtons() {
+
+        const buttons = $$(
+            "[data-platform-action]"
+        );
+
+        console.info(
+            "ASEM: platform buttons found:",
+            buttons.length
+        );
+
+        buttons.forEach(button => {
+
+            if (button.dataset.asemDirectBound === "1") {
+                return;
+            }
+
+            button.dataset.asemDirectBound = "1";
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    const action =
+                        button.dataset.platformAction;
+
+                    if (!action) {
+                        return;
+                    }
+
+                    console.info(
+                        "ASEM: platform button:",
+                        action
+                    );
+
+                    const handler =
+                        actions[action];
+
+                    if (
+                        typeof handler !== "function"
+                    ) {
+
+                        console.warn(
+                            "ASEM: missing action:",
+                            action
+                        );
+
+                        return;
+                    }
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    try {
+
+                        const result =
+                            handler();
+
+                        if (
+                            result &&
+                            typeof result.catch === "function"
+                        ) {
+
+                            result.catch(error => {
+
+                                console.error(
+                                    "ASEM async action error:",
+                                    action,
+                                    error
+                                );
+
+                            });
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "ASEM direct action error:",
+                            action,
+                            error
+                        );
+                    }
+
+                },
+                false
+            );
+        });
+    }
+
+
+    /* =========================================================
        GLOBAL COMPATIBILITY API
        ========================================================= */
 
@@ -1991,6 +2085,8 @@
         initializeSearch();
 
         initializeClickRouter();
+
+        initializePlatformButtons();
 
         initializeKeyboard();
 
