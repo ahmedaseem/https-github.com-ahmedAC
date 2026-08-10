@@ -1366,52 +1366,26 @@ console.log("ASEM: app.js STARTED");
     ======================================================== */
 
     const actions = {
+    tourism: () => handleSection("tourism-section", loadTourism),
+    businesses: () => handleSection("businesses-section", loadBusinesses),
+    products: () => handleSection("products-section", loadProducts),
+    projects: () => handleSection("projects", loadProjects),
+    portfolio: openPortfolio,
+    services: () => openPageSection("services"),
+    contact: () => openExternalPage("contact.html"),
+    about: () => openExternalPage("about.html"),
+    search: focusSearch,
+    top: () => window.scrollTo({ top: 0, behavior: "smooth" })
+};
 
-        tourism:
-            () => loadTourism(),
-
-        businesses:
-            () => loadBusinesses(),
-
-        products:
-            () => loadProducts(),
-
-        projects:
-            () => {
-                openPageSection(
-                    "projects"
-                );
-                loadProjects();
-            },
-
-        portfolio:
-            () => openPortfolio(),
-
-        services:
-            () => openPageSection(
-                "services"
-            ),
-
-        contact:
-            () => openExternalPage(
-                "contact.html"
-            ),
-
-        about:
-            () => openExternalPage(
-                "about.html"
-            ),
-
-        search:
-            () => focusSearch(),
-
-        top:
-            () => window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            })
-
-    };
+function handleSection(sectionId, loader) {
+    openPageSection(sectionId);
+    if (typeof loader === "function") {
+        loader();
+    }
+}
+          
+ 
 
 
     function initializeActionRouter() {

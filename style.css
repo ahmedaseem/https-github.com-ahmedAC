@@ -1608,3 +1608,9 @@ body {
 }
 
 }
+.logo img {
+    width: auto;
+    height: 58px;
+    max-width: 180px;
+    object-fit: contain;
+}
