@@ -1,4 +1,3 @@
-"app.js" — ASEM Global Platform
 
 "use strict";
 
@@ -85,7 +84,6 @@
     demoDelay: 350
 };
 
-    };
 
 
     /* ========================================================
@@ -2787,13 +2785,13 @@
        PUBLIC API
        ======================================================== */
 
-    window.ASEM = {
-
-        config:
-            CONFIG,
-
-        demo:
-            DEMO_DATA,
+        export const CONFIG = {
+    MODE: "production",
+    API_URL: "https://api.realserver.com",
+    DEMO_DATA: {
+        message: "This is demo data"
+    }
+};
 
         loadTourism,
 
