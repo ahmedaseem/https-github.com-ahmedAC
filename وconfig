@@ -1,5 +1,5 @@
 export const CONFIG = {
-  mode: "demo",        // أو api
+  mode: "demo",
   demoDelay: 1000,
   timeout: 5000,
   api: {
@@ -10,4 +10,4 @@ export const CONFIG = {
     theme: "light",
     language: "en"
   }
-}
+};
