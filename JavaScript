@@ -1,0 +1,34 @@
+const API = "http://192.168.1.1";
+
+function openSearch(){
+    window.location.href="/search.html";
+}
+
+function openRestaurants(){
+    fetch(API + "/api/restaurants")
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        // عرض المطاعم هنا
+    });
+}
+
+function openPlaces(){
+    fetch(API + "/api/places")
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+    });
+}
+
+function openProducts(){
+    fetch(API + "/api/products")
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+    });
+}
+
+function openProfile(){
+    window.location.href="/profile.html";
+}

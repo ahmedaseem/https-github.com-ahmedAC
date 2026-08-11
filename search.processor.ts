@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
-import { SEARCH_QUEUE } from '../jobs/search.queue';
+import { SEARCH_QUEUE } from './search.queue.js';
 
 @Processor(SEARCH_QUEUE)
 export class SearchProcessor extends WorkerHost {
