@@ -621,6 +621,21 @@ section {
 }
 
 
+.platform-svg-icon {
+    width: 34px;
+    height: 34px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    color: var(--primary);
+}
+
+
 /* =========================================================
    12. PLATFORM RESULTS
    ========================================================= */

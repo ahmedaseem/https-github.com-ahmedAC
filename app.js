@@ -431,6 +431,15 @@ console.log("ASEM: app.js STARTED");
                             : ""
                     }
 
+                    <button
+                        type="button"
+                        class="btn copy-card-btn"
+                        data-copy="${escapeHTML(
+                            `${name}\\n${category}\\n${description}`
+                        )}">
+                        Copy
+                    </button>
+
                 </div>
 
             </article>
@@ -524,6 +533,15 @@ console.log("ASEM: app.js STARTED");
                               `
                             : ""
                     }
+
+                    <button
+                        type="button"
+                        class="btn copy-card-btn"
+                        data-copy="${escapeHTML(
+                            `${name}\\n${category}\\n${description}${item.address ? `\\n${item.address}` : ""}`
+                        )}">
+                        Copy
+                    </button>
 
                 </div>
 
@@ -620,6 +638,15 @@ console.log("ASEM: app.js STARTED");
                             : ""
                     }
 
+                    <button
+                        type="button"
+                        class="btn copy-card-btn"
+                        data-copy="${escapeHTML(
+                            `${name}\\n${category}\\n${description}${item.price !== undefined ? `\\n${item.price} ${item.currency || "USD"}` : ""}`
+                        )}">
+                        Copy
+                    </button>
+
                 </div>
 
             </article>
@@ -675,6 +702,15 @@ console.log("ASEM: app.js STARTED");
                 <p>
                     ${escapeHTML(description)}
                 </p>
+
+                <button
+                    type="button"
+                    class="btn copy-card-btn"
+                    data-copy="${escapeHTML(
+                        `${name}\\n${description}`
+                    )}">
+                    Copy
+                </button>
 
             </article>
         `;
@@ -1525,6 +1561,71 @@ function handleSection(sectionId, loader) {
 
 
     /* ========================================================
+       COPY ACTIONS
+    ======================================================== */
+
+    function initializeCopyActions() {
+
+        document.addEventListener(
+            "click",
+            async event => {
+
+                const button =
+                    event.target.closest(
+                        "[data-copy]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const value =
+                    button.dataset.copy || "";
+
+                if (!value) {
+                    return;
+                }
+
+                try {
+
+                    await navigator.clipboard.writeText(
+                        value
+                    );
+
+                    const original =
+                        button.textContent;
+
+                    button.textContent =
+                        "Copied ✓";
+
+                    setTimeout(
+                        () => {
+                            button.textContent =
+                                original;
+                        },
+                        1500
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "ASEM: copy failed",
+                        error
+                    );
+
+                    window.prompt(
+                        "Copy this text:",
+                        value
+                    );
+                }
+            }
+        );
+    }
+
+
+    /* ========================================================
        GLOBAL COMPATIBILITY API
     ======================================================== */
 
@@ -1586,6 +1687,8 @@ function handleSection(sectionId, loader) {
         initializeScrollTop();
 
         initializeActionRouter();
+
+        initializeCopyActions();
 
         initializeKeyboard();
 
