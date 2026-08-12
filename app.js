@@ -2,6 +2,8 @@
 
 import { CONFIG } from "./config.js";
 
+const API_BASE = CONFIG.api.real;
+
 console.log("ASEM: app.js STARTED");
 
     /* ========================================================
@@ -25,10 +27,10 @@ console.log("ASEM: app.js STARTED");
         },
 
         api: {
-            tourism: "/api/tourism",
-            businesses: "/api/businesses",
-            products: "/api/products",
-            projects: "/api/projects"
+            tourism: `${API_BASE}/tourism`,
+            businesses: `${API_BASE}/businesses`,
+            products: `${API_BASE}/products`,
+            projects: `${API_BASE}/projects`
         },
 
         storage: {

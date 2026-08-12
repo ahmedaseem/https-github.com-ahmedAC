@@ -1,10 +1,10 @@
 export const CONFIG = {
-  mode: "demo",        // أو api
+  mode: "api",        // أو api
   demoDelay: 1000,
   timeout: 5000,
   api: {
     demo: "...",
-    real: "...",
+    real: "https://gov-server.com/api",
   },
   storage: {
     theme: "light",
