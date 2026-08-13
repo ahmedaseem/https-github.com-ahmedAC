@@ -1427,47 +1427,31 @@ function handleSection(sectionId, loader) {
 
 
     function initializeActionRouter() {
+    document.addEventListener("click", function (event) {
+        const element = event.target.closest("[data-platform-action]");
 
-        document.addEventListener(
-            "click",
-            event => {
+        if (!element) {
+            return;
+        }
 
-                const element =
-                    event.target.closest(
-                        "[data-platform-action]"
-                    );
+        const action = element.getAttribute("data-platform-action");
+        const handler = actions[action];
 
-                if (!element) {
-                    return;
-                }
+        if (typeof handler !== "function") {
+            console.warn("ASEM: unknown action:", action);
+            return;
+        }
 
-                const action =
-                    element.dataset
-                        .platformAction;
+        event.preventDefault();
+        event.stopPropagation();
 
-                const handler =
-                    actions[action];
-
-                if (
-                    typeof handler !==
-                    "function"
-                ) {
-
-                    console.warn(
-                        `ASEM: unknown action ${action}`
-                    );
-
-                    return;
-                }
-
-                event.preventDefault();
-
-                handler();
-
-            }
-        );
-    }
-
+        try {
+            handler();
+        } catch (error) {
+            console.error("ASEM action failed:", action, error);
+        }
+    });
+}
 
     /* ========================================================
        KEYBOARD
