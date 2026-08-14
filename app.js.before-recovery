@@ -1359,35 +1359,54 @@ function toggleTheme() {
    GPS / GEOLOCATION
 ======================================================== */
 
-function showLocationStatus(message) {
-    const status = DOM.locationStatus;
+function showLocationStatus(
+    message
+) {
+
+    const status =
+        DOM.locationStatus;
 
     if (status) {
-        status.textContent = message;
+
+        status.textContent =
+            message;
     }
 
-    console.log(`ASEM GPS: ${message}`);
+    console.log(
+        `ASEM GPS: ${message}`
+    );
 }
 
 
-async function sendLocationToBackend(location) {
+async function sendLocationToBackend(
+    location
+) {
+
     if (!ASEM.api.location) {
         return null;
     }
 
     try {
+
         return await apiRequest(
             ASEM.api.location,
             {
                 method: "POST",
+
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type":
+                        "application/json"
                 },
-                body: JSON.stringify(location)
+
+                body:
+                    JSON.stringify(
+                        location
+                    )
             }
         );
 
     } catch (error) {
+
         console.warn(
             "ASEM: location backend unavailable",
             error
@@ -1399,10 +1418,15 @@ async function sendLocationToBackend(location) {
 
 
 function requestGPS() {
-    if (!navigator.geolocation) {
+
+    if (
+        !navigator.geolocation
+    ) {
+
         showLocationStatus(
             "GPS / Geolocation is not supported by this browser."
         );
+
         return;
     }
 
@@ -1410,72 +1434,128 @@ function requestGPS() {
         "Requesting your location..."
     );
 
-    navigator.geolocation.getCurrentPosition(
-        async position => {
+    navigator.geolocation
+        .getCurrentPosition(
 
-            const location = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                accuracy: position.coords.accuracy,
-                timestamp: position.timestamp
-            };
+            async position => {
 
-            window.ASEMLocation = location;
+                const location = {
 
-            showLocationStatus(
-                `Location detected: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`
-            );
+                    latitude:
+                        position.coords.latitude,
 
-            await sendLocationToBackend(location);
+                    longitude:
+                        position.coords.longitude,
 
-        },
+                    accuracy:
+                        position.coords.accuracy,
 
-        error => {
+                    timestamp:
+                        position.timestamp
+                };
 
-            let message =
-                "Unable to get location.";
+                showLocationStatus(
+                    `Location detected: ${
+                        location.latitude.toFixed(6)
+                    }, ${
+                        location.longitude.toFixed(6)
+                    }`
+                );
 
-            switch (error.code) {
+                window.ASEMLocation =
+                    location;
 
-                case error.PERMISSION_DENIED:
-                    message =
-                        "Location permission was denied.";
-                    break;
+                await sendLocationToBackend(
+                    location
+                );
+            },
 
-                case error.POSITION_UNAVAILABLE:
-                    message =
-                        "Location information is unavailable.";
-                    break;
+            error => {
 
-                case error.TIMEOUT:
-                    message =
-                        "Location request timed out.";
-                    break;
+                let message =
+                    "Unable to get location.";
+
+                switch (
+                    error.code
+                ) {
+
+                    case error.PERMISSION_DENIED:
+
+                        message =
+                            "Location permission was denied.";
+
+                        break;
+
+                    case error.POSITION_UNAVAILABLE:
+
+                        message =
+                            "Location information is unavailable.";
+
+                        break;
+
+                    case error.TIMEOUT:
+
+                        message =
+                            "Location request timed out.";
+
+                        break;
+                }
+
+                showLocationStatus(
+                    message
+                );
+
+                console.warn(
+                    "ASEM GPS:",
+                    error
+                );
+            },
+
+            {
+                enableHighAccuracy:
+                    true,
+
+                timeout:
+                    15000,
+
+                maximumAge:
+                    0
             }
-
-            showLocationStatus(message);
-
-            console.warn(
-                "ASEM GPS:",
-                error
-            );
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0
-        }
-    );
+        );
 }
 
 
-/*
- * Kept for compatibility.
- * GPS clicks are handled by initializeActionRouter().
- */
 function initializeGPS() {
-    return true;
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const target =
+                event.target;
+
+            if (
+                !target ||
+                typeof target.closest !==
+                    "function"
+            ) {
+                return;
+            }
+
+            const button =
+                target.closest(
+                    "[data-gps], [data-platform-action='gps'], [data-platform-action='location']"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            event.preventDefault();
+
+            requestGPS();
+        }
+    );
 }
 
 
@@ -1509,8 +1589,8 @@ const actions = {
             loadProjects
         ),
 
-    portfolio: () =>
-        openPortfolio(),
+    portfolio:
+        openPortfolio,
 
     services: () =>
         openPageSection(
@@ -1527,14 +1607,14 @@ const actions = {
             "about.html"
         ),
 
-    search: () =>
-        focusSearch(),
+    search:
+        focusSearch,
 
-    gps: () =>
-        requestGPS(),
+    gps:
+        requestGPS,
 
-    location: () =>
-        requestGPS(),
+    location:
+        requestGPS,
 
     top: () =>
         window.scrollTo({
@@ -1542,18 +1622,8 @@ const actions = {
             behavior: "smooth"
         })
 };
-        
-                
-
-  
-
-    
-
-            
-         
 
 
-            
 /* ========================================================
    LANGUAGE
 ======================================================== */
@@ -1823,74 +1893,86 @@ function initializeScrollTop() {
 ======================================================== */
 
 function initializeActionRouter() {
-    document.addEventListener("click", event => {
-        const target = event.target;
 
-        if (
-            !target ||
-            typeof target.closest !== "function"
-        ) {
-            return;
-        }
+    document.addEventListener(
+        "click",
+        event => {
 
-        const element = target.closest(
-            "[data-platform-action], [data-gps]"
-        );
-
-        if (!element) {
-            return;
-        }
-
-        event.preventDefault();
-
-        let action =
-            element.dataset.platformAction;
-
-        // Native GPS buttons without data-platform-action
-        if (
-            !action &&
-            element.matches("[data-gps]")
-        ) {
-            action = "gps";
-        }
-
-        if (!action) {
-            return;
-        }
-
-        const handler = actions[action];
-
-        if (typeof handler !== "function") {
-            console.warn(
-                `ASEM: unknown action ${action}`
-            );
-            return;
-        }
-
-        try {
-            const result = handler();
+            const target =
+                event.target;
 
             if (
-                result &&
-                typeof result.then === "function"
+                !target ||
+                typeof target.closest !==
+                    "function"
             ) {
-                result.catch(error => {
-                    console.error(
-                        "ASEM action:",
-                        error
-                    );
-                });
+                return;
             }
-        } catch (error) {
-            console.error(
-                `ASEM action "${action}" failed:`,
-                error
-            );
+
+            const element =
+                target.closest(
+                    "[data-platform-action]"
+                );
+
+            if (!element) {
+                return;
+            }
+
+            const action =
+                element.dataset
+                    .platformAction;
+
+            const handler =
+                actions[action];
+
+            if (
+                typeof handler !==
+                "function"
+            ) {
+
+                console.warn(
+                    `ASEM: unknown action ${action}`
+                );
+
+                return;
+            }
+
+            event.preventDefault();
+
+            try {
+
+                const result =
+                    handler();
+
+                if (
+                    result &&
+                    typeof result.then ===
+                    "function"
+                ) {
+
+                    result.catch(
+                        error => {
+
+                            console.error(
+                                "ASEM action:",
+                                error
+                            );
+                        }
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "ASEM action:",
+                    error
+                );
+            }
         }
-    });
+    );
 }
 
-              
+
 /* ========================================================
    KEYBOARD
 ======================================================== */
