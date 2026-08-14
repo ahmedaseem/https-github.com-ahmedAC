@@ -2359,3 +2359,23 @@ if (
 
     initialize();
 }
+
+
+/* ========================================================
+   START 8 PLATFORM ICONS
+   ======================================================== */
+
+if (document.readyState === "loading") {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeActionRouter,
+        { once: true }
+    );
+
+} else {
+
+    initializeActionRouter();
+
+}
+
