@@ -38,7 +38,21 @@
 
 </nav>
 
+.platform-icon {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+    cursor: pointer;
+}
 
+.platform-icon svg {
+    pointer-events: none;
+}
+
+.platform-icon::before,
+.platform-icon::after {
+    pointer-events: none;
+}
 
 <main class="card">
 

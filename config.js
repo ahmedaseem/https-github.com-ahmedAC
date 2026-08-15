@@ -10,9 +10,7 @@
    api: {
      demo: "...",
 -    real: "https://gov-server.com/api",
-+    real: "http://127.0.0.1:3001",        
-     real: "https://127.0.0.1:8080",
-
++    real: "http://127.0.0.1:3001",
    },
 +
    storage: {
@@ -22,4 +20,3 @@
 -}
 +};
 :
-
