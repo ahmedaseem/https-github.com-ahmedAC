@@ -86,42 +86,9 @@ const ASEM = {
 const translations = {
 
 ar: {
-platform: "المنصة",
-services: "الخدمات",
 projects: "المشاريع",
-portfolio: "الأعمال",
-about: "من نحن",
 contact: "تواصل معنا",
-hero_title: "ASEM Digital Solutions",
-hero_desc: "مشاريع رقمية مجانية وحلول برمجية مخصصة للأفراد والشركات حول العالم.",
-start_project: "ابدأ مشروعك مجانًا",
-global_platform: "منصة ASEM العالمية",
-global_platform_desc: "استكشف الوجهات السياحية والشركات والمنتجات والخدمات الرقمية من خلال منصة موحدة.",
-tourism: "السياحة العالمية",
-tourism_desc: "اكتشف الوجهات والمعالم والتجارب حول العالم.",
-businesses: "الشركات العالمية",
-businesses_desc: "استكشف الشركات والمطاعم والخدمات والمؤسسات حول العالم.",
-products: "المنتجات العالمية",
-products_desc: "اكتشف المنتجات والعروض من الشركات حول العالم.",
-projects_desc: "استكشف مشاريع ASEM الرقمية وحلول البرمجيات.",
-portfolio_desc: "مجموعة مختارة من الحلول الرقمية من ASEM.",
-services_desc: "استكشف خدمات تطوير الويب والذكاء الاصطناعي والأتمتة والحلول السحابية.",
-contact_desc: "تواصل مع ASEM Digital Solutions.",
-global_search: "البحث العالمي",
-global_search_desc: "ابحث في منصة ASEM بالكامل.",
-web_dev: "تطوير الويب",
-web_dev_desc: "مواقع ومنصات رقمية حديثة وسريعة وآمنة.",
-ai_auto: "الذكاء الاصطناعي والأتمتة",
-ai_auto_desc: "حلول ذكية مدعومة بالذكاء الاصطناعي والأتمتة.",
-cloud: "الحلول السحابية",
-cloud_desc: "بنية تحتية سحابية قابلة للتوسع وموثوقة للمؤسسات الحديثة.",
-why_asem: "لماذا تختار ASEM؟",
-secure: "أمان بمستوى المؤسسات",
-modern_tech: "تقنيات حديثة",
-full_solutions: "حلول رقمية متكاملة",
-trusted_world: "موثوقة عالميًا",
-trusted_desc: "تبني ASEM نظامًا رقميًا عالميًا يربط الأشخاص والشركات والخدمات والسياحة والتكنولوجيا.",
-payments: "طرق الدفع المدعومة",
+why: "لماذا ASEM؟",
 start: "ابدأ مشروعك مجانًا",
 contactBtn: "تواصل معنا",
 description: "مشاريع رقمية مجانية وحلول برمجية مخصصة للأفراد والشركات حول العالم",
@@ -129,42 +96,9 @@ email: "البريد الرسمي"
 },
 
 en: {
-platform: "Global Platform",
-services: "Services",
 projects: "Projects",
-portfolio: "Portfolio",
-about: "About",
-contact: "Contact",
-hero_title: "ASEM Digital Solutions",
-hero_desc: "Free digital projects and custom software solutions for individuals and companies worldwide.",
-start_project: "Start Your Free Project",
-global_platform: "ASEM Global Platform",
-global_platform_desc: "Explore tourism destinations, global businesses, products and digital services through one unified platform.",
-tourism: "Global Tourism",
-tourism_desc: "Discover destinations, attractions and experiences around the world.",
-businesses: "Global Businesses",
-businesses_desc: "Explore businesses, restaurants, services and organizations worldwide.",
-products: "Global Products",
-products_desc: "Discover products and offerings from businesses around the world.",
-projects_desc: "Explore ASEM digital projects and software solutions.",
-portfolio_desc: "Discover selected ASEM digital solutions.",
-services_desc: "Explore web development, AI, automation and cloud services.",
-contact_desc: "Contact ASEM Digital Solutions.",
-global_search: "Global Search",
-global_search_desc: "Search across the ASEM platform.",
-web_dev: "Web Development",
-web_dev_desc: "Modern, fast, secure websites and digital platforms.",
-ai_auto: "AI & Automation",
-ai_auto_desc: "Smart solutions powered by modern artificial intelligence and automation.",
-cloud: "Cloud Solutions",
-cloud_desc: "Scalable and reliable cloud infrastructure for modern organizations.",
-why_asem: "Why Choose ASEM",
-secure: "Enterprise-grade security",
-modern_tech: "Modern technologies",
-full_solutions: "Complete digital solutions",
-trusted_world: "Trusted Worldwide",
-trusted_desc: "ASEM is building a global digital ecosystem connecting people, businesses, services, tourism and technology.",
-payments: "Supported Payment Methods",
+contact: "Contact Us",
+why: "Why ASEM?",
 start: "Start Your Free Project",
 contactBtn: "Contact Us",
 description: "Free digital projects and custom software solutions for individuals and companies worldwide",
@@ -172,218 +106,23 @@ email: "Official Email"
 },
 
 fr: {
-platform: "Plateforme mondiale",
-services: "Services",
 projects: "Projets",
-portfolio: "Portfolio",
-about: "À propos",
 contact: "Contact",
-hero_title: "ASEM Digital Solutions",
-hero_desc: "Projets numériques gratuits et solutions logicielles personnalisées pour les particuliers et les entreprises du monde entier.",
-start_project: "Commencez votre projet gratuitement",
-global_platform: "Plateforme mondiale ASEM",
-global_platform_desc: "Explorez les destinations touristiques, les entreprises, les produits et les services numériques sur une plateforme unifiée.",
-tourism: "Tourisme mondial",
-tourism_desc: "Découvrez des destinations, attractions et expériences dans le monde entier.",
-businesses: "Entreprises mondiales",
-businesses_desc: "Explorez les entreprises, restaurants, services et organisations du monde entier.",
-products: "Produits mondiaux",
-products_desc: "Découvrez les produits et offres des entreprises du monde entier.",
-projects_desc: "Découvrez les projets numériques et solutions logicielles d'ASEM.",
-portfolio_desc: "Découvrez une sélection de solutions numériques ASEM.",
-services_desc: "Découvrez nos services de développement web, IA, automatisation et cloud.",
-contact_desc: "Contactez ASEM Digital Solutions.",
-global_search: "Recherche mondiale",
-global_search_desc: "Recherchez sur toute la plateforme ASEM.",
-web_dev: "Développement web",
-web_dev_desc: "Sites web et plateformes numériques modernes, rapides et sécurisés.",
-ai_auto: "IA et automatisation",
-ai_auto_desc: "Solutions intelligentes basées sur l'intelligence artificielle et l'automatisation.",
-cloud: "Solutions cloud",
-cloud_desc: "Infrastructure cloud évolutive et fiable pour les organisations modernes.",
-why_asem: "Pourquoi choisir ASEM",
-secure: "Sécurité de niveau entreprise",
-modern_tech: "Technologies modernes",
-full_solutions: "Solutions numériques complètes",
-trusted_world: "Une confiance mondiale",
-trusted_desc: "ASEM construit un écosystème numérique mondial reliant les personnes, les entreprises, les services, le tourisme et la technologie.",
-payments: "Modes de paiement pris en charge",
+why: "Pourquoi ASEM ?",
 start: "Commencez votre projet gratuitement",
 contactBtn: "Nous contacter",
 description: "Projets numériques gratuits et solutions logicielles personnalisées",
 email: "Email officiel"
 },
 
-de: {
-platform: "Globale Plattform",
-services: "Dienstleistungen",
-projects: "Projekte",
-portfolio: "Portfolio",
-about: "Über uns",
-contact: "Kontakt",
-hero_title: "ASEM Digital Solutions",
-hero_desc: "Kostenlose digitale Projekte und individuelle Softwarelösungen für Privatpersonen und Unternehmen weltweit.",
-start_project: "Kostenloses Projekt starten",
-global_platform: "ASEM Globale Plattform",
-global_platform_desc: "Entdecken Sie Reiseziele, Unternehmen, Produkte und digitale Dienstleistungen auf einer einheitlichen Plattform.",
-tourism: "Globaler Tourismus",
-tourism_desc: "Entdecken Sie Reiseziele, Sehenswürdigkeiten und Erlebnisse weltweit.",
-businesses: "Globale Unternehmen",
-businesses_desc: "Entdecken Sie Unternehmen, Restaurants, Dienstleistungen und Organisationen weltweit.",
-products: "Globale Produkte",
-products_desc: "Entdecken Sie Produkte und Angebote von Unternehmen weltweit.",
-projects_desc: "Entdecken Sie digitale Projekte und Softwarelösungen von ASEM.",
-portfolio_desc: "Entdecken Sie ausgewählte digitale Lösungen von ASEM.",
-services_desc: "Entdecken Sie Webentwicklung, KI, Automatisierung und Cloud-Dienste.",
-contact_desc: "Kontaktieren Sie ASEM Digital Solutions.",
-global_search: "Globale Suche",
-global_search_desc: "Durchsuchen Sie die gesamte ASEM-Plattform.",
-web_dev: "Webentwicklung",
-web_dev_desc: "Moderne, schnelle und sichere Websites und digitale Plattformen.",
-ai_auto: "KI und Automatisierung",
-ai_auto_desc: "Intelligente Lösungen mit künstlicher Intelligenz und Automatisierung.",
-cloud: "Cloud-Lösungen",
-cloud_desc: "Skalierbare und zuverlässige Cloud-Infrastruktur für moderne Organisationen.",
-why_asem: "Warum ASEM wählen",
-secure: "Sicherheit auf Unternehmensniveau",
-modern_tech: "Moderne Technologien",
-full_solutions: "Komplette digitale Lösungen",
-trusted_world: "Weltweit vertrauenswürdig",
-trusted_desc: "ASEM entwickelt ein globales digitales Ökosystem, das Menschen, Unternehmen, Dienstleistungen, Tourismus und Technologie verbindet.",
-payments: "Unterstützte Zahlungsmethoden",
-start: "Kostenloses Projekt starten",
-contactBtn: "Kontakt",
-description: "Kostenlose digitale Projekte und individuelle Softwarelösungen für Privatpersonen und Unternehmen weltweit",
-email: "Offizielle E-Mail"
-},
-
-it: {
-platform: "Piattaforma globale",
-services: "Servizi",
-projects: "Progetti",
-portfolio: "Portfolio",
-about: "Chi siamo",
-contact: "Contatti",
-hero_title: "ASEM Digital Solutions",
-hero_desc: "Progetti digitali gratuiti e soluzioni software personalizzate per privati e aziende in tutto il mondo.",
-start_project: "Inizia il tuo progetto gratuitamente",
-global_platform: "Piattaforma globale ASEM",
-global_platform_desc: "Esplora destinazioni turistiche, aziende, prodotti e servizi digitali attraverso una piattaforma unificata.",
-tourism: "Turismo globale",
-tourism_desc: "Scopri destinazioni, attrazioni ed esperienze in tutto il mondo.",
-businesses: "Aziende globali",
-businesses_desc: "Esplora aziende, ristoranti, servizi e organizzazioni in tutto il mondo.",
-products: "Prodotti globali",
-products_desc: "Scopri prodotti e offerte di aziende di tutto il mondo.",
-projects_desc: "Esplora i progetti digitali e le soluzioni software ASEM.",
-portfolio_desc: "Scopri una selezione di soluzioni digitali ASEM.",
-services_desc: "Scopri i servizi di sviluppo web, IA, automazione e cloud.",
-contact_desc: "Contatta ASEM Digital Solutions.",
-global_search: "Ricerca globale",
-global_search_desc: "Cerca in tutta la piattaforma ASEM.",
-web_dev: "Sviluppo web",
-web_dev_desc: "Siti web e piattaforme digitali moderne, veloci e sicure.",
-ai_auto: "IA e automazione",
-ai_auto_desc: "Soluzioni intelligenti basate sull'intelligenza artificiale e sull'automazione.",
-cloud: "Soluzioni cloud",
-cloud_desc: "Infrastruttura cloud scalabile e affidabile per le organizzazioni moderne.",
-why_asem: "Perché scegliere ASEM",
-secure: "Sicurezza di livello aziendale",
-modern_tech: "Tecnologie moderne",
-full_solutions: "Soluzioni digitali complete",
-trusted_world: "Affidabilità globale",
-trusted_desc: "ASEM sta costruendo un ecosistema digitale globale che collega persone, aziende, servizi, turismo e tecnologia.",
-payments: "Metodi di pagamento supportati",
-start: "Inizia il tuo progetto gratuitamente",
-contactBtn: "Contatti",
-description: "Progetti digitali gratuiti e soluzioni software personalizzate per privati e aziende in tutto il mondo",
-email: "Email ufficiale"
-},
-
-es: {
-platform: "Plataforma global",
-services: "Servicios",
-projects: "Proyectos",
-portfolio: "Portafolio",
-about: "Acerca de",
-contact: "Contacto",
-hero_title: "ASEM Digital Solutions",
-hero_desc: "Proyectos digitales gratuitos y soluciones de software personalizadas para personas y empresas de todo el mundo.",
-start_project: "Inicia tu proyecto gratis",
-global_platform: "Plataforma global ASEM",
-global_platform_desc: "Explora destinos turísticos, empresas, productos y servicios digitales desde una plataforma unificada.",
-tourism: "Turismo global",
-tourism_desc: "Descubre destinos, atracciones y experiencias en todo el mundo.",
-businesses: "Empresas globales",
-businesses_desc: "Explora empresas, restaurantes, servicios y organizaciones de todo el mundo.",
-products: "Productos globales",
-products_desc: "Descubre productos y ofertas de empresas de todo el mundo.",
-projects_desc: "Explora los proyectos digitales y soluciones de software de ASEM.",
-portfolio_desc: "Descubre una selección de soluciones digitales de ASEM.",
-services_desc: "Explora servicios de desarrollo web, IA, automatización y nube.",
-contact_desc: "Contacta con ASEM Digital Solutions.",
-global_search: "Búsqueda global",
-global_search_desc: "Busca en toda la plataforma ASEM.",
-web_dev: "Desarrollo web",
-web_dev_desc: "Sitios web y plataformas digitales modernas, rápidas y seguras.",
-ai_auto: "IA y automatización",
-ai_auto_desc: "Soluciones inteligentes impulsadas por inteligencia artificial y automatización.",
-cloud: "Soluciones en la nube",
-cloud_desc: "Infraestructura cloud escalable y fiable para organizaciones modernas.",
-why_asem: "Por qué elegir ASEM",
-secure: "Seguridad de nivel empresarial",
-modern_tech: "Tecnologías modernas",
-full_solutions: "Soluciones digitales completas",
-trusted_world: "Confianza mundial",
-trusted_desc: "ASEM está construyendo un ecosistema digital global que conecta personas, empresas, servicios, turismo y tecnología.",
-payments: "Métodos de pago admitidos",
-start: "Inicia tu proyecto gratis",
-contactBtn: "Contacto",
-description: "Proyectos digitales gratuitos y soluciones de software personalizadas para personas y empresas de todo el mundo",
-email: "Correo oficial"
-},
-
-nl: {
-platform: "Wereldwijd platform",
-services: "Diensten",
-projects: "Projecten",
-portfolio: "Portfolio",
-about: "Over ons",
-contact: "Contact",
-hero_title: "ASEM Digital Solutions",
-hero_desc: "Gratis digitale projecten en maatwerksoftware voor particulieren en bedrijven wereldwijd.",
-start_project: "Start je gratis project",
-global_platform: "ASEM Wereldwijd Platform",
-global_platform_desc: "Ontdek toeristische bestemmingen, bedrijven, producten en digitale diensten via één platform.",
-tourism: "Wereldtoerisme",
-tourism_desc: "Ontdek bestemmingen, attracties en ervaringen over de hele wereld.",
-businesses: "Wereldwijde bedrijven",
-businesses_desc: "Ontdek bedrijven, restaurants, diensten en organisaties wereldwijd.",
-products: "Wereldwijde producten",
-products_desc: "Ontdek producten en aanbiedingen van bedrijven over de hele wereld.",
-projects_desc: "Ontdek digitale projecten en softwareoplossingen van ASEM.",
-portfolio_desc: "Ontdek geselecteerde digitale oplossingen van ASEM.",
-services_desc: "Ontdek webontwikkeling, AI, automatisering en clouddiensten.",
-contact_desc: "Neem contact op met ASEM Digital Solutions.",
-global_search: "Wereldwijd zoeken",
-global_search_desc: "Zoek binnen het volledige ASEM-platform.",
-web_dev: "Webontwikkeling",
-web_dev_desc: "Moderne, snelle en veilige websites en digitale platforms.",
-ai_auto: "AI en automatisering",
-ai_auto_desc: "Slimme oplossingen met kunstmatige intelligentie en automatisering.",
-cloud: "Cloudoplossingen",
-cloud_desc: "Schaalbare en betrouwbare cloudinfrastructuur voor moderne organisaties.",
-why_asem: "Waarom ASEM kiezen",
-secure: "Beveiliging op ondernemingsniveau",
-modern_tech: "Moderne technologieën",
-full_solutions: "Complete digitale oplossingen",
-trusted_world: "Wereldwijd vertrouwd",
-trusted_desc: "ASEM bouwt aan een wereldwijd digitaal ecosysteem dat mensen, bedrijven, diensten, toerisme en technologie verbindt.",
-payments: "Ondersteunde betaalmethoden",
-start: "Start je gratis project",
-contactBtn: "Contact",
-description: "Gratis digitale projecten en maatwerksoftware voor particulieren en bedrijven wereldwijd",
-email: "Officiële e-mail"
+ja: {
+projects: "プロジェクト",
+contact: "お問い合わせ",
+why: "なぜASEMなのか",
+start: "無料でプロジェクトを開始",
+contactBtn: "お問い合わせ",
+description: "個人や企業向けの無料デジタルプロジェクトとカスタムソリューション",
+email: "公式メール"
 }
 
 };
@@ -1819,30 +1558,19 @@ const actions = {
         openPortfolio(),
 
     services: () =>
-        openPageSection("services"),
+        openPageSection(
+            "services"
+        ),
 
-    contact: () => {
-        const section =
-            document.getElementById("contact");
+    contact: () =>
+        openExternalPage(
+            "contact.html"
+        ),
 
-        if (section) {
-            return openPageSection("contact");
-        }
-
-        const footer =
-            document.querySelector("footer");
-
-        if (footer) {
-            footer.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-            return true;
-        }
-
-        return false;
-    },
+    about: () =>
+        openExternalPage(
+            "about.html"
+        ),
 
     search: () =>
         focusSearch(),
@@ -1877,18 +1605,30 @@ const actions = {
 
 function detectLanguage() {
 
-    const normalized =
-        String(
-            navigator.language || "en"
-        ).toLowerCase();
+    const language =
+        navigator.language ||
+        "en";
 
-    if (normalized.startsWith("ar")) return "ar";
-    if (normalized.startsWith("fr")) return "fr";
-    if (normalized.startsWith("de")) return "de";
-    if (normalized.startsWith("it")) return "it";
-    if (normalized.startsWith("es")) return "es";
-    if (normalized.startsWith("nl")) return "nl";
-    if (normalized.startsWith("en")) return "en";
+    const normalized =
+        language.toLowerCase();
+
+    if (
+        normalized.startsWith("ar")
+    ) {
+        return "ar";
+    }
+
+    if (
+        normalized.startsWith("fr")
+    ) {
+        return "fr";
+    }
+
+    if (
+        normalized.startsWith("ja")
+    ) {
+        return "ja";
+    }
 
     return "en";
 }
@@ -1916,8 +1656,6 @@ function applyLanguage(
                 ? "rtl"
                 : "ltr"
         );
-
-    applyTranslations(selected);
 
     try {
 
@@ -1990,31 +1728,6 @@ function initializeLanguage() {
             saved
         );
     }
-}
-
-
-
-function applyTranslations(language) {
-
-    const dictionary =
-        translations[language] ||
-        translations.en;
-
-    $$("[data-i18n]").forEach(
-        element => {
-
-            const key =
-                element.getAttribute("data-i18n");
-
-            if (
-                key &&
-                dictionary[key] !== undefined
-            ) {
-                element.textContent =
-                    dictionary[key];
-            }
-        }
-    );
 }
 
 
@@ -2156,84 +1869,103 @@ function initializeScrollTop() {
 
 function initializeActionRouter() {
 
-    const bindings = {
-        tourism: actions.tourism,
-        businesses: actions.businesses,
-        products: actions.products,
-        projects: actions.projects,
-        portfolio: actions.portfolio,
-        services: actions.services,
-        contact: actions.contact,
-        search: actions.search
-    };
+    if (
+        window.__ASEM_ACTION_ROUTER_INITIALIZED
+    ) {
+        return;
+    }
 
-    Object.entries(bindings).forEach(
-        ([name, handler]) => {
+    window.__ASEM_ACTION_ROUTER_INITIALIZED = true;
 
-            document
-                .querySelectorAll(
-                    `[data-platform-action="${name}"]`
-                )
-                .forEach(element => {
+    document.addEventListener(
+        "click",
+        event => {
 
-                    if (
-                        element.dataset.asemBound === "true"
-                    ) {
-                        return;
-                    }
+            const target =
+                event.target;
 
-                    element.dataset.asemBound = "true";
+            if (
+                !target ||
+                typeof target.closest !==
+                    "function"
+            ) {
+                return;
+            }
 
-                    element.addEventListener(
-                        "click",
-                        event => {
+            const element =
+                target.closest(
+                    "[data-platform-action], [data-gps]"
+                );
 
-                            event.preventDefault();
-                            event.stopPropagation();
+            if (!element) {
+                return;
+            }
 
-                            try {
+            let action =
+                element.dataset.platformAction;
 
-                                const result =
-                                    handler();
+            if (
+                !action &&
+                element.matches("[data-gps]")
+            ) {
+                action = "gps";
+            }
 
-                                if (
-                                    result &&
-                                    typeof result.then ===
-                                        "function"
-                                ) {
-                                    result.catch(error => {
-                                        console.error(
-                                            `ASEM ${name} failed:`,
-                                            error
-                                        );
-                                    });
-                                }
+            if (!action) {
+                return;
+            }
 
-                            } catch (error) {
+            const handler =
+                actions[action];
 
-                                console.error(
-                                    `ASEM ${name} failed:`,
-                                    error
-                                );
-                            }
+            if (
+                typeof handler !==
+                "function"
+            ) {
+                console.warn(
+                    `ASEM: unknown action ${action}`
+                );
+                return;
+            }
+
+            event.preventDefault();
+
+            try {
+
+                const result =
+                    handler();
+
+                if (
+                    result &&
+                    typeof result.then ===
+                        "function"
+                ) {
+                    result.catch(
+                        error => {
+                            console.error(
+                                `ASEM action "${action}" failed:`,
+                                error
+                            );
                         }
                     );
+                }
 
-                });
+            } catch (error) {
+
+                console.error(
+                    `ASEM action "${action}" failed:`,
+                    error
+                );
+            }
         }
     );
 
-    console.info(
-        "ASEM: 8 platform actions bound directly"
+    console.log(
+        "ASEM action router initialized"
     );
-
-    document.querySelectorAll(
-        "[data-platform-action]"
-    ).forEach(element => {
-        element.style.cursor = "pointer";
-    });
 }
 
+              
 /* ========================================================
    KEYBOARD
 ======================================================== */

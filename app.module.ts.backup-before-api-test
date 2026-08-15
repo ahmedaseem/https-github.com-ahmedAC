@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CacheModule } from './cache.module.js';
 import { RedisModule } from './redis.module.js';
-import { TestApiModule } from './test-api/test-api.module.js';
 
 @Module({
   imports: [
     RedisModule,
     CacheModule,
-    TestApiModule,
   ],
 })
 export class AppModule {}

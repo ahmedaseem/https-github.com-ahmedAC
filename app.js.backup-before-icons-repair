@@ -1819,30 +1819,19 @@ const actions = {
         openPortfolio(),
 
     services: () =>
-        openPageSection("services"),
+        openPageSection(
+            "services"
+        ),
 
-    contact: () => {
-        const section =
-            document.getElementById("contact");
+    contact: () =>
+        openExternalPage(
+            "contact.html"
+        ),
 
-        if (section) {
-            return openPageSection("contact");
-        }
-
-        const footer =
-            document.querySelector("footer");
-
-        if (footer) {
-            footer.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-            return true;
-        }
-
-        return false;
-    },
+    about: () =>
+        openExternalPage(
+            "about.html"
+        ),
 
     search: () =>
         focusSearch(),
@@ -2156,84 +2145,103 @@ function initializeScrollTop() {
 
 function initializeActionRouter() {
 
-    const bindings = {
-        tourism: actions.tourism,
-        businesses: actions.businesses,
-        products: actions.products,
-        projects: actions.projects,
-        portfolio: actions.portfolio,
-        services: actions.services,
-        contact: actions.contact,
-        search: actions.search
-    };
+    if (
+        window.__ASEM_ACTION_ROUTER_INITIALIZED
+    ) {
+        return;
+    }
 
-    Object.entries(bindings).forEach(
-        ([name, handler]) => {
+    window.__ASEM_ACTION_ROUTER_INITIALIZED = true;
 
-            document
-                .querySelectorAll(
-                    `[data-platform-action="${name}"]`
-                )
-                .forEach(element => {
+    document.addEventListener(
+        "click",
+        event => {
 
-                    if (
-                        element.dataset.asemBound === "true"
-                    ) {
-                        return;
-                    }
+            const target =
+                event.target;
 
-                    element.dataset.asemBound = "true";
+            if (
+                !target ||
+                typeof target.closest !==
+                    "function"
+            ) {
+                return;
+            }
 
-                    element.addEventListener(
-                        "click",
-                        event => {
+            const element =
+                target.closest(
+                    "[data-platform-action], [data-gps]"
+                );
 
-                            event.preventDefault();
-                            event.stopPropagation();
+            if (!element) {
+                return;
+            }
 
-                            try {
+            let action =
+                element.dataset.platformAction;
 
-                                const result =
-                                    handler();
+            if (
+                !action &&
+                element.matches("[data-gps]")
+            ) {
+                action = "gps";
+            }
 
-                                if (
-                                    result &&
-                                    typeof result.then ===
-                                        "function"
-                                ) {
-                                    result.catch(error => {
-                                        console.error(
-                                            `ASEM ${name} failed:`,
-                                            error
-                                        );
-                                    });
-                                }
+            if (!action) {
+                return;
+            }
 
-                            } catch (error) {
+            const handler =
+                actions[action];
 
-                                console.error(
-                                    `ASEM ${name} failed:`,
-                                    error
-                                );
-                            }
+            if (
+                typeof handler !==
+                "function"
+            ) {
+                console.warn(
+                    `ASEM: unknown action ${action}`
+                );
+                return;
+            }
+
+            event.preventDefault();
+
+            try {
+
+                const result =
+                    handler();
+
+                if (
+                    result &&
+                    typeof result.then ===
+                        "function"
+                ) {
+                    result.catch(
+                        error => {
+                            console.error(
+                                `ASEM action "${action}" failed:`,
+                                error
+                            );
                         }
                     );
+                }
 
-                });
+            } catch (error) {
+
+                console.error(
+                    `ASEM action "${action}" failed:`,
+                    error
+                );
+            }
         }
     );
 
-    console.info(
-        "ASEM: 8 platform actions bound directly"
+    console.log(
+        "ASEM action router initialized"
     );
-
-    document.querySelectorAll(
-        "[data-platform-action]"
-    ).forEach(element => {
-        element.style.cursor = "pointer";
-    });
 }
 
+              
 /* ========================================================
    KEYBOARD
 ======================================================== */
