@@ -6,7 +6,7 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1"
+        content="width=device-width, initial-scale=1"
     >
 
     <title>ASEM Digital Solutions | Global Digital Platform</title>
@@ -36,12 +36,18 @@
         href="https://asemdigital.github.io/"
     >
 
-    <!--
-        OPTIONAL:
-        Add these files later when your assets folder is ready.
+    <!-- Optional assets.
+         Enable these only when the files exist.
 
-        <link rel="icon" href="assets/favicon.png">
-        <link rel="manifest" href="manifest.json">
+    <link
+        rel="icon"
+        href="assets/favicon.png"
+    >
+
+    <link
+        rel="manifest"
+        href="manifest.json"
+    >
     -->
 
     <!-- Open Graph -->
@@ -66,13 +72,12 @@
         content="https://asemdigital.github.io/"
     >
 
-    <!--
-        Do not enable this until the image actually exists:
+    <!-- Enable when the image exists.
 
-        <meta
-            property="og:image"
-            content="https://asemdigital.github.io/assets/og-image.png"
-        >
+    <meta
+        property="og:image"
+        content="https://asemdigital.github.io/assets/og-image.png"
+    >
     -->
 
     <meta
@@ -100,37 +105,9 @@
     <!-- CSS -->
 
     <link
-        rel="preload"
-        href="style.css"
-        as="style"
-    >
-
-    <link
         rel="stylesheet"
         href="style.css"
     >
-
-    <!-- Compatibility -->
-
-    <style>
-        button.platform-card,
-        button.card,
-        [data-platform-action],
-        [data-section] {
-            pointer-events: auto;
-            cursor: pointer;
-        }
-
-        button.platform-card {
-            font: inherit;
-            text-align: inherit;
-            border: 0;
-        }
-
-        [hidden] {
-            display: none !important;
-        }
-    </style>
 
     <!-- Structured Data -->
 
@@ -159,18 +136,21 @@
     >
 
         <a
-    href="index.html"
-    class="logo"
-    aria-label="ASEM Digital Solutions Home"
->
-    <img
-        src="asem-logo.png"
-        alt="ASEM Digital Solutions"
-    >
-</a>
+            href="index.html"
+            class="logo"
+            aria-label="ASEM Digital Solutions Home"
+        >
+            <img
+                src="asem-logo.png"
+                alt="ASEM Digital Solutions"
+            >
+        </a>
 
 
-        <div class="nav-links">
+        <div
+            class="nav-links"
+            aria-label="Primary navigation"
+        >
 
             <a
                 href="#global-platform"
@@ -219,43 +199,122 @@
 
         <div class="controls">
 
+            <!-- Global Search -->
+
+            <label
+                class="sr-only"
+                for="searchBox"
+            >
+                Search the ASEM platform
+            </label>
+
             <input
                 type="search"
                 id="searchBox"
                 class="search-box"
                 placeholder="🔍 Search..."
-                aria-label="Search"
+                aria-label="Search the ASEM platform"
                 autocomplete="off"
+                spellcheck="false"
             >
 
+
+            <!-- Language -->
+
+            <label
+                class="sr-only"
+                for="langSwitch"
+            >
+                Select language
+            </label>
 
             <select
                 id="langSwitch"
                 aria-label="Language"
             >
-                <option value="auto">Auto</option>
-                <option value="ar">العربية</option>
-                <option value="en">English</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="it">Italiano</option>
-                <option value="es">Español</option>
-                <option value="nl">Nederlands</option>
+
+                <option value="auto">
+                    Auto
+                </option>
+
+                <option value="ar">
+                    العربية
+                </option>
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="fr">
+                    Français
+                </option>
+
+                <option value="de">
+                    Deutsch
+                </option>
+
+                <option value="it">
+                    Italiano
+                </option>
+
+                <option value="es">
+                    Español
+                </option>
+
+                <option value="nl">
+                    Nederlands
+                </option>
+
             </select>
 
+
+            <!-- Location -->
+
+            <button
+                id="locationToggle"
+                type="button"
+                class="icon-button"
+                data-platform-action="location"
+                aria-label="Use my location"
+                title="Use my location"
+            >
+                <span aria-hidden="true">
+                    📍
+                </span>
+            </button>
+
+
+            <!-- Theme -->
 
             <button
                 id="themeToggle"
                 type="button"
-                aria-label="Toggle Dark Mode"
-                title="Toggle Dark Mode"
+                class="icon-button"
+                aria-label="Switch to dark mode"
+                title="Switch theme"
             >
-                🌙
+                <span aria-hidden="true">
+                    🌙
+                </span>
             </button>
 
         </div>
 
     </nav>
+
+
+    <!-- =====================================================
+         LOCATION STATUS
+         ===================================================== -->
+
+    <div
+        id="locationStatus"
+        class="location-status"
+        role="status"
+        aria-live="polite"
+    >
+        Location not enabled
+    </div>
 
 
     <!-- =====================================================
@@ -298,10 +357,15 @@
 
 
     <!-- =====================================================
-         GLOBAL PLATFORM
+         MAIN CONTENT
          ===================================================== -->
 
-    <main>
+    <main id="main-content">
+
+
+        <!-- =================================================
+             GLOBAL PLATFORM
+             ================================================= -->
 
         <section
             id="global-platform"
@@ -328,7 +392,9 @@
             <div class="cards platform-cards">
 
 
-                <!-- TOURISM -->
+                <!-- =================================================
+                     TOURISM
+                     ================================================= -->
 
                 <button
                     type="button"
@@ -338,17 +404,20 @@
                     aria-controls="tourism-section"
                 >
 
-                    
-
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <path d="M12 48h40"/>
-                            <path d="M18 48c2-12 8-20 14-28 6 8 12 16 14 28"/>
-                            <path d="M32 20v28"/>
-                            <path d="M24 32h16"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <path d="M12 48h40"></path>
+                            <path d="M18 48c2-12 8-20 14-28 6 8 12 16 14 28"></path>
+                            <path d="M32 20v28"></path>
+                            <path d="M24 32h16"></path>
                         </svg>
                     </span>
 
@@ -364,7 +433,9 @@
                 </button>
 
 
-                <!-- BUSINESSES -->
+                <!-- =================================================
+                     BUSINESSES
+                     ================================================= -->
 
                 <button
                     type="button"
@@ -374,17 +445,27 @@
                     aria-controls="businesses-section"
                 >
 
-                    
-
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <circle cx="32" cy="32" r="22"/>
-                            <path d="M10 32h44"/>
-                            <path d="M32 10c7 6 10 14 10 22s-3 16-10 22"/>
-                            <path d="M32 10c-7 6-10 14-10 22s3 16 10 22"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="32"
+                                cy="32"
+                                r="22"
+                            ></circle>
+
+                            <path d="M10 32h44"></path>
+
+                            <path d="M32 10c7 6 10 14 10 22s-3 16-10 22"></path>
+
+                            <path d="M32 10c-7 6-10 14-10 22s3 16 10 22"></path>
                         </svg>
                     </span>
 
@@ -400,7 +481,9 @@
                 </button>
 
 
-                <!-- PRODUCTS -->
+                <!-- =================================================
+                     PRODUCTS
+                     ================================================= -->
 
                 <button
                     type="button"
@@ -410,17 +493,28 @@
                     aria-controls="products-section"
                 >
 
-                    
-
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <path d="M10 12h7l5 29h25l7-21H19"/>
-                            <circle cx="27" cy="51" r="3"/>
-                            <circle cx="45" cy="51" r="3"/>
-                            <path d="M27 20h22"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <path d="M10 12h7l5 29h25l7-21H19"></path>
+                            <circle
+                                cx="27"
+                                cy="51"
+                                r="3"
+                            ></circle>
+                            <circle
+                                cx="45"
+                                cy="51"
+                                r="3"
+                            ></circle>
+                            <path d="M27 20h22"></path>
                         </svg>
                     </span>
 
@@ -436,7 +530,9 @@
                 </button>
 
 
-                <!-- PROJECTS -->
+                <!-- =================================================
+                     PROJECTS
+                     ================================================= -->
 
                 <button
                     type="button"
@@ -446,16 +542,27 @@
                     aria-controls="projects"
                 >
 
-                    
-
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <rect x="10" y="12" width="44" height="30" rx="3"/>
-                            <path d="M5 50h54"/>
-                            <path d="M25 50l2-8h10l2 8"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="10"
+                                y="12"
+                                width="44"
+                                height="30"
+                                rx="3"
+                            ></rect>
+
+                            <path d="M5 50h54"></path>
+
+                            <path d="M25 50l2-8h10l2 8"></path>
                         </svg>
                     </span>
 
@@ -471,7 +578,9 @@
                 </button>
 
 
-                <!-- PORTFOLIO -->
+                <!-- =================================================
+                     PORTFOLIO
+                     ================================================= -->
 
                 <button
                     type="button"
@@ -481,17 +590,29 @@
                     aria-controls="portfolio"
                 >
 
-                    
-
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <rect x="10" y="16" width="44" height="36" rx="4"/>
-                            <path d="M22 16v-5h20v5"/>
-                            <path d="M10 27h44"/>
-                            <path d="M28 27v8h8v-8"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="10"
+                                y="16"
+                                width="44"
+                                height="36"
+                                rx="4"
+                            ></rect>
+
+                            <path d="M22 16v-5h20v5"></path>
+
+                            <path d="M10 27h44"></path>
+
+                            <path d="M28 27v8h8v-8"></path>
                         </svg>
                     </span>
 
@@ -507,7 +628,9 @@
                 </button>
 
 
-                <!-- SERVICES -->
+                <!-- =================================================
+                     SERVICES
+                     ================================================= -->
 
                 <button
                     type="button"
@@ -517,22 +640,30 @@
                     aria-controls="services"
                 >
 
-                    
-
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <circle cx="32" cy="32" r="9"/>
-                            <path d="M32 8v9"/>
-                            <path d="M32 47v9"/>
-                            <path d="M8 32h9"/>
-                            <path d="M47 32h9"/>
-                            <path d="M15 15l6 6"/>
-                            <path d="M43 43l6 6"/>
-                            <path d="M49 15l-6 6"/>
-                            <path d="M21 43l-6 6"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="32"
+                                cy="32"
+                                r="9"
+                            ></circle>
+
+                            <path d="M32 8v9"></path>
+                            <path d="M32 47v9"></path>
+                            <path d="M8 32h9"></path>
+                            <path d="M47 32h9"></path>
+                            <path d="M15 15l6 6"></path>
+                            <path d="M43 43l6 6"></path>
+                            <path d="M49 15l-6 6"></path>
+                            <path d="M21 43l-6 6"></path>
                         </svg>
                     </span>
 
@@ -548,7 +679,9 @@
                 </button>
 
 
-                <!-- CONTACT -->
+                <!-- =================================================
+                     CONTACT
+                     ================================================= -->
 
                 <button
                     type="button"
@@ -556,17 +689,27 @@
                     data-platform-action="contact"
                 >
 
-                    
-
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <rect x="8" y="14" width="48" height="36" rx="4"/>
-                            <path d="M10 18l22 18 22-18"/>
-                            <path d="M10 48l17-16"/>
-                            <path d="M54 48L37 32"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="8"
+                                y="14"
+                                width="48"
+                                height="36"
+                                rx="4"
+                            ></rect>
+
+                            <path d="M10 18l22 18 22-18"></path>
+                            <path d="M10 48l17-16"></path>
+                            <path d="M54 48L37 32"></path>
                         </svg>
                     </span>
 
@@ -581,23 +724,34 @@
                 </button>
 
 
-                <!-- SEARCH -->
+                <!-- =================================================
+                     SEARCH
+                     ================================================= -->
 
                 <button
                     type="button"
                     class="card platform-card"
                     data-platform-action="search"
+                    aria-controls="platform-search-results"
                 >
-
-                    
 
                     <span
                         class="platform-icon"
                         aria-hidden="true"
                     >
-                        <svg viewBox="0 0 64 64" class="platform-svg-icon" aria-hidden="true">
-                            <circle cx="28" cy="28" r="17"/>
-                            <path d="M41 41l14 14"/>
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="28"
+                                cy="28"
+                                r="17"
+                            ></circle>
+
+                            <path d="M41 41l14 14"></path>
                         </svg>
                     </span>
 
@@ -607,6 +761,51 @@
 
                     <p data-i18n="global_search_desc">
                         Search across the ASEM platform.
+                    </p>
+
+                </button>
+
+
+                <!-- =================================================
+                     LOCATION / NEARBY
+                     ================================================= -->
+
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="nearby"
+                    aria-controls="platform-search-results"
+                >
+
+                    <span
+                        class="platform-icon"
+                        aria-hidden="true"
+                    >
+                        <svg
+                            viewBox="0 0 64 64"
+                            class="platform-svg-icon"
+                            focusable="false"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M32 56s18-17 18-31a18 18 0 1 0-36 0c0 14 18 31 18 31z"
+                            ></path>
+
+                            <circle
+                                cx="32"
+                                cy="25"
+                                r="6"
+                            ></circle>
+                        </svg>
+                    </span>
+
+                    <h3>
+                        Nearby
+                    </h3>
+
+                    <p>
+                        Find nearby businesses,
+                        products and platform results.
                     </p>
 
                 </button>
@@ -716,39 +915,41 @@
             </section>
 
         </section>
-<!-- =================================================
-     GLOBAL SEARCH RESULTS
-     ================================================= -->
-
-<section
-    id="platform-search-results"
-    class="platform-results"
-    aria-labelledby="platform-search-title"
-    hidden
->
-
-    <div class="section-header">
-
-        <h3 id="platform-search-title">
-            🔎 Global Search
-        </h3>
-
-        <p>
-            Search across tourism,
-            businesses, products and projects.
-        </p>
-
-    </div>
 
 
-    <div
-        id="searchGrid"
-        class="cards"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
+        <!-- =================================================
+             GLOBAL SEARCH RESULTS
+             ================================================= -->
 
-</section>
+        <section
+            id="platform-search-results"
+            class="platform-results"
+            aria-labelledby="platform-search-title"
+            hidden
+        >
+
+            <div class="section-header">
+
+                <h3 id="platform-search-title">
+                    🔎 Global Search
+                </h3>
+
+                <p>
+                    Search across tourism,
+                    businesses, products and projects.
+                </p>
+
+            </div>
+
+            <div
+                id="searchGrid"
+                class="cards"
+                aria-live="polite"
+                aria-busy="false"
+            ></div>
+
+        </section>
+
 
         <!-- =====================================================
              SERVICES
@@ -804,7 +1005,7 @@
                     </span>
 
                     <h3 data-i18n="ai_auto">
-                        AI & Automation
+                        AI &amp; Automation
                     </h3>
 
                     <p data-i18n="ai_auto_desc">
@@ -927,6 +1128,7 @@
 
             </div>
 
+
             <ul>
 
                 <li data-i18n="secure">
@@ -977,7 +1179,10 @@
             </div>
 
         </section>
-   
+
+
+    </main>
+
 
     <!-- =====================================================
          FOOTER
@@ -985,29 +1190,53 @@
 
     <footer>
 
-        <div class="social">
+        <div
+            class="social"
+            aria-label="Social media"
+        >
 
             <a
                 href="https://github.com/gov-server"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="ASEM GitHub"
             >
+                <span aria-hidden="true">💻</span>
                 GitHub
             </a>
 
-            <a href="#">
+            <!-- Replace # when the official LinkedIn URL exists. -->
+
+            <a
+                href="#"
+                aria-label="LinkedIn"
+            >
+                <span aria-hidden="true">💼</span>
                 LinkedIn
             </a>
 
-            <a href="#">
+            <!-- Replace # when the official X/Twitter URL exists. -->
+
+            <a
+                href="#"
+                aria-label="Twitter"
+            >
+                <span aria-hidden="true">𝕏</span>
                 Twitter
             </a>
 
-            <a href="#">
+            <!-- Replace # when the official YouTube URL exists. -->
+
+            <a
+                href="#"
+                aria-label="YouTube"
+            >
+                <span aria-hidden="true">▶️</span>
                 YouTube
             </a>
 
         </div>
+
 
         <p>
             © 2026 ASEM Digital Solutions
@@ -1017,7 +1246,7 @@
 
 
     <!-- =====================================================
-         SCROLL TOP
+         SCROLL TO TOP
          ===================================================== -->
 
     <button
@@ -1027,21 +1256,47 @@
         title="Scroll to top"
         hidden
     >
-        ↑
+        <span aria-hidden="true">↑</span>
     </button>
 
 
     <!-- =====================================================
-         ASEM JAVASCRIPT
-         DO NOT DELETE
+         ADVERTISEMENT PLACEHOLDER
          ===================================================== -->
 
     <aside
-    class="ad-container"
-    data-ad-placement="homepage-top">
-</aside>
+        class="ad-container"
+        data-ad-placement="homepage-top"
+        aria-label="Advertisement"
+    ></aside>
+
+
+    <!-- =====================================================
+         ASEM JAVASCRIPT
+         =====================================================
+
+         app.js should contain:
+
+         - API configuration
+         - API requests
+         - search
+         - tourism loading
+         - business loading
+         - product loading
+         - project loading
+         - GPS
+         - nearby search
+         - theme
+         - language
+         - event routing
+
+         defer allows HTML parsing to finish before execution.
+    ===================================================== -->
+
+    <script>
+    window.ASEM_CONFIG = {
+        API_BASE_URL: "https://YOUR-PRODUCTION-API-DOMAIN"
+    };
+</script>
 
 <script src="app.js"></script>
-
-</body>
-</html>

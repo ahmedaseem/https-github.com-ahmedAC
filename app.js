@@ -6,7 +6,7 @@
  * GLOBAL PLATFORM CONTROLLER
  * ============================================================
  *
- * HTML compatible controller
+ * Frontend controller for:
  *
  * ✓ Tourism
  * ✓ Businesses
@@ -15,133 +15,253 @@
  * ✓ Portfolio
  * ✓ Services
  * ✓ Contact
+ * ✓ About
  * ✓ Global Search
- * ✓ GPS
- * ✓ Nearby filtering
+ * ✓ GPS / Nearby
  * ✓ Dark / Light mode
- * ✓ All HTML languages
+ * ✓ Language selection
  * ✓ Keyboard accessibility
  * ✓ API loading
- * ✓ PostgreSQL backend
  * ✓ Safe HTML rendering
+ * ✓ Local API testing
+ * ✓ Production API configuration
  *
- * Payment systems intentionally disabled for testing phase.
+ * Payment systems are intentionally not included.
+ *
  * ============================================================
  */
+
+
+/* ============================================================
+   APPLICATION
+   ============================================================ */
 
 (() => {
 
     "use strict";
 
 
-    /* =========================================================
+    /* ========================================================
        CONFIGURATION
-       ========================================================= */
-
-    `${ASEM.api.nearby}?${params}`
-
-
-    /* =========================================================
-       CONFIGURATION
-       ========================================================= */
+       ======================================================== */
 
     const ASEM = {
 
-    api: {
-
-        tourism: "/api/tourism",
-
-        businesses: "/api/businesses",
-
-        products: "/api/products",
-
-        projects: "/api/projects",
-
-        search: "/api/search",
-
-        nearby: "/api/nearby"
-    },
+        app: {
+            name: "ASEM Digital Solutions",
+            version: "1.0.0"
+        },
 
 
-    storage: {
+        /*
+         * API configuration
+         *
+         * LOCAL:
+         * Backend is running on:
+         * http://localhost:3001
+         *
+         * PRODUCTION:
+         * Change production.baseURL to your real production
+         * backend URL when the backend is deployed.
+         *
+         * Example:
+         *
+         * production: {
+         *     baseURL: "https://api.example.com/api"
+         * }
+         *
+         * If the production frontend and backend use the same
+         * domain, "/api" is also valid.
+         */
 
-        theme: "asem-theme",
+        api: {
 
-        language: "asem-language",
-
-        location: "asem-location"
-    },
-
-
-    timeout: 15000,
+            environment:
+                window.location.hostname === "localhost" ||
+                window.location.hostname === "127.0.0.1"
+                    ? "local"
+                    : "production",
 
 
-    gps: {
-
-        enabled: false,
-
-        latitude: null,
-
-        longitude: null,
-
-        accuracy: null
-    },
+            local: {
+                baseURL:
+                    "http://localhost:3001/api"
+            },
 
 
-    state: {
+            production: {
+                baseURL:
+                    "/api"
+            },
 
-        searchQuery: "",
 
-        searchType: "all",
+            endpoints: {
 
-        searchResults: [],
+                tourism:
+                    "/tourism",
 
-        locationEnabled: false,
+                businesses:
+                    "/businesses",
 
-        searching: false,
+                products:
+                    "/products",
 
-        datasets: {
+                projects:
+                    "/projects",
 
-            tourism: [],
+                search:
+                    "/search",
 
-            businesses: [],
+                nearby:
+                    "/nearby"
+            }
+        },
 
-            products: [],
 
-            projects: []
+        storage: {
+
+            theme:
+                "asem-theme",
+
+            language:
+                "asem-language",
+
+            location:
+                "asem-location"
+        },
+
+
+        timeout:
+            15000,
+
+
+        gps: {
+
+            enabled:
+                false,
+
+            latitude:
+                null,
+
+            longitude:
+                null,
+
+            accuracy:
+                null
+        },
+
+
+        state: {
+
+            searchQuery:
+                "",
+
+            searchType:
+                "all",
+
+            searchResults:
+                [],
+
+            locationEnabled:
+                false,
+
+            searching:
+                false,
+
+            datasets: {
+
+                tourism:
+                    [],
+
+                businesses:
+                    [],
+
+                products:
+                    [],
+
+                projects:
+                    []
+            }
         }
+
+    };
+
+
+    /* ========================================================
+       API URL HELPER
+       ======================================================== */
+
+    function getAPIBaseURL() {
+
+        /*
+         * Allow an optional global override.
+         *
+         * This is useful for production deployments without
+         * modifying the main application logic.
+         *
+         * Example in HTML before app.js:
+         *
+         * window.ASEM_API_BASE_URL =
+         *     "https://api.example.com/api";
+         */
+
+        if (
+            typeof window !== "undefined" &&
+            typeof window.ASEM_API_BASE_URL === "string" &&
+            window.ASEM_API_BASE_URL.trim()
+        ) {
+
+            return window.ASEM_API_BASE_URL
+                .trim()
+                .replace(/\/+$/, "");
+        }
+
+
+        const environment =
+            ASEM.api.environment;
+
+
+        return ASEM.api[environment].baseURL
+            .replace(/\/+$/, "");
     }
-};
-
-    
 
 
-       
+    function getAPIURL(endpoint) {
 
-     
+        const baseURL =
+            getAPIBaseURL();
 
 
-    /* =========================================================
+        const cleanEndpoint =
+            String(endpoint || "")
+                .replace(/^\/+/, "");
+
+
+        return `${baseURL}/${cleanEndpoint}`;
+    }
+
+
+    /* ========================================================
        DOM HELPERS
-       ========================================================= */
+       ======================================================== */
 
-    const $ = (
-        selector,
-        root = document
-    ) => root.querySelector(selector);
+    function $(selector, root = document) {
 
-
-    const $$ = (
-        selector,
-        root = document
-    ) => Array.from(
-        root.querySelectorAll(selector)
-    );
+        return root.querySelector(selector);
+    }
 
 
-    /* =========================================================
+    function $$(selector, root = document) {
+
+        return Array.from(
+            root.querySelectorAll(selector)
+        );
+    }
+
+
+    /* ========================================================
        SECURITY
-       ========================================================= */
+       ======================================================== */
 
     function escapeHTML(value) {
 
@@ -149,8 +269,10 @@
             value === null ||
             value === undefined
         ) {
+
             return "";
         }
+
 
         return String(value)
             .replace(/&/g, "&amp;")
@@ -164,27 +286,32 @@
     function safeURL(value) {
 
         if (!value) {
+
             return "";
         }
+
 
         try {
 
             const base =
-    typeof window !== "undefined"
-        ? window.location.origin
-        : "http://localhost";
+                window.location.origin;
 
-const url = new URL(
-    String(value),
-    base
-);
+
+            const url =
+                new URL(
+                    String(value),
+                    base
+                );
+
 
             if (
                 url.protocol !== "http:" &&
                 url.protocol !== "https:"
             ) {
+
                 return "";
             }
+
 
             return url.href;
 
@@ -195,32 +322,44 @@ const url = new URL(
     }
 
 
-    /* =========================================================
+    /* ========================================================
        NORMALIZE API DATA
-       ========================================================= */
+       ======================================================== */
 
     function normalizeArray(data) {
 
         if (Array.isArray(data)) {
+
             return data;
         }
+
 
         if (
             !data ||
             typeof data !== "object"
         ) {
+
             return [];
         }
 
+
         const possibleKeys = [
+
             "data",
+
             "items",
+
             "results",
+
             "tourism",
+
             "businesses",
+
             "products",
+
             "projects"
         ];
+
 
         for (
             const key of possibleKeys
@@ -234,16 +373,17 @@ const url = new URL(
             }
         }
 
+
         return [];
     }
 
 
-    /* =========================================================
+    /* ========================================================
        API REQUEST
-       ========================================================= */
+       ======================================================== */
 
     async function apiRequest(
-        url,
+        endpoint,
         options = {}
     ) {
 
@@ -259,31 +399,50 @@ const url = new URL(
             );
 
 
+        /*
+         * If the caller supplies its own AbortController,
+         * use its signal.
+         *
+         * Otherwise use our timeout controller.
+         */
+
+        const signal =
+            options.signal ||
+            controller.signal;
+
+
         try {
 
             const response =
                 await fetch(
-                    url,
+                    endpoint,
                     {
+
                         method:
                             options.method ||
                             "GET",
 
+
                         headers: {
+
                             "Accept":
                                 "application/json",
 
                             ...(options.headers || {})
                         },
 
+
                         credentials:
-                            "same-origin",
+                            options.credentials ||
+                            "include",
+
 
                         cache:
                             "no-store",
 
-                        signal:
-                            controller.signal,
+
+                        signal,
+
 
                         body:
                             options.body
@@ -302,19 +461,52 @@ const url = new URL(
                     const error =
                         await response.json();
 
-                    if (error.message) {
+
+                    if (
+                        error &&
+                        error.message
+                    ) {
+
                         message =
-                            error.message;
+                            String(
+                                error.message
+                            );
                     }
 
-                } catch (_) {}
+                } catch (_) {
+                    /*
+                     * Response was not JSON.
+                     */
+                }
 
 
-                throw new Error(message);
+                throw new Error(
+                    message
+                );
             }
 
 
-            return await response.json();
+            /*
+             * Some endpoints may return an empty response.
+             */
+
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            if (
+                contentType
+                    .toLowerCase()
+                    .includes("application/json")
+            ) {
+
+                return await response.json();
+            }
+
+
+            return await response.text();
 
         } finally {
 
@@ -323,9 +515,9 @@ const url = new URL(
     }
 
 
-    /* =========================================================
+    /* ========================================================
        UI STATES
-       ========================================================= */
+       ======================================================== */
 
     function showLoading(
         grid,
@@ -333,16 +525,27 @@ const url = new URL(
     ) {
 
         if (!grid) {
+
             return;
         }
 
+
+        grid.setAttribute(
+            "aria-busy",
+            "true"
+        );
+
+
         grid.innerHTML = `
 
-            <article class="card platform-state">
+            <article
+                class="card platform-state"
+            >
 
                 <div
                     class="platform-card-icon"
-                    aria-hidden="true">
+                    aria-hidden="true"
+                >
                     ⏳
                 </div>
 
@@ -355,6 +558,7 @@ const url = new URL(
                 </p>
 
             </article>
+
         `;
     }
 
@@ -366,16 +570,27 @@ const url = new URL(
     ) {
 
         if (!grid) {
+
             return;
         }
 
+
+        grid.setAttribute(
+            "aria-busy",
+            "false"
+        );
+
+
         grid.innerHTML = `
 
-            <article class="card platform-state">
+            <article
+                class="card platform-state"
+            >
 
                 <div
                     class="platform-card-icon"
-                    aria-hidden="true">
+                    aria-hidden="true"
+                >
                     🌐
                 </div>
 
@@ -388,6 +603,7 @@ const url = new URL(
                 </p>
 
             </article>
+
         `;
     }
 
@@ -400,16 +616,45 @@ const url = new URL(
     ) {
 
         if (!grid) {
+
             return;
         }
 
+
+        grid.setAttribute(
+            "aria-busy",
+            "false"
+        );
+
+
+        const retry =
+            retryAction
+                ? `
+
+                    <button
+                        type="button"
+                        class="btn"
+                        data-retry="${escapeHTML(
+                            retryAction
+                        )}"
+                    >
+                        Retry
+                    </button>
+
+                `
+                : "";
+
+
         grid.innerHTML = `
 
-            <article class="card platform-state">
+            <article
+                class="card platform-state"
+            >
 
                 <div
                     class="platform-card-icon"
-                    aria-hidden="true">
+                    aria-hidden="true"
+                >
                     ⚠️
                 </div>
 
@@ -421,29 +666,17 @@ const url = new URL(
                     ${escapeHTML(message)}
                 </p>
 
-                ${
-                    retryAction
-                    ? `
-                        <button
-                            type="button"
-                            class="btn"
-                            data-retry="${escapeHTML(
-                                retryAction
-                            )}">
-                            Retry
-                        </button>
-                    `
-                    : ""
-                }
+                ${retry}
 
             </article>
+
         `;
     }
 
 
-    /* =========================================================
-       IMAGE
-       ========================================================= */
+    /* ========================================================
+       IMAGE RENDERING
+       ======================================================== */
 
     function imageHTML(
         image,
@@ -461,11 +694,11 @@ const url = new URL(
 
                 <div
                     class="platform-card-icon"
-                    aria-hidden="true">
-
+                    aria-hidden="true"
+                >
                     ${fallback}
-
                 </div>
+
             `;
         }
 
@@ -480,13 +713,14 @@ const url = new URL(
                 referrerpolicy="no-referrer"
                 onerror="this.style.display='none';"
             >
+
         `;
     }
 
 
-    /* =========================================================
+    /* ========================================================
        TOURISM CARD
-       ========================================================= */
+       ======================================================== */
 
     function buildTourismCard(item) {
 
@@ -505,13 +739,37 @@ const url = new URL(
             "Tourism";
 
 
+        const hasCoordinates =
+            Number.isFinite(
+                Number(item.latitude)
+            ) &&
+            Number.isFinite(
+                Number(item.longitude)
+            );
+
+
         return `
 
             <article
                 class="card platform-result-card"
                 tabindex="0"
                 data-type="tourism"
-                data-id="${escapeHTML(item.id || "")}">
+                data-id="${escapeHTML(
+                    item.id || ""
+                )}"
+                ${
+                    hasCoordinates
+                        ? `
+                            data-latitude="${escapeHTML(
+                                item.latitude
+                            )}"
+                            data-longitude="${escapeHTML(
+                                item.longitude
+                            )}"
+                        `
+                        : ""
+                }
+            >
 
                 ${imageHTML(
                     item.image,
@@ -519,9 +777,13 @@ const url = new URL(
                     "🏝️"
                 )}
 
-                <div class="platform-card-content">
+                <div
+                    class="platform-card-content"
+                >
 
-                    <span class="platform-card-category">
+                    <span
+                        class="platform-card-category"
+                    >
                         ${escapeHTML(category)}
                     </span>
 
@@ -535,50 +797,60 @@ const url = new URL(
 
                     ${
                         item.location
-                        ? `
-                            <small>
-                                📍 ${escapeHTML(
-                                    item.location
-                                )}
-                            </small>
-                        `
-                        : ""
+                            ? `
+
+                                <small>
+                                    📍
+                                    ${escapeHTML(
+                                        item.location
+                                    )}
+                                </small>
+
+                            `
+                            : ""
                     }
 
                     ${
-                        item.latitude !== null &&
-                        item.longitude !== null
-                        ? `
-                            <small>
-                                🌐 GPS available
-                            </small>
-                        `
-                        : ""
+                        hasCoordinates
+                            ? `
+
+                                <small>
+                                    🌐 GPS available
+                                </small>
+
+                            `
+                            : ""
                     }
 
                     ${
                         item.rating !== undefined &&
                         item.rating !== null
-                        ? `
-                            <div class="platform-rating">
-                                ⭐ ${escapeHTML(
-                                    item.rating
-                                )}
-                            </div>
-                        `
-                        : ""
+                            ? `
+
+                                <div
+                                    class="platform-rating"
+                                >
+                                    ⭐
+                                    ${escapeHTML(
+                                        item.rating
+                                    )}
+                                </div>
+
+                            `
+                            : ""
                     }
 
                 </div>
 
             </article>
+
         `;
     }
 
 
-    /* =========================================================
+    /* ========================================================
        BUSINESS CARD
-       ========================================================= */
+       ======================================================== */
 
     function buildBusinessCard(item) {
 
@@ -597,13 +869,37 @@ const url = new URL(
             "Business";
 
 
+        const hasCoordinates =
+            Number.isFinite(
+                Number(item.latitude)
+            ) &&
+            Number.isFinite(
+                Number(item.longitude)
+            );
+
+
         return `
 
             <article
                 class="card platform-result-card"
                 tabindex="0"
                 data-type="business"
-                data-id="${escapeHTML(item.id || "")}">
+                data-id="${escapeHTML(
+                    item.id || ""
+                )}"
+                ${
+                    hasCoordinates
+                        ? `
+                            data-latitude="${escapeHTML(
+                                item.latitude
+                            )}"
+                            data-longitude="${escapeHTML(
+                                item.longitude
+                            )}"
+                        `
+                        : ""
+                }
+            >
 
                 ${imageHTML(
                     item.logo ||
@@ -612,9 +908,13 @@ const url = new URL(
                     "🌍"
                 )}
 
-                <div class="platform-card-content">
+                <div
+                    class="platform-card-content"
+                >
 
-                    <span class="platform-card-category">
+                    <span
+                        class="platform-card-category"
+                    >
                         ${escapeHTML(category)}
                     </span>
 
@@ -628,51 +928,65 @@ const url = new URL(
 
                     ${
                         item.address
-                        ? `
-                            <small>
-                                📍 ${escapeHTML(
-                                    item.address
-                                )}
-                            </small>
-                        `
-                        : ""
+                            ? `
+
+                                <small>
+                                    📍
+                                    ${escapeHTML(
+                                        item.address
+                                    )}
+                                </small>
+
+                            `
+                            : ""
                     }
 
                     ${
                         item.rating !== undefined &&
                         item.rating !== null
-                        ? `
-                            <div class="platform-rating">
-                                ⭐ ${escapeHTML(
-                                    item.rating
-                                )}
-                            </div>
-                        `
-                        : ""
+                            ? `
+
+                                <div
+                                    class="platform-rating"
+                                >
+                                    ⭐
+                                    ${escapeHTML(
+                                        item.rating
+                                    )}
+                                </div>
+
+                            `
+                            : ""
                     }
 
                     ${
-                        item.distance !== undefined
-                        ? `
-                            <small>
-                                📏 ${escapeHTML(
-                                    item.distance
-                                )} km away
-                            </small>
-                        `
-                        : ""
+                        item.distance !== undefined &&
+                        item.distance !== null
+                            ? `
+
+                                <small>
+                                    📏
+                                    ${escapeHTML(
+                                        item.distance
+                                    )}
+                                    km away
+                                </small>
+
+                            `
+                            : ""
                     }
 
                 </div>
 
             </article>
+
         `;
     }
 
 
-    /* =========================================================
+    /* ========================================================
        PRODUCT CARD
-       ========================================================= */
+       ======================================================== */
 
     function buildProductCard(item) {
 
@@ -691,13 +1005,37 @@ const url = new URL(
             "Product";
 
 
+        const hasCoordinates =
+            Number.isFinite(
+                Number(item.latitude)
+            ) &&
+            Number.isFinite(
+                Number(item.longitude)
+            );
+
+
         return `
 
             <article
                 class="card platform-result-card"
                 tabindex="0"
                 data-type="product"
-                data-id="${escapeHTML(item.id || "")}">
+                data-id="${escapeHTML(
+                    item.id || ""
+                )}"
+                ${
+                    hasCoordinates
+                        ? `
+                            data-latitude="${escapeHTML(
+                                item.latitude
+                            )}"
+                            data-longitude="${escapeHTML(
+                                item.longitude
+                            )}"
+                        `
+                        : ""
+                }
+            >
 
                 ${imageHTML(
                     item.image,
@@ -705,9 +1043,13 @@ const url = new URL(
                     "🛒"
                 )}
 
-                <div class="platform-card-content">
+                <div
+                    class="platform-card-content"
+                >
 
-                    <span class="platform-card-category">
+                    <span
+                        class="platform-card-category"
+                    >
                         ${escapeHTML(category)}
                     </span>
 
@@ -722,42 +1064,52 @@ const url = new URL(
                     ${
                         item.price !== undefined &&
                         item.price !== null
-                        ? `
-                            <strong class="product-price">
-                                ${escapeHTML(
-                                    item.price
-                                )}
-                                ${escapeHTML(
-                                    item.currency ||
-                                    "USD"
-                                )}
-                            </strong>
-                        `
-                        : ""
+                            ? `
+
+                                <strong
+                                    class="product-price"
+                                >
+                                    ${escapeHTML(
+                                        item.price
+                                    )}
+                                    ${escapeHTML(
+                                        item.currency ||
+                                        "USD"
+                                    )}
+                                </strong>
+
+                            `
+                            : ""
                     }
 
                     ${
-                        item.distance !== undefined
-                        ? `
-                            <small>
-                                📏 ${escapeHTML(
-                                    item.distance
-                                )} km away
-                            </small>
-                        `
-                        : ""
+                        item.distance !== undefined &&
+                        item.distance !== null
+                            ? `
+
+                                <small>
+                                    📏
+                                    ${escapeHTML(
+                                        item.distance
+                                    )}
+                                    km away
+                                </small>
+
+                            `
+                            : ""
                     }
 
                 </div>
 
             </article>
+
         `;
     }
 
 
-    /* =========================================================
+    /* ========================================================
        PROJECT CARD
-       ========================================================= */
+       ======================================================== */
 
     function buildProjectCard(item) {
 
@@ -777,7 +1129,10 @@ const url = new URL(
                 class="card project-card"
                 tabindex="0"
                 data-type="project"
-                data-id="${escapeHTML(item.id || "")}">
+                data-id="${escapeHTML(
+                    item.id || ""
+                )}"
+            >
 
                 ${imageHTML(
                     item.image,
@@ -794,13 +1149,14 @@ const url = new URL(
                 </p>
 
             </article>
+
         `;
     }
 
 
-    /* =========================================================
+    /* ========================================================
        SEARCH CARD
-       ========================================================= */
+       ======================================================== */
 
     function buildSearchCard(item) {
 
@@ -810,7 +1166,10 @@ const url = new URL(
             ).toLowerCase();
 
 
-        if (type === "tourism") {
+        if (
+            type === "tourism"
+        ) {
+
             return buildTourismCard(item);
         }
 
@@ -819,6 +1178,7 @@ const url = new URL(
             type === "business" ||
             type === "businesses"
         ) {
+
             return buildBusinessCard(item);
         }
 
@@ -827,20 +1187,30 @@ const url = new URL(
             type === "product" ||
             type === "products"
         ) {
+
             return buildProductCard(item);
         }
 
 
-        if (type === "project") {
+        if (
+            type === "project" ||
+            type === "projects"
+        ) {
+
             return buildProjectCard(item);
         }
 
 
         return `
 
-            <article class="card platform-result-card">
+            <article
+                class="card platform-result-card"
+            >
 
-                <div class="platform-card-icon">
+                <div
+                    class="platform-card-icon"
+                    aria-hidden="true"
+                >
                     🌐
                 </div>
 
@@ -853,18 +1223,20 @@ const url = new URL(
 
                 <p>
                     ${escapeHTML(
-                        item.description || ""
+                        item.description ||
+                        ""
                     )}
                 </p>
 
             </article>
+
         `;
     }
 
 
-    /* =========================================================
-       RENDER
-       ========================================================= */
+    /* ========================================================
+       GRID RENDERING
+       ======================================================== */
 
     function renderGrid(
         grid,
@@ -875,7 +1247,14 @@ const url = new URL(
     ) {
 
         if (!grid) {
+
             return;
+        }
+
+
+        if (!Array.isArray(items)) {
+
+            items = [];
         }
 
 
@@ -895,12 +1274,67 @@ const url = new URL(
             items
                 .map(builder)
                 .join("");
+
+
+        grid.setAttribute(
+            "aria-busy",
+            "false"
+        );
     }
 
 
-    /* =========================================================
+    /* ========================================================
+       SECTION VISIBILITY
+       ======================================================== */
+
+    function showSection(
+        selector
+    ) {
+
+        const section =
+            $(selector);
+
+
+        if (!section) {
+
+            return;
+        }
+
+
+        section.hidden =
+            false;
+
+
+        requestAnimationFrame(() => {
+
+            section.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+    }
+
+
+    function hideSection(
+        selector
+    ) {
+
+        const section =
+            $(selector);
+
+
+        if (section) {
+
+            section.hidden =
+                true;
+        }
+    }
+
+
+    /* ========================================================
        LOAD TOURISM
-       ========================================================= */
+       ======================================================== */
 
     async function loadTourism() {
 
@@ -908,18 +1342,19 @@ const url = new URL(
             $("#tourismGrid");
 
 
-        const section =
-            $("#tourism-section");
-
-
         if (!grid) {
+
+            console.warn(
+                "ASEM: #tourismGrid was not found."
+            );
+
             return;
         }
 
 
-        if (section) {
-            section.hidden = false;
-        }
+        showSection(
+            "#tourism-section"
+        );
 
 
         showLoading(
@@ -932,7 +1367,9 @@ const url = new URL(
 
             const data =
                 await apiRequest(
-                    ASEM.api.tourism
+                    getAPIURL(
+                        ASEM.api.endpoints.tourism
+                    )
                 );
 
 
@@ -952,19 +1389,10 @@ const url = new URL(
                 "Tourism destinations will appear here."
             );
 
-
-            if (section) {
-
-                section.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
-
         } catch (error) {
 
             console.error(
-                "Tourism error:",
+                "ASEM Tourism:",
                 error
             );
 
@@ -972,16 +1400,16 @@ const url = new URL(
             showError(
                 grid,
                 "Tourism unavailable",
-                error.message,
+                getErrorMessage(error),
                 "tourism"
             );
         }
     }
 
 
-    /* =========================================================
+    /* ========================================================
        LOAD BUSINESSES
-       ========================================================= */
+       ======================================================== */
 
     async function loadBusinesses() {
 
@@ -989,18 +1417,19 @@ const url = new URL(
             $("#businessesGrid");
 
 
-        const section =
-            $("#businesses-section");
-
-
         if (!grid) {
+
+            console.warn(
+                "ASEM: #businessesGrid was not found."
+            );
+
             return;
         }
 
 
-        if (section) {
-            section.hidden = false;
-        }
+        showSection(
+            "#businesses-section"
+        );
 
 
         showLoading(
@@ -1013,7 +1442,9 @@ const url = new URL(
 
             const data =
                 await apiRequest(
-                    ASEM.api.businesses
+                    getAPIURL(
+                        ASEM.api.endpoints.businesses
+                    )
                 );
 
 
@@ -1033,19 +1464,10 @@ const url = new URL(
                 "Businesses will appear here."
             );
 
-
-            if (section) {
-
-                section.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
-
         } catch (error) {
 
             console.error(
-                "Businesses error:",
+                "ASEM Businesses:",
                 error
             );
 
@@ -1053,16 +1475,16 @@ const url = new URL(
             showError(
                 grid,
                 "Businesses unavailable",
-                error.message,
+                getErrorMessage(error),
                 "businesses"
             );
         }
     }
 
 
-    /* =========================================================
+    /* ========================================================
        LOAD PRODUCTS
-       ========================================================= */
+       ======================================================== */
 
     async function loadProducts() {
 
@@ -1070,18 +1492,19 @@ const url = new URL(
             $("#productsGrid");
 
 
-        const section =
-            $("#products-section");
-
-
         if (!grid) {
+
+            console.warn(
+                "ASEM: #productsGrid was not found."
+            );
+
             return;
         }
 
 
-        if (section) {
-            section.hidden = false;
-        }
+        showSection(
+            "#products-section"
+        );
 
 
         showLoading(
@@ -1094,7 +1517,9 @@ const url = new URL(
 
             const data =
                 await apiRequest(
-                    ASEM.api.products
+                    getAPIURL(
+                        ASEM.api.endpoints.products
+                    )
                 );
 
 
@@ -1114,19 +1539,10 @@ const url = new URL(
                 "Products will appear here."
             );
 
-
-            if (section) {
-
-                section.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
-
         } catch (error) {
 
             console.error(
-                "Products error:",
+                "ASEM Products:",
                 error
             );
 
@@ -1134,16 +1550,16 @@ const url = new URL(
             showError(
                 grid,
                 "Products unavailable",
-                error.message,
+                getErrorMessage(error),
                 "products"
             );
         }
     }
 
 
-    /* =========================================================
+    /* ========================================================
        LOAD PROJECTS
-       ========================================================= */
+       ======================================================== */
 
     async function loadProjects() {
 
@@ -1152,6 +1568,11 @@ const url = new URL(
 
 
         if (!grid) {
+
+            console.warn(
+                "ASEM: #projectsGrid was not found."
+            );
+
             return;
         }
 
@@ -1166,7 +1587,9 @@ const url = new URL(
 
             const data =
                 await apiRequest(
-                    ASEM.api.projects
+                    getAPIURL(
+                        ASEM.api.endpoints.projects
+                    )
                 );
 
 
@@ -1189,7 +1612,7 @@ const url = new URL(
         } catch (error) {
 
             console.error(
-                "Projects error:",
+                "ASEM Projects:",
                 error
             );
 
@@ -1197,79 +1620,270 @@ const url = new URL(
             showError(
                 grid,
                 "Projects unavailable",
-                error.message,
+                getErrorMessage(error),
                 "projects"
-            )
+            );
         }
     }
 
 
-    
+    /* ========================================================
+       PRELOAD PLATFORM DATA
+       ======================================================== */
 
-          /* =========================================================
-            GPS
-           ========================================================= */
+    async function preloadPlatformData() {
+
+        /*
+         * Preloading is intentionally non-blocking.
+         *
+         * If one endpoint fails, the rest can still load.
+         */
+
+        const requests = [
+
+            {
+                name: "tourism",
+                endpoint:
+                    ASEM.api.endpoints.tourism
+            },
+
+            {
+                name: "businesses",
+                endpoint:
+                    ASEM.api.endpoints.businesses
+            },
+
+            {
+                name: "products",
+                endpoint:
+                    ASEM.api.endpoints.products
+            },
+
+            {
+                name: "projects",
+                endpoint:
+                    ASEM.api.endpoints.projects
+            }
+
+        ];
+
+
+        await Promise.allSettled(
+
+            requests.map(
+                async request => {
+
+                    try {
+
+                        const data =
+                            await apiRequest(
+                                getAPIURL(
+                                    request.endpoint
+                                )
+                            );
+
+
+                        ASEM.state.datasets[
+                            request.name
+                        ] =
+                            normalizeArray(data);
+
+                    } catch (error) {
+
+                        console.warn(
+                            `ASEM preload ${request.name}:`,
+                            error
+                        );
+                    }
+                }
+            )
+
+        );
+
+
+        console.info(
+            "ASEM platform data preloaded.",
+            {
+
+                tourism:
+                    ASEM.state.datasets.tourism.length,
+
+                businesses:
+                    ASEM.state.datasets.businesses.length,
+
+                products:
+                    ASEM.state.datasets.products.length,
+
+                projects:
+                    ASEM.state.datasets.projects.length
+            }
+        );
+    }
+
+
+    /* ========================================================
+       LOCATION UI
+       ======================================================== */
 
     function updateLocationUI() {
 
         const buttons =
             $$(
-                "[data-platform-action='location'], [data-platform-action='gps']"
+                "[data-platform-action='location'], " +
+                "[data-platform-action='gps'], " +
+                "[data-platform-action='nearby']"
             );
 
 
-        buttons.forEach(button => {
+        buttons.forEach(
+            button => {
 
-            button.classList.toggle(
-                "active",
-                ASEM.state.locationEnabled
-            );
+                button.classList.toggle(
+                    "active",
+                    ASEM.state.locationEnabled
+                );
 
 
-            if (
-                ASEM.state.locationEnabled
-            ) {
+                button.setAttribute(
+                    "aria-pressed",
+                    ASEM.state.locationEnabled
+                        ? "true"
+                        : "false"
+                );
+
 
                 button.setAttribute(
                     "aria-label",
-                    "Location enabled"
+                    ASEM.state.locationEnabled
+                        ? "Location enabled"
+                        : "Use my location"
                 );
 
-            } else {
-
-                button.setAttribute(
-                    "aria-label",
-                    "Use my location"
-                );
             }
-        });
+        );
 
 
         const status =
-            $(
-                "#locationStatus"
-            );
+            $("#locationStatus");
 
 
         if (!status) {
+
             return;
         }
 
 
-        if (
+        status.textContent =
             ASEM.state.locationEnabled
-        ) {
+                ? "📍 Location enabled"
+                : "Location not enabled";
+    }
 
-            status.textContent =
-                "📍 Location enabled";
 
-        } else {
+    /* ========================================================
+       LOCATION STORAGE
+       ======================================================== */
 
-            status.textContent =
-                "Location not enabled";
+    function saveLocation() {
+
+        try {
+
+            localStorage.setItem(
+                ASEM.storage.location,
+                JSON.stringify(
+                    ASEM.gps
+                )
+            );
+
+        } catch (_) {
+
+            /*
+             * localStorage may be unavailable.
+             */
         }
     }
 
+
+    function loadSavedLocation() {
+
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    ASEM.storage.location
+                );
+
+
+            if (!saved) {
+
+                return;
+            }
+
+
+            const location =
+                JSON.parse(saved);
+
+
+            if (
+                !location ||
+                !Number.isFinite(
+                    Number(location.latitude)
+                ) ||
+                !Number.isFinite(
+                    Number(location.longitude)
+                )
+            ) {
+
+                return;
+            }
+
+
+            ASEM.gps = {
+
+                enabled:
+                    true,
+
+                latitude:
+                    Number(
+                        location.latitude
+                    ),
+
+                longitude:
+                    Number(
+                        location.longitude
+                    ),
+
+                accuracy:
+                    Number.isFinite(
+                        Number(
+                            location.accuracy
+                        )
+                    )
+                        ? Number(
+                            location.accuracy
+                        )
+                        : null
+            };
+
+
+            ASEM.state.locationEnabled =
+                true;
+
+
+            updateLocationUI();
+
+        } catch (_) {
+
+            /*
+             * Ignore invalid stored location.
+             */
+        }
+    }
+
+
+    /* ========================================================
+       GET CURRENT LOCATION
+       ======================================================== */
 
     function getCurrentLocation() {
 
@@ -1277,7 +1891,7 @@ const url = new URL(
             (resolve, reject) => {
 
                 if (
-                    !navigator.geolocation
+                    !("geolocation" in navigator)
                 ) {
 
                     reject(
@@ -1291,6 +1905,7 @@ const url = new URL(
 
 
                 navigator.geolocation.getCurrentPosition(
+
                     position => {
 
                         const coords =
@@ -1299,78 +1914,93 @@ const url = new URL(
 
                         ASEM.gps = {
 
-                            enabled: true,
+                            enabled:
+                                true,
 
                             latitude:
-                                coords.latitude,
+                                Number(
+                                    coords.latitude
+                                ),
 
                             longitude:
-                                coords.longitude,
+                                Number(
+                                    coords.longitude
+                                ),
 
                             accuracy:
-                                coords.accuracy
+                                Number.isFinite(
+                                    Number(
+                                        coords.accuracy
+                                    )
+                                )
+                                    ? Number(
+                                        coords.accuracy
+                                    )
+                                    : null
                         };
 
 
-                        ASEM.state
-                            .locationEnabled =
+                        ASEM.state.locationEnabled =
                             true;
 
 
-                        try {
-
-                            localStorage.setItem(
-                                ASEM.storage.location,
-                                JSON.stringify(
-                                    ASEM.gps
-                                )
-                            );
-
-                        } catch (_) {}
-
+                        saveLocation();
 
                         updateLocationUI();
+
 
                         resolve(
                             ASEM.gps
                         );
                     },
 
+
                     error => {
 
                         let message =
                             "Unable to determine your location.";
 
+
                         if (
                             error.code ===
-                            1
+                            error.PERMISSION_DENIED
                         ) {
+
                             message =
                                 "Location permission was denied.";
                         }
 
+
                         if (
                             error.code ===
-                            2
+                            error.POSITION_UNAVAILABLE
                         ) {
+
                             message =
                                 "Your location could not be determined.";
                         }
 
+
                         if (
                             error.code ===
-                            3
+                            error.TIMEOUT
                         ) {
+
                             message =
                                 "Location request timed out.";
                         }
 
+
                         reject(
-                            new Error(message)
+                            new Error(
+                                message
+                            )
                         );
                     },
 
+
                     {
+
                         enableHighAccuracy:
                             true,
 
@@ -1380,11 +2010,37 @@ const url = new URL(
                         maximumAge:
                             60000
                     }
+
                 );
+
             }
         );
     }
 
+
+    /* ========================================================
+       LOCATION MESSAGE
+       ======================================================== */
+
+    function showLocationMessage(
+        message
+    ) {
+
+        const status =
+            $("#locationStatus");
+
+
+        if (status) {
+
+            status.textContent =
+                `⚠️ ${message}`;
+        }
+    }
+
+
+    /* ========================================================
+       ENABLE GPS
+       ======================================================== */
 
     async function enableGPS() {
 
@@ -1401,52 +2057,54 @@ const url = new URL(
                 error
             );
 
+
             showLocationMessage(
-                error.message
+                getErrorMessage(error)
             );
         }
     }
 
 
-    function showLocationMessage(
-        message
-    ) {
-
-        const status =
-            $(
-                "#locationStatus"
-            );
-
-        if (status) {
-            status.textContent =
-                `⚠️ ${message}`;
-        }
-    }
-
+    /* ========================================================
+       NEARBY SEARCH
+       ======================================================== */
 
     async function searchNearby() {
 
         const grid =
-            $(
-                "#searchGrid"
-            ) ||
-            $(
-                "#platformSearchGrid"
-            );
+            $("#searchGrid");
 
 
         if (!grid) {
+
+            console.warn(
+                "ASEM: #searchGrid was not found."
+            );
+
             return;
         }
 
 
         if (
-            !ASEM.gps.latitude ||
-            !ASEM.gps.longitude
+            !Number.isFinite(
+                Number(
+                    ASEM.gps.latitude
+                )
+            ) ||
+            !Number.isFinite(
+                Number(
+                    ASEM.gps.longitude
+                )
+            )
         ) {
 
             await getCurrentLocation();
         }
+
+
+        showSection(
+            "#platform-search-results"
+        );
 
 
         showLoading(
@@ -1459,10 +2117,14 @@ const url = new URL(
             new URLSearchParams({
 
                 lat:
-                    ASEM.gps.latitude,
+                    String(
+                        ASEM.gps.latitude
+                    ),
 
                 lng:
-                    ASEM.gps.longitude,
+                    String(
+                        ASEM.gps.longitude
+                    ),
 
                 radius:
                     "25",
@@ -1477,7 +2139,9 @@ const url = new URL(
 
             const data =
                 await apiRequest(
-                    `${ASEM.api.nearby}?${params}`
+                    `${getAPIURL(
+                        ASEM.api.endpoints.nearby
+                    )}?${params.toString()}`
                 );
 
 
@@ -1485,12 +2149,15 @@ const url = new URL(
                 normalizeArray(data);
 
 
+            ASEM.state.searchResults =
+                results;
+
+
             renderSearchResults(
                 results,
-                "No nearby results",
+                "No Nearby Results",
                 "There are no platform results within the selected area."
             );
-
 
         } catch (error) {
 
@@ -1503,41 +2170,26 @@ const url = new URL(
             showError(
                 grid,
                 "Nearby search unavailable",
-                error.message,
+                getErrorMessage(error),
                 "location"
             );
         }
     }
 
-    /* =========================================================
-       SEARCH
-       ========================================================= */
 
-    let searchController = null;
+    /* ========================================================
+       SEARCH
+       ======================================================== */
+
+    let searchController =
+        null;
 
 
     function openSearchSection() {
 
-        const section =
-            $("#platform-search-results");
-
-
-        if (!section) {
-            return;
-        }
-
-
-        section.hidden = false;
-
-
-        requestAnimationFrame(() => {
-
-            section.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        });
+        showSection(
+            "#platform-search-results"
+        );
     }
 
 
@@ -1556,11 +2208,16 @@ const url = new URL(
 
         if (!value) {
 
+            ASEM.state.searchResults =
+                [];
+
+
             renderSearchResults(
                 [],
                 "Global Search",
                 "Enter a search term to search the ASEM platform."
             );
+
 
             openSearchSection();
 
@@ -1573,6 +2230,11 @@ const url = new URL(
 
 
         if (!grid) {
+
+            console.warn(
+                "ASEM: #searchGrid was not found."
+            );
+
             return;
         }
 
@@ -1612,7 +2274,8 @@ const url = new URL(
 
         params.set(
             "type",
-            ASEM.state.searchType
+            ASEM.state.searchType ||
+            "all"
         );
 
 
@@ -1620,7 +2283,15 @@ const url = new URL(
 
             const data =
                 await apiRequest(
-                    `${ASEM.api.search}?${params.toString()}`
+
+                    `${getAPIURL(
+                        ASEM.api.endpoints.search
+                    )}?${params.toString()}`,
+
+                    {
+                        signal:
+                            searchController.signal
+                    }
                 );
 
 
@@ -1641,9 +2312,11 @@ const url = new URL(
         } catch (error) {
 
             if (
+                error &&
                 error.name ===
                 "AbortError"
             ) {
+
                 return;
             }
 
@@ -1657,7 +2330,7 @@ const url = new URL(
             showError(
                 grid,
                 "Search unavailable",
-                error.message,
+                getErrorMessage(error),
                 "search"
             );
 
@@ -1680,7 +2353,14 @@ const url = new URL(
 
 
         if (!grid) {
+
             return;
+        }
+
+
+        if (!Array.isArray(results)) {
+
+            results = [];
         }
 
 
@@ -1700,12 +2380,68 @@ const url = new URL(
             results
                 .map(buildSearchCard)
                 .join("");
+
+
+        grid.setAttribute(
+            "aria-busy",
+            "false"
+        );
     }
 
 
-    /* =========================================================
+    /* ========================================================
+       LOCAL SEARCH FILTER
+       ======================================================== */
+
+    function searchLocal(
+        value
+    ) {
+
+        const query =
+            String(value || "")
+                .toLowerCase()
+                .trim();
+
+
+        /*
+         * Only filter already-rendered result cards.
+         *
+         * We do not call the API on every keystroke.
+         * The API search runs when Enter is pressed.
+         */
+
+        const cards =
+            $$(
+                ".platform-result-card, " +
+                ".project-card"
+            );
+
+
+        cards.forEach(
+            card => {
+
+                if (!query) {
+
+                    card.hidden =
+                        false;
+
+                    return;
+                }
+
+
+                card.hidden =
+                    !card.textContent
+                        .toLowerCase()
+                        .includes(query);
+
+            }
+        );
+    }
+
+
+    /* ========================================================
        SEARCH INPUT
-       ========================================================= */
+       ======================================================== */
 
     function initializeSearch() {
 
@@ -1714,6 +2450,7 @@ const url = new URL(
 
 
         if (!input) {
+
             return;
         }
 
@@ -1738,7 +2475,13 @@ const url = new URL(
                     event.key === "Escape"
                 ) {
 
-                    input.value = "";
+                    event.preventDefault();
+
+                    input.value =
+                        "";
+
+                    ASEM.state.searchQuery =
+                        "";
 
                     renderSearchResults(
                         [],
@@ -1746,6 +2489,7 @@ const url = new URL(
                         "Enter a search term to search the platform."
                     );
                 }
+
             }
         );
 
@@ -1762,43 +2506,9 @@ const url = new URL(
     }
 
 
-    function searchLocal(
-        value
-    ) {
-
-        const query =
-            String(value || "")
-                .toLowerCase()
-                .trim();
-
-
-        const cards =
-            $$(
-                ".platform-result-card, .project-card"
-            );
-
-
-        cards.forEach(card => {
-
-            if (!query) {
-
-                card.hidden = false;
-
-                return;
-            }
-
-
-            card.hidden =
-                !card.textContent
-                    .toLowerCase()
-                    .includes(query);
-        });
-    }
-
-
-    /* =========================================================
+    /* ========================================================
        THEME
-       ========================================================= */
+       ======================================================== */
 
     function applyTheme(
         theme
@@ -1839,6 +2549,14 @@ const url = new URL(
                     ? "Switch to light mode"
                     : "Switch to dark mode"
             );
+
+
+            button.setAttribute(
+                "title",
+                dark
+                    ? "Switch to light mode"
+                    : "Switch to dark mode"
+            );
         }
 
 
@@ -1849,13 +2567,19 @@ const url = new URL(
                 finalTheme
             );
 
-        } catch (_) {}
+        } catch (_) {
+
+            /*
+             * Ignore storage errors.
+             */
+        }
     }
 
 
     function initializeTheme() {
 
-        let saved = null;
+        let saved =
+            null;
 
 
         try {
@@ -1873,7 +2597,9 @@ const url = new URL(
             saved === "light"
         ) {
 
-            applyTheme(saved);
+            applyTheme(
+                saved
+            );
 
             return;
         }
@@ -1911,28 +2637,38 @@ const url = new URL(
     }
 
 
-    /* =========================================================
-       LANGUAGES
-       ========================================================= */
+    /* ========================================================
+       LANGUAGE
+       ======================================================== */
 
     function applyLanguage(
         language
     ) {
 
         const supported = [
+
             "auto",
+
             "ar",
+
             "en",
+
             "fr",
+
             "de",
+
             "it",
+
             "es",
+
             "nl"
         ];
 
 
         const selected =
-            supported.includes(language)
+            supported.includes(
+                language
+            )
                 ? language
                 : "auto";
 
@@ -1995,7 +2731,9 @@ const url = new URL(
             new CustomEvent(
                 "asem:languagechange",
                 {
+
                     detail: {
+
                         language:
                             finalLanguage
                     }
@@ -2012,6 +2750,7 @@ const url = new URL(
 
 
         if (!select) {
+
             return;
         }
 
@@ -2037,7 +2776,8 @@ const url = new URL(
             )
             .some(
                 option =>
-                    option.value === saved
+                    option.value ===
+                    saved
             );
 
 
@@ -2065,9 +2805,53 @@ const url = new URL(
     }
 
 
-    /* =========================================================
+    /* ========================================================
+       ERROR HANDLING
+       ======================================================== */
+
+    function getErrorMessage(
+        error
+    ) {
+
+        if (
+            !error
+        ) {
+
+            return "An unknown error occurred.";
+        }
+
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            return "The request was cancelled.";
+        }
+
+
+        if (
+            error instanceof TypeError
+        ) {
+
+            return (
+                "Unable to connect to the API. " +
+                "Check that the backend is running and that " +
+                "CORS is configured correctly."
+            );
+        }
+
+
+        return (
+            error.message ||
+            "An unexpected error occurred."
+        );
+    }
+
+
+    /* ========================================================
        ACTIONS
-       ========================================================= */
+       ======================================================== */
 
     const actions = {
 
@@ -2089,12 +2873,15 @@ const url = new URL(
                 const section =
                     $("#projects");
 
+
                 if (section) {
 
                     section.scrollIntoView({
-                        behavior: "smooth"
+                        behavior: "smooth",
+                        block: "start"
                     });
                 }
+
 
                 await loadProjects();
             },
@@ -2106,10 +2893,12 @@ const url = new URL(
                 const section =
                     $("#portfolio");
 
+
                 if (section) {
 
                     section.scrollIntoView({
-                        behavior: "smooth"
+                        behavior: "smooth",
+                        block: "start"
                     });
                 }
             },
@@ -2121,10 +2910,12 @@ const url = new URL(
                 const section =
                     $("#services");
 
+
                 if (section) {
 
                     section.scrollIntoView({
-                        behavior: "smooth"
+                        behavior: "smooth",
+                        block: "start"
                     });
                 }
             },
@@ -2152,11 +2943,13 @@ const url = new URL(
                 const input =
                     $("#searchBox");
 
+
+                openSearchSection();
+
+
                 if (input) {
 
                     input.focus();
-
-                    openSearchSection();
                 }
             },
 
@@ -2177,22 +2970,28 @@ const url = new URL(
             () => {
 
                 window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
+
+                    top:
+                        0,
+
+                    behavior:
+                        "smooth"
                 });
             }
+
     };
 
 
-    /* =========================================================
+    /* ========================================================
        ACTION ROUTING
-       ========================================================= */
+       ======================================================== */
 
     function getAction(
         element
     ) {
 
         if (!element) {
+
             return null;
         }
 
@@ -2250,11 +3049,19 @@ const url = new URL(
     }
 
 
+    /* ========================================================
+       CLICK ROUTER
+       ======================================================== */
+
     function initializeClickRouter() {
 
         document.addEventListener(
             "click",
             event => {
+
+                /*
+                 * Retry buttons.
+                 */
 
                 const retry =
                     event.target.closest(
@@ -2263,6 +3070,9 @@ const url = new URL(
 
 
                 if (retry) {
+
+                    event.preventDefault();
+
 
                     const action =
                         retry.dataset.retry;
@@ -2273,14 +3083,17 @@ const url = new URL(
                         "function"
                     ) {
 
-                        event.preventDefault();
-
                         actions[action]();
                     }
+
 
                     return;
                 }
 
+
+                /*
+                 * Theme toggle.
+                 */
 
                 const themeButton =
                     event.target.closest(
@@ -2298,16 +3111,26 @@ const url = new URL(
                 }
 
 
+                /*
+                 * Platform action buttons.
+                 */
+
                 const actionElement =
                     event.target.closest(
-                        "[data-platform-action], [data-section]"
+                        "[data-platform-action], " +
+                        "[data-section]"
                     );
 
 
                 if (!actionElement) {
+
                     return;
                 }
 
+
+                /*
+                 * Do not interfere with modifier-clicks.
+                 */
 
                 if (
                     event.ctrlKey ||
@@ -2315,6 +3138,7 @@ const url = new URL(
                     event.shiftKey ||
                     event.altKey
                 ) {
+
                     return;
                 }
 
@@ -2334,83 +3158,15 @@ const url = new URL(
 
                     actions[action]();
                 }
+
             }
         );
     }
 
-          /* =========================================================
-                    document.addEventListener
-             ========================================================= *
 
-                       "click",
-                      event => {
-
-        const mapButton =
-            event.target.closest(
-                "[data-open-map]"
-            );
-
-
-        if (mapButton) {
-
-            event.preventDefault();
-
-            const card =
-                mapButton.closest(
-                    ".platform-result-card"
-                );
-
-
-            if (card) {
-                openMapForElement(card);
-            }
-
-            });
-          }
-
-               return;
-
-
-        const card =
-            event.target.closest(
-                ".platform-result-card"
-            );
-
-
-        if (!card) {
-            return;
-        }
-
-
-      
-        /*
-         * Don't intercept a nested
-         * button/link.
-         */
-        if (!card) {
-            return;
-        }
-
-
-        /*
-         * Don't intercept a nested
-         * button/link.
-         */
-        if (
-            event.target.closest(
-                "button, a"
-            )
-        ) {
-            return;
-        }
-
-
-        openMapForElement(card);
-    }
-);
-    /* =========================================================
-       KEYBOARD
-       ========================================================= */
+    /* ========================================================
+       KEYBOARD ACCESSIBILITY
+       ======================================================== */
 
     function initializeKeyboard() {
 
@@ -2422,17 +3178,35 @@ const url = new URL(
                     event.key !== "Enter" &&
                     event.key !== " "
                 ) {
+
                     return;
                 }
 
 
                 const element =
                     event.target.closest(
-                        "[data-platform-action], [data-section]"
+                        "[data-platform-action], " +
+                        "[data-section]"
                     );
 
 
                 if (!element) {
+
+                    return;
+                }
+
+
+                /*
+                 * Native buttons already support Enter/Space.
+                 * Avoid triggering them twice.
+                 */
+
+                if (
+                    element.tagName
+                        .toLowerCase() ===
+                    "button"
+                ) {
+
                     return;
                 }
 
@@ -2441,7 +3215,9 @@ const url = new URL(
 
 
                 const action =
-                    getAction(element);
+                    getAction(
+                        element
+                    );
 
 
                 if (
@@ -2451,14 +3227,15 @@ const url = new URL(
 
                     actions[action]();
                 }
+
             }
         );
     }
 
 
-    /* =========================================================
-       NAVIGATION
-       ========================================================= */
+    /* ========================================================
+       HASH NAVIGATION
+       ======================================================== */
 
     function initializeNavigation() {
 
@@ -2473,6 +3250,7 @@ const url = new URL(
 
 
                 if (!link) {
+
                     return;
                 }
 
@@ -2487,6 +3265,7 @@ const url = new URL(
                     !href ||
                     href === "#"
                 ) {
+
                     return;
                 }
 
@@ -2496,10 +3275,13 @@ const url = new URL(
 
 
                 const section =
-                    document.getElementById(id);
+                    document.getElementById(
+                        id
+                    );
 
 
                 if (!section) {
+
                     return;
                 }
 
@@ -2508,249 +3290,9 @@ const url = new URL(
 
 
                 section.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
-        );
-    }
 
+                    behavior:
+                        "smooth",
 
-    /* =========================================================
-       SCROLL TOP
-       ========================================================= */
-
-    function initializeScrollTop() {
-
-        const button =
-            $("#scrollTop");
-
-
-        if (!button) {
-            return;
-        }
-
-
-        function update() {
-
-            button.hidden =
-                window.scrollY <= 400;
-        }
-
-
-        window.addEventListener(
-            "scroll",
-            update,
-            {
-                passive: true
-            }
-        );
-
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-            }
-        );
-
-
-        update();
-    }
-
-
-    /* =========================================================
-       HIDE RESULT SECTIONS
-       ========================================================= */
-
-    function initializeResultSections() {
-
-        [
-            "tourism-section",
-            "businesses-section",
-            "products-section"
-        ]
-        .forEach(id => {
-
-            const element =
-                document.getElementById(id);
-
-
-            if (element) {
-
-                element.hidden =
-                    true;
-            }
-        });
-    }
-
-
-    /* =========================================================
-       INITIAL LOAD
-       ========================================================= */
-
-    async function preloadPlatformData() {
-
-        /*
-         * Load data silently.
-         *
-         * This makes GPS nearby search work
-         * without requiring /api/nearby.
-         */
-
-        const requests = [
-
-            apiRequest(
-                ASEM.api.tourism
-            ),
-
-            apiRequest(
-                ASEM.api.businesses
-            ),
-
-            apiRequest(
-                ASEM.api.products
-            ),
-
-            apiRequest(
-                ASEM.api.projects
-            )
-        ];
-
-
-        try {
-
-            const [
-                tourism,
-                businesses,
-                products,
-                projects
-            ] = await Promise.all(
-                requests
-            );
-
-
-            ASEM.state.datasets.tourism =
-                normalizeArray(tourism);
-
-
-            ASEM.state.datasets.businesses =
-                normalizeArray(businesses);
-
-
-            ASEM.state.datasets.products =
-                normalizeArray(products);
-
-
-            ASEM.state.datasets.projects =
-                normalizeArray(projects);
-
-
-            console.info(
-                "ASEM platform data loaded.",
-                {
-                    tourism:
-                        ASEM.state.datasets.tourism.length,
-
-                    businesses:
-                        ASEM.state.datasets.businesses.length,
-
-                    products:
-                        ASEM.state.datasets.products.length,
-
-                    projects:
-                        ASEM.state.datasets.projects.length
-                }
-            );
-
-        } catch (error) {
-
-            console.warn(
-                "ASEM preload:",
-                error
-            );
-        }
-    }
-
-
-    /* =========================================================
-       GLOBAL API
-       ========================================================= */
-
-                 if (typeof window !== "undefined") {
-    window.ASEM = ASEM;
-    window.loadTourism = loadTourism;
-    window.loadBusinesses = loadBusinesses;
-    window.loadProducts = loadProducts;
-    window.loadProjects = loadProjects;
-    window.performASEMSearch = performSearch;
-    window.enableASEMGPS = enableGPS;
-    window.searchASEMNearby = enableGPS;
-    window.toggleASEMTheme = toggleTheme;
-}                
-
-
-
-    /* =========================================================
-       START
-       ========================================================= */
-
-    async function initializeApplication() {
-
-        initializeTheme();
-
-        initializeLanguage();
-
-        initializeSearch();
-
-        initializeClickRouter();
-
-        initializeKeyboard();
-
-        initializeNavigation();
-
-        initializeScrollTop();
-
-        initializeResultSections();
-
-        updateLocationUI();
-
-
-        console.info(
-            "ASEM Global Platform initialized."
-        );
-
-
-        /*
-         * Database/API preload.
-         */
-
-
-
-
-
-
-
-if (
-        document.readyState ===
-        "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            initializeApplication,
-            {
-                once: true
-            }
-        );
-
-    } else {
-
-        initializeApplication();
-    }
-
-}
+                    block:
+                        "start"
