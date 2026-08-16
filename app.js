@@ -3,94 +3,140 @@
 /*
  * ============================================================
  * ASEM DIGITAL SOLUTIONS
- * GLOBAL PLATFORM CONTROLLER v2
+ * GLOBAL PLATFORM CONTROLLER
  * ============================================================
  *
- * Features
- * ------------------------------------------------------------
+ * HTML compatible controller
+ *
  * ✓ Tourism
  * ✓ Businesses
  * ✓ Products
  * ✓ Projects
- * ✓ Unified platform search
- * ✓ GPS / browser geolocation
- * ✓ Nearby businesses/products/tourism
- * ✓ Search by text
- * ✓ Search by category
- * ✓ Search by location
- * ✓ Search by GPS coordinates
- * ✓ Theme
- * ✓ Language
- * ✓ Scroll-to-top
- * ✓ Legacy data-section support
- * ✓ New data-platform-action support
+ * ✓ Portfolio
+ * ✓ Services
+ * ✓ Contact
+ * ✓ Global Search
+ * ✓ GPS
+ * ✓ Nearby filtering
+ * ✓ Dark / Light mode
+ * ✓ All HTML languages
  * ✓ Keyboard accessibility
- * ✓ Dynamic API cards
- * ✓ Event delegation
- * ✓ Retry handling
- * ✓ API timeout handling
- * ✓ Abort previous searches
- * ✓ Safe HTML escaping
+ * ✓ API loading
+ * ✓ PostgreSQL backend
+ * ✓ Safe HTML rendering
  *
- * Backend expected:
- *
- * GET /api/tourism
- * GET /api/businesses
- * GET /api/products
- * GET /api/projects
- * GET /api/search?q=...
- * GET /api/nearby?lat=...&lng=...&radius=...
+ * Payment systems intentionally disabled for testing phase.
  * ============================================================
  */
 
 (() => {
+
     "use strict";
-
-    const ASEM = {
-
-        api: {
-            tourism: "/api/tourism",
-            businesses: "/api/businesses",
-            products: "/api/products",
-            projects: "/api/projects",
-            search: "/api/search",
-            nearby: "/api/nearby"
-        },
-
-        storage: {
-            theme: "asem-theme",
-            language: "asem-language",
-            location: "asem-location"
-        },
-
-        timeout: 15000,
-
-        gps: {
-            enabled: false,
-            latitude: null,
-            longitude: null,
-            accuracy: null
-        },
-
-        state: {
-            searchQuery: "",
-            searchType: "all",
-            searchResults: [],
-            locationEnabled: false,
-            searching: false
-        }
-    };
 
 
     /* =========================================================
-       DOM
+       CONFIGURATION
        ========================================================= */
 
-    const $ = (selector, root = document) =>
-        root.querySelector(selector);
+    `${ASEM.api.nearby}?${params}`
 
-    const $$ = (selector, root = document) =>
-        Array.from(root.querySelectorAll(selector));
+
+    /* =========================================================
+       CONFIGURATION
+       ========================================================= */
+
+    const ASEM = {
+
+    api: {
+
+        tourism: "/api/tourism",
+
+        businesses: "/api/businesses",
+
+        products: "/api/products",
+
+        projects: "/api/projects",
+
+        search: "/api/search",
+
+        nearby: "/api/nearby"
+    },
+
+
+    storage: {
+
+        theme: "asem-theme",
+
+        language: "asem-language",
+
+        location: "asem-location"
+    },
+
+
+    timeout: 15000,
+
+
+    gps: {
+
+        enabled: false,
+
+        latitude: null,
+
+        longitude: null,
+
+        accuracy: null
+    },
+
+
+    state: {
+
+        searchQuery: "",
+
+        searchType: "all",
+
+        searchResults: [],
+
+        locationEnabled: false,
+
+        searching: false,
+
+        datasets: {
+
+            tourism: [],
+
+            businesses: [],
+
+            products: [],
+
+            projects: []
+        }
+    }
+};
+
+    
+
+
+       
+
+     
+
+
+    /* =========================================================
+       DOM HELPERS
+       ========================================================= */
+
+    const $ = (
+        selector,
+        root = document
+    ) => root.querySelector(selector);
+
+
+    const $$ = (
+        selector,
+        root = document
+    ) => Array.from(
+        root.querySelectorAll(selector)
+    );
 
 
     /* =========================================================
@@ -123,17 +169,19 @@
 
         try {
 
-            const url =
-                new URL(
-                    String(value),
-                    window.location.origin
-                );
+            const base =
+    typeof window !== "undefined"
+        ? window.location.origin
+        : "http://localhost";
+
+const url = new URL(
+    String(value),
+    base
+);
 
             if (
-                ![
-                    "http:",
-                    "https:"
-                ].includes(url.protocol)
+                url.protocol !== "http:" &&
+                url.protocol !== "https:"
             ) {
                 return "";
             }
@@ -148,7 +196,7 @@
 
 
     /* =========================================================
-       ARRAY NORMALIZATION
+       NORMALIZE API DATA
        ========================================================= */
 
     function normalizeArray(data) {
@@ -164,7 +212,7 @@
             return [];
         }
 
-        const keys = [
+        const possibleKeys = [
             "data",
             "items",
             "results",
@@ -174,9 +222,14 @@
             "projects"
         ];
 
-        for (const key of keys) {
+        for (
+            const key of possibleKeys
+        ) {
 
-            if (Array.isArray(data[key])) {
+            if (
+                Array.isArray(data[key])
+            ) {
+
                 return data[key];
             }
         }
@@ -186,7 +239,7 @@
 
 
     /* =========================================================
-       API
+       API REQUEST
        ========================================================= */
 
     async function apiRequest(
@@ -197,12 +250,14 @@
         const controller =
             new AbortController();
 
+
         const timeout =
             setTimeout(
                 () => controller.abort(),
                 options.timeout ||
                 ASEM.timeout
             );
+
 
         try {
 
@@ -221,15 +276,17 @@
                             ...(options.headers || {})
                         },
 
-                        body:
-                            options.body,
+                        credentials:
+                            "same-origin",
 
-                        credentials: "same-origin",
-
-                        cache: "no-store",
+                        cache:
+                            "no-store",
 
                         signal:
-                            controller.signal
+                            controller.signal,
+
+                        body:
+                            options.body
                     }
                 );
 
@@ -238,6 +295,7 @@
 
                 let message =
                     `HTTP ${response.status}`;
+
 
                 try {
 
@@ -250,6 +308,7 @@
                     }
 
                 } catch (_) {}
+
 
                 throw new Error(message);
             }
@@ -265,131 +324,12 @@
 
 
     /* =========================================================
-       SECTIONS
-       ========================================================= */
-
-    function findSection(type) {
-
-        const names = {
-            tourism: [
-                "tourism-section",
-                "tourism-results"
-            ],
-
-            businesses: [
-                "businesses-section",
-                "businesses-results"
-            ],
-
-            products: [
-                "products-section",
-                "products-results"
-            ],
-
-            projects: [
-                "projects"
-            ],
-
-            portfolio: [
-                "portfolio"
-            ],
-
-            services: [
-                "services"
-            ],
-
-            contact: [
-                "contact"
-            ],
-
-            about: [
-                "about"
-            ],
-
-            search: [
-                "search-results",
-                "platform-search-results"
-            ]
-        };
-
-
-        for (
-            const id of
-            names[type] || []
-        ) {
-
-            const element =
-                document.getElementById(id);
-
-            if (element) {
-                return element;
-            }
-        }
-
-        return null;
-    }
-
-
-    function openPageSection(id) {
-
-        const section =
-            document.getElementById(id);
-
-        if (!section) {
-            console.warn(
-                "ASEM: section not found:",
-                id
-            );
-
-            return false;
-        }
-
-
-        section.hidden = false;
-
-        section.removeAttribute(
-            "aria-hidden"
-        );
-
-
-        requestAnimationFrame(() => {
-
-            section.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        });
-
-        return true;
-    }
-
-
-    function hideSection(id) {
-
-        const section =
-            document.getElementById(id);
-
-        if (!section) {
-            return;
-        }
-
-        section.hidden = true;
-
-        section.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-    }
-
-
-    /* =========================================================
        UI STATES
        ========================================================= */
 
     function showLoading(
         grid,
-        message = "Loading..."
+        title
     ) {
 
         if (!grid) {
@@ -397,19 +337,23 @@
         }
 
         grid.innerHTML = `
+
             <article class="card platform-state">
+
                 <div
-                    class="loading-spinner"
+                    class="platform-card-icon"
                     aria-hidden="true">
+                    ⏳
                 </div>
 
                 <h3>
-                    ${escapeHTML(message)}
+                    ${escapeHTML(title)}
                 </h3>
 
                 <p>
                     Please wait...
                 </p>
+
             </article>
         `;
     }
@@ -426,6 +370,7 @@
         }
 
         grid.innerHTML = `
+
             <article class="card platform-state">
 
                 <div
@@ -451,7 +396,7 @@
         grid,
         title,
         message,
-        retry
+        retryAction = ""
     ) {
 
         if (!grid) {
@@ -459,6 +404,7 @@
         }
 
         grid.innerHTML = `
+
             <article class="card platform-state">
 
                 <div
@@ -475,12 +421,20 @@
                     ${escapeHTML(message)}
                 </p>
 
-                <button
-                    type="button"
-                    class="btn"
-                    data-retry="${escapeHTML(retry)}">
-                    Retry
-                </button>
+                ${
+                    retryAction
+                    ? `
+                        <button
+                            type="button"
+                            class="btn"
+                            data-retry="${escapeHTML(
+                                retryAction
+                            )}">
+                            Retry
+                        </button>
+                    `
+                    : ""
+                }
 
             </article>
         `;
@@ -500,50 +454,59 @@
         const url =
             safeURL(image);
 
+
         if (!url) {
 
             return `
+
                 <div
                     class="platform-card-icon"
                     aria-hidden="true">
+
                     ${fallback}
+
                 </div>
             `;
         }
 
+
         return `
+
             <img
                 src="${escapeHTML(url)}"
                 alt="${escapeHTML(name)}"
                 loading="lazy"
                 class="platform-card-image"
                 referrerpolicy="no-referrer"
-                onerror="this.remove()"
+                onerror="this.style.display='none';"
             >
         `;
     }
 
 
     /* =========================================================
-       CARDS
+       TOURISM CARD
        ========================================================= */
 
     function buildTourismCard(item) {
 
         const name =
             item.name ||
-            item.title ||
             "Tourism Destination";
+
 
         const description =
             item.description ||
             "Discover this destination.";
 
+
         const category =
             item.category ||
             "Tourism";
 
+
         return `
+
             <article
                 class="card platform-result-card"
                 tabindex="0"
@@ -551,8 +514,7 @@
                 data-id="${escapeHTML(item.id || "")}">
 
                 ${imageHTML(
-                    item.image ||
-                    item.photo,
+                    item.image,
                     name,
                     "🏝️"
                 )}
@@ -575,44 +537,68 @@
                         item.location
                         ? `
                             <small>
-                                📍 ${escapeHTML(item.location)}
+                                📍 ${escapeHTML(
+                                    item.location
+                                )}
                             </small>
                         `
                         : ""
                     }
 
                     ${
-                        item.rating !== undefined
+                        item.latitude !== null &&
+                        item.longitude !== null
+                        ? `
+                            <small>
+                                🌐 GPS available
+                            </small>
+                        `
+                        : ""
+                    }
+
+                    ${
+                        item.rating !== undefined &&
+                        item.rating !== null
                         ? `
                             <div class="platform-rating">
-                                ⭐ ${escapeHTML(item.rating)}
+                                ⭐ ${escapeHTML(
+                                    item.rating
+                                )}
                             </div>
                         `
                         : ""
                     }
 
                 </div>
+
             </article>
         `;
     }
 
 
+    /* =========================================================
+       BUSINESS CARD
+       ========================================================= */
+
     function buildBusinessCard(item) {
 
         const name =
             item.name ||
-            item.title ||
             "Global Business";
+
 
         const description =
             item.description ||
             "Discover this business.";
 
+
         const category =
             item.category ||
             "Business";
 
+
         return `
+
             <article
                 class="card platform-result-card"
                 tabindex="0"
@@ -621,8 +607,7 @@
 
                 ${imageHTML(
                     item.logo ||
-                    item.cover_image ||
-                    item.image,
+                    item.cover_image,
                     name,
                     "🌍"
                 )}
@@ -645,8 +630,23 @@
                         item.address
                         ? `
                             <small>
-                                📍 ${escapeHTML(item.address)}
+                                📍 ${escapeHTML(
+                                    item.address
+                                )}
                             </small>
+                        `
+                        : ""
+                    }
+
+                    ${
+                        item.rating !== undefined &&
+                        item.rating !== null
+                        ? `
+                            <div class="platform-rating">
+                                ⭐ ${escapeHTML(
+                                    item.rating
+                                )}
+                            </div>
                         `
                         : ""
                     }
@@ -657,44 +657,42 @@
                             <small>
                                 📏 ${escapeHTML(
                                     item.distance
-                                )} km
+                                )} km away
                             </small>
                         `
                         : ""
                     }
 
-                    ${
-                        item.rating !== undefined
-                        ? `
-                            <div class="platform-rating">
-                                ⭐ ${escapeHTML(item.rating)}
-                            </div>
-                        `
-                        : ""
-                    }
-
                 </div>
+
             </article>
         `;
     }
 
 
+    /* =========================================================
+       PRODUCT CARD
+       ========================================================= */
+
     function buildProductCard(item) {
 
         const name =
             item.name ||
-            item.title ||
             "Global Product";
+
 
         const description =
             item.description ||
             "Discover this product.";
 
+
         const category =
             item.category ||
             "Product";
 
+
         return `
+
             <article
                 class="card platform-result-card"
                 tabindex="0"
@@ -722,7 +720,8 @@
                     </p>
 
                     ${
-                        item.price !== undefined
+                        item.price !== undefined &&
+                        item.price !== null
                         ? `
                             <strong class="product-price">
                                 ${escapeHTML(
@@ -743,30 +742,37 @@
                             <small>
                                 📏 ${escapeHTML(
                                     item.distance
-                                )} km
+                                )} km away
                             </small>
                         `
                         : ""
                     }
 
                 </div>
+
             </article>
         `;
     }
 
 
+    /* =========================================================
+       PROJECT CARD
+       ========================================================= */
+
     function buildProjectCard(item) {
 
         const name =
             item.name ||
-            item.title ||
             "ASEM Project";
+
 
         const description =
             item.description ||
             "ASEM Digital Solutions project.";
 
+
         return `
+
             <article
                 class="card project-card"
                 tabindex="0"
@@ -792,19 +798,22 @@
     }
 
 
+    /* =========================================================
+       SEARCH CARD
+       ========================================================= */
+
     function buildSearchCard(item) {
 
         const type =
             String(
-                item.type ||
-                item.entity_type ||
-                ""
+                item.type || ""
             ).toLowerCase();
 
 
         if (type === "tourism") {
             return buildTourismCard(item);
         }
+
 
         if (
             type === "business" ||
@@ -813,6 +822,7 @@
             return buildBusinessCard(item);
         }
 
+
         if (
             type === "product" ||
             type === "products"
@@ -820,17 +830,15 @@
             return buildProductCard(item);
         }
 
+
         if (type === "project") {
             return buildProjectCard(item);
         }
 
 
         return `
-            <article
-                class="card platform-result-card"
-                tabindex="0"
-                data-type="${escapeHTML(type)}"
-                data-id="${escapeHTML(item.id || "")}">
+
+            <article class="card platform-result-card">
 
                 <div class="platform-card-icon">
                     🌐
@@ -839,7 +847,6 @@
                 <h3>
                     ${escapeHTML(
                         item.name ||
-                        item.title ||
                         "Platform Result"
                     )}
                 </h3>
@@ -849,10 +856,15 @@
                         item.description || ""
                     )}
                 </p>
+
             </article>
         `;
     }
 
+
+    /* =========================================================
+       RENDER
+       ========================================================= */
 
     function renderGrid(
         grid,
@@ -866,6 +878,7 @@
             return;
         }
 
+
         if (!items.length) {
 
             showEmpty(
@@ -877,6 +890,7 @@
             return;
         }
 
+
         grid.innerHTML =
             items
                 .map(builder)
@@ -885,31 +899,22 @@
 
 
     /* =========================================================
-       LOADERS
+       LOAD TOURISM
        ========================================================= */
 
-    async function loadEntity(
-        type,
-        gridID,
-        sectionIDs,
-        builder,
-        title
-    ) {
+    async function loadTourism() {
 
         const grid =
-            getGrid(gridID);
+            $("#tourismGrid");
+
+
+        const section =
+            $("#tourism-section");
+
 
         if (!grid) {
             return;
         }
-
-
-        const section =
-            sectionIDs
-                .map(id =>
-                    document.getElementById(id)
-                )
-                .find(Boolean);
 
 
         if (section) {
@@ -919,7 +924,7 @@
 
         showLoading(
             grid,
-            `Loading ${title}...`
+            "Loading Global Tourism..."
         );
 
 
@@ -927,19 +932,24 @@
 
             const data =
                 await apiRequest(
-                    ASEM.api[type]
+                    ASEM.api.tourism
                 );
+
 
             const items =
                 normalizeArray(data);
 
 
+            ASEM.state.datasets.tourism =
+                items;
+
+
             renderGrid(
                 grid,
                 items,
-                builder,
-                `No ${type} yet`,
-                `${title} will appear here.`
+                buildTourismCard,
+                "No Tourism Results",
+                "Tourism destinations will appear here."
             );
 
 
@@ -951,80 +961,195 @@
                 });
             }
 
-
         } catch (error) {
 
             console.error(
-                `ASEM ${type}:`,
+                "Tourism error:",
                 error
             );
 
 
             showError(
                 grid,
-                `${title} unavailable`,
-                `The ${title.toLowerCase()} service could not be reached.`,
-                type
+                "Tourism unavailable",
+                error.message,
+                "tourism"
             );
         }
     }
 
 
-    function getGrid(id) {
-
-        return document.getElementById(id);
-    }
-
-
-    async function loadTourism() {
-
-        return loadEntity(
-            "tourism",
-            "tourismGrid",
-            [
-                "tourism-section",
-                "tourism-results"
-            ],
-            buildTourismCard,
-            "Global Tourism"
-        );
-    }
-
+    /* =========================================================
+       LOAD BUSINESSES
+       ========================================================= */
 
     async function loadBusinesses() {
 
-        return loadEntity(
-            "businesses",
-            "businessesGrid",
-            [
-                "businesses-section",
-                "businesses-results"
-            ],
-            buildBusinessCard,
-            "Global Businesses"
+        const grid =
+            $("#businessesGrid");
+
+
+        const section =
+            $("#businesses-section");
+
+
+        if (!grid) {
+            return;
+        }
+
+
+        if (section) {
+            section.hidden = false;
+        }
+
+
+        showLoading(
+            grid,
+            "Loading Global Businesses..."
         );
+
+
+        try {
+
+            const data =
+                await apiRequest(
+                    ASEM.api.businesses
+                );
+
+
+            const items =
+                normalizeArray(data);
+
+
+            ASEM.state.datasets.businesses =
+                items;
+
+
+            renderGrid(
+                grid,
+                items,
+                buildBusinessCard,
+                "No Businesses",
+                "Businesses will appear here."
+            );
+
+
+            if (section) {
+
+                section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Businesses error:",
+                error
+            );
+
+
+            showError(
+                grid,
+                "Businesses unavailable",
+                error.message,
+                "businesses"
+            );
+        }
     }
 
+
+    /* =========================================================
+       LOAD PRODUCTS
+       ========================================================= */
 
     async function loadProducts() {
 
-        return loadEntity(
-            "products",
-            "productsGrid",
-            [
-                "products-section",
-                "products-results"
-            ],
-            buildProductCard,
-            "Global Products"
+        const grid =
+            $("#productsGrid");
+
+
+        const section =
+            $("#products-section");
+
+
+        if (!grid) {
+            return;
+        }
+
+
+        if (section) {
+            section.hidden = false;
+        }
+
+
+        showLoading(
+            grid,
+            "Loading Global Products..."
         );
+
+
+        try {
+
+            const data =
+                await apiRequest(
+                    ASEM.api.products
+                );
+
+
+            const items =
+                normalizeArray(data);
+
+
+            ASEM.state.datasets.products =
+                items;
+
+
+            renderGrid(
+                grid,
+                items,
+                buildProductCard,
+                "No Products",
+                "Products will appear here."
+            );
+
+
+            if (section) {
+
+                section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Products error:",
+                error
+            );
+
+
+            showError(
+                grid,
+                "Products unavailable",
+                error.message,
+                "products"
+            );
+        }
     }
 
+
+    /* =========================================================
+       LOAD PROJECTS
+       ========================================================= */
 
     async function loadProjects() {
 
         const grid =
-            getGrid("projectsGrid");
+            $("#projectsGrid");
+
 
         if (!grid) {
             return;
@@ -1044,37 +1169,46 @@
                     ASEM.api.projects
                 );
 
+
             const items =
                 normalizeArray(data);
+
+
+            ASEM.state.datasets.projects =
+                items;
 
 
             renderGrid(
                 grid,
                 items,
                 buildProjectCard,
-                "ASEM Projects",
-                "Projects will appear here."
+                "No Projects",
+                "ASEM projects will appear here."
             );
 
         } catch (error) {
 
-            console.warn(
-                "ASEM Projects:",
+            console.error(
+                "Projects error:",
                 error
             );
 
-            showEmpty(
+
+            showError(
                 grid,
-                "ASEM Projects",
-                "The project showcase will appear here."
-            );
+                "Projects unavailable",
+                error.message,
+                "projects"
+            )
         }
     }
 
 
-    /* =========================================================
-       GPS
-       ========================================================= */
+    
+
+          /* =========================================================
+            GPS
+           ========================================================= */
 
     function updateLocationUI() {
 
@@ -1375,13 +1509,36 @@
         }
     }
 
-
     /* =========================================================
-       UNIFIED SEARCH
+       SEARCH
        ========================================================= */
 
-    let searchController =
-        null;
+    let searchController = null;
+
+
+    function openSearchSection() {
+
+        const section =
+            $("#platform-search-results");
+
+
+        if (!section) {
+            return;
+        }
+
+
+        section.hidden = false;
+
+
+        requestAnimationFrame(() => {
+
+            section.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+    }
 
 
     async function performSearch(
@@ -1397,41 +1554,30 @@
             value;
 
 
-        if (
-            !value &&
-            !ASEM.state.locationEnabled
-        ) {
+        if (!value) {
+
+            renderSearchResults(
+                [],
+                "Global Search",
+                "Enter a search term to search the ASEM platform."
+            );
+
+            openSearchSection();
 
             return;
         }
 
 
         const grid =
-            $(
-                "#searchGrid"
-            ) ||
-            $(
-                "#platformSearchGrid"
-            );
+            $("#searchGrid");
 
 
         if (!grid) {
-
-            console.warn(
-                "ASEM: search grid not found."
-            );
-
             return;
         }
 
 
-        const section =
-            findSection("search");
-
-
-        if (section) {
-            section.hidden = false;
-        }
+        openSearchSection();
 
 
         if (searchController) {
@@ -1458,47 +1604,23 @@
             new URLSearchParams();
 
 
-        if (value) {
-            params.set(
-                "q",
-                value
-            );
-        }
+        params.set(
+            "q",
+            value
+        );
 
 
         params.set(
             "type",
-            ASEM.state.searchType ||
-            "all"
+            ASEM.state.searchType
         );
-
-
-        if (
-            ASEM.gps.latitude !== null &&
-            ASEM.gps.longitude !== null
-        ) {
-
-            params.set(
-                "lat",
-                ASEM.gps.latitude
-            );
-
-            params.set(
-                "lng",
-                ASEM.gps.longitude
-            );
-        }
 
 
         try {
 
             const data =
                 await apiRequest(
-                    `${ASEM.api.search}?${params}`,
-                    {
-                        signal:
-                            searchController.signal
-                    }
+                    `${ASEM.api.search}?${params.toString()}`
                 );
 
 
@@ -1512,19 +1634,9 @@
 
             renderSearchResults(
                 results,
-                "No results",
+                "No Results",
                 `No results found for "${value}".`
             );
-
-
-            if (section) {
-
-                section.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
-
 
         } catch (error) {
 
@@ -1545,7 +1657,7 @@
             showError(
                 grid,
                 "Search unavailable",
-                "The platform search service could not be reached.",
+                error.message,
                 "search"
             );
 
@@ -1564,12 +1676,7 @@
     ) {
 
         const grid =
-            $(
-                "#searchGrid"
-            ) ||
-            $(
-                "#platformSearchGrid"
-            );
+            $("#searchGrid");
 
 
         if (!grid) {
@@ -1597,103 +1704,67 @@
 
 
     /* =========================================================
-       SEARCH INPUTS
+       SEARCH INPUT
        ========================================================= */
 
     function initializeSearch() {
 
-        const inputs =
-            $$(
-                "#searchBox, [data-platform-search]"
-            );
+        const input =
+            $("#searchBox");
 
 
-        inputs.forEach(input => {
-
-            input.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-
-                        event.preventDefault();
-
-                        performSearch(
-                            input.value
-                        );
-                    }
-
-
-                    if (
-                        event.key ===
-                        "Escape"
-                    ) {
-
-                        input.value = "";
-
-                        ASEM.state
-                            .searchQuery =
-                            "";
-
-                        searchLocal("");
-                    }
-                }
-            );
-
-
-            input.addEventListener(
-                "input",
-                event => {
-
-                    const value =
-                        event.target.value
-                            .trim();
-
-
-                    /*
-                     * Local filtering is immediate.
-                     * Server search is executed on Enter
-                     * to avoid hammering the database.
-                     */
-
-                    searchLocal(value);
-                }
-            );
-        });
-
-
-        const searchButton =
-            $(
-                "[data-platform-search-submit]"
-            );
-
-
-        if (searchButton) {
-
-            searchButton.addEventListener(
-                "click",
-                () => {
-
-                    const input =
-                        $(
-                            "#searchBox, [data-platform-search]"
-                        );
-
-                    if (input) {
-                        performSearch(
-                            input.value
-                        );
-                    }
-                }
-            );
+        if (!input) {
+            return;
         }
+
+
+        input.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    performSearch(
+                        input.value
+                    );
+                }
+
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    input.value = "";
+
+                    renderSearchResults(
+                        [],
+                        "Global Search",
+                        "Enter a search term to search the platform."
+                    );
+                }
+            }
+        );
+
+
+        input.addEventListener(
+            "input",
+            event => {
+
+                searchLocal(
+                    event.target.value
+                );
+            }
+        );
     }
 
 
-    function searchLocal(value) {
+    function searchLocal(
+        value
+    ) {
 
         const query =
             String(value || "")
@@ -1711,54 +1782,17 @@
 
             if (!query) {
 
-                card.hidden =
-                    false;
+                card.hidden = false;
 
                 return;
             }
 
 
-            const text =
-                card.textContent
-                    .toLowerCase();
-
-
             card.hidden =
-                !text.includes(query);
+                !card.textContent
+                    .toLowerCase()
+                    .includes(query);
         });
-    }
-
-
-    /* =========================================================
-       SEARCH FILTER
-       ========================================================= */
-
-    function setSearchType(type) {
-
-        ASEM.state.searchType =
-            [
-                "all",
-                "tourism",
-                "businesses",
-                "products",
-                "projects"
-            ].includes(type)
-                ? type
-                : "all";
-
-
-        const queryInput =
-            $(
-                "#searchBox"
-            );
-
-
-        if (queryInput) {
-
-            performSearch(
-                queryInput.value
-            );
-        }
     }
 
 
@@ -1766,9 +1800,11 @@
        THEME
        ========================================================= */
 
-    function applyTheme(theme) {
+    function applyTheme(
+        theme
+    ) {
 
-        const valid =
+        const finalTheme =
             theme === "dark"
                 ? "dark"
                 : "light";
@@ -1777,20 +1813,18 @@
         document.documentElement
             .setAttribute(
                 "data-theme",
-                valid
+                finalTheme
             );
 
 
         const button =
-            $(
-                "#themeToggle"
-            );
+            $("#themeToggle");
 
 
         if (button) {
 
             const dark =
-                valid === "dark";
+                finalTheme === "dark";
 
 
             button.textContent =
@@ -1812,7 +1846,7 @@
 
             localStorage.setItem(
                 ASEM.storage.theme,
-                valid
+                finalTheme
             );
 
         } catch (_) {}
@@ -1845,7 +1879,7 @@
         }
 
 
-        const dark =
+        const prefersDark =
             window.matchMedia &&
             window.matchMedia(
                 "(prefers-color-scheme: dark)"
@@ -1853,7 +1887,7 @@
 
 
         applyTheme(
-            dark
+            prefersDark
                 ? "dark"
                 : "light"
         );
@@ -1878,7 +1912,7 @@
 
 
     /* =========================================================
-       LANGUAGE
+       LANGUAGES
        ========================================================= */
 
     function applyLanguage(
@@ -1887,10 +1921,13 @@
 
         const supported = [
             "auto",
+            "ar",
             "en",
             "fr",
-            "ar",
-            "ja"
+            "de",
+            "it",
+            "es",
+            "nl"
         ];
 
 
@@ -1905,8 +1942,7 @@
 
 
         if (
-            selected ===
-            "auto"
+            selected === "auto"
         ) {
 
             finalLanguage =
@@ -1918,15 +1954,11 @@
 
 
             if (
-                ![
-                    "en",
-                    "fr",
-                    "ar",
-                    "ja"
-                ].includes(
+                !supported.includes(
                     finalLanguage
                 )
             ) {
+
                 finalLanguage =
                     "en";
             }
@@ -1937,6 +1969,15 @@
             .setAttribute(
                 "lang",
                 finalLanguage
+            );
+
+
+        document.documentElement
+            .setAttribute(
+                "dir",
+                finalLanguage === "ar"
+                    ? "rtl"
+                    : "ltr"
             );
 
 
@@ -1967,9 +2008,7 @@
     function initializeLanguage() {
 
         const select =
-            $(
-                "#langSwitch"
-            );
+            $("#langSwitch");
 
 
         if (!select) {
@@ -1992,18 +2031,18 @@
         } catch (_) {}
 
 
-        const exists =
+        const optionExists =
             Array.from(
                 select.options
             )
             .some(
                 option =>
-                    option.value ===
-                    saved
+                    option.value === saved
             );
 
 
-        if (exists) {
+        if (optionExists) {
+
             select.value =
                 saved;
         }
@@ -2027,10 +2066,129 @@
 
 
     /* =========================================================
+       ACTIONS
+       ========================================================= */
+
+    const actions = {
+
+        tourism:
+            loadTourism,
+
+
+        businesses:
+            loadBusinesses,
+
+
+        products:
+            loadProducts,
+
+
+        projects:
+            async () => {
+
+                const section =
+                    $("#projects");
+
+                if (section) {
+
+                    section.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
+
+                await loadProjects();
+            },
+
+
+        portfolio:
+            () => {
+
+                const section =
+                    $("#portfolio");
+
+                if (section) {
+
+                    section.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
+            },
+
+
+        services:
+            () => {
+
+                const section =
+                    $("#services");
+
+                if (section) {
+
+                    section.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
+            },
+
+
+        contact:
+            () => {
+
+                window.location.href =
+                    "contact.html";
+            },
+
+
+        about:
+            () => {
+
+                window.location.href =
+                    "about.html";
+            },
+
+
+        search:
+            () => {
+
+                const input =
+                    $("#searchBox");
+
+                if (input) {
+
+                    input.focus();
+
+                    openSearchSection();
+                }
+            },
+
+
+        location:
+            enableGPS,
+
+
+        gps:
+            enableGPS,
+
+
+        nearby:
+            enableGPS,
+
+
+        top:
+            () => {
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
+    };
+
+
+    /* =========================================================
        ACTION ROUTING
        ========================================================= */
 
-    function actionFromElement(
+    function getAction(
         element
     ) {
 
@@ -2054,26 +2212,13 @@
             element.dataset.section
         ) {
 
-            const legacy =
-                element.dataset.section;
-
-
             const map = {
-
-                "tourism-results":
-                    "tourism",
 
                 "tourism-section":
                     "tourism",
 
-                "businesses-results":
-                    "businesses",
-
                 "businesses-section":
                     "businesses",
-
-                "products-results":
-                    "products",
 
                 "products-section":
                     "products",
@@ -2095,102 +2240,15 @@
             };
 
 
-            return map[legacy] ||
-                null;
+            return map[
+                element.dataset.section
+            ] || null;
         }
 
 
         return null;
     }
 
-
-    const actions = {
-
-        tourism:
-            loadTourism,
-
-        businesses:
-            loadBusinesses,
-
-        products:
-            loadProducts,
-
-        projects:
-            async () => {
-
-                openPageSection(
-                    "projects"
-                );
-
-                await loadProjects();
-            },
-
-        portfolio:
-            () => {
-
-                openPageSection(
-                    "portfolio"
-                );
-            },
-
-        services:
-            () => {
-
-                openPageSection(
-                    "services"
-                );
-            },
-
-        contact:
-            () => {
-
-                window.location.href =
-                    "contact.html";
-            },
-
-        about:
-            () => {
-
-                window.location.href =
-                    "about.html";
-            },
-
-        search:
-            () => {
-
-                const input =
-                    $(
-                        "#searchBox"
-                    );
-
-                if (input) {
-                    input.focus();
-                }
-            },
-
-        location:
-            enableGPS,
-
-        gps:
-            enableGPS,
-
-        nearby:
-            searchNearby,
-
-        top:
-            () => {
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-            }
-    };
-
-
-    /* =========================================================
-       CLICK ROUTER
-       ========================================================= */
 
     function initializeClickRouter() {
 
@@ -2211,9 +2269,8 @@
 
 
                     if (
-                        typeof actions[
-                            action
-                        ] === "function"
+                        typeof actions[action] ===
+                        "function"
                     ) {
 
                         event.preventDefault();
@@ -2225,68 +2282,132 @@
                 }
 
 
+                const themeButton =
+                    event.target.closest(
+                        "#themeToggle"
+                    );
+
+
+                if (themeButton) {
+
+                    event.preventDefault();
+
+                    toggleTheme();
+
+                    return;
+                }
+
+
                 const actionElement =
                     event.target.closest(
                         "[data-platform-action], [data-section]"
                     );
 
 
-                if (
-                    actionElement
-                ) {
-
-                    const action =
-                        actionFromElement(
-                            actionElement
-                        );
-
-
-                    const handler =
-                        actions[action];
-
-
-                    if (
-                        typeof handler ===
-                        "function"
-                    ) {
-
-                        /*
-                         * Do not interfere with
-                         * modifier-click navigation.
-                         */
-
-                        if (
-                            event.ctrlKey ||
-                            event.metaKey ||
-                            event.shiftKey ||
-                            event.altKey
-                        ) {
-                            return;
-                        }
-
-
-                        event.preventDefault();
-
-                        handler();
-
-                        return;
-                    }
+                if (!actionElement) {
+                    return;
                 }
 
 
                 if (
-                    event.target.closest(
-                        "#themeToggle"
-                    )
+                    event.ctrlKey ||
+                    event.metaKey ||
+                    event.shiftKey ||
+                    event.altKey
+                ) {
+                    return;
+                }
+
+
+                const action =
+                    getAction(
+                        actionElement
+                    );
+
+
+                if (
+                    typeof actions[action] ===
+                    "function"
                 ) {
 
-                    toggleTheme();
+                    event.preventDefault();
+
+                    actions[action]();
                 }
             }
         );
     }
 
+          /* =========================================================
+                    document.addEventListener
+             ========================================================= *
 
+                       "click",
+                      event => {
+
+        const mapButton =
+            event.target.closest(
+                "[data-open-map]"
+            );
+
+
+        if (mapButton) {
+
+            event.preventDefault();
+
+            const card =
+                mapButton.closest(
+                    ".platform-result-card"
+                );
+
+
+            if (card) {
+                openMapForElement(card);
+            }
+
+            });
+          }
+
+               return;
+
+
+        const card =
+            event.target.closest(
+                ".platform-result-card"
+            );
+
+
+        if (!card) {
+            return;
+        }
+
+
+      
+        /*
+         * Don't intercept a nested
+         * button/link.
+         */
+        if (!card) {
+            return;
+        }
+
+
+        /*
+         * Don't intercept a nested
+         * button/link.
+         */
+        if (
+            event.target.closest(
+                "button, a"
+            )
+        ) {
+            return;
+        }
+
+
+        openMapForElement(card);
+    }
+);
     /* =========================================================
        KEYBOARD
        ========================================================= */
@@ -2318,15 +2439,16 @@
 
                 event.preventDefault();
 
+
                 const action =
-                    actionFromElement(
-                        element
-                    );
+                    getAction(element);
 
 
                 if (
-                    actions[action]
+                    typeof actions[action] ===
+                    "function"
                 ) {
+
                     actions[action]();
                 }
             }
@@ -2373,14 +2495,22 @@
                     href.substring(1);
 
 
-                if (
-                    document.getElementById(id)
-                ) {
+                const section =
+                    document.getElementById(id);
 
-                    event.preventDefault();
 
-                    openPageSection(id);
+                if (!section) {
+                    return;
                 }
+
+
+                event.preventDefault();
+
+
+                section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
             }
         );
     }
@@ -2393,9 +2523,7 @@
     function initializeScrollTop() {
 
         const button =
-            $(
-                "#scrollTop"
-            );
+            $("#scrollTop");
 
 
         if (!button) {
@@ -2403,14 +2531,11 @@
         }
 
 
-        const update =
-            () => {
+        function update() {
 
-                button.classList.toggle(
-                    "visible",
-                    window.scrollY > 400
-                );
-            };
+            button.hidden =
+                window.scrollY <= 400;
+        }
 
 
         window.addEventListener(
@@ -2439,63 +2564,116 @@
 
 
     /* =========================================================
-       RESULT VISIBILITY
+       HIDE RESULT SECTIONS
        ========================================================= */
 
     function initializeResultSections() {
 
         [
             "tourism-section",
-            "tourism-results",
             "businesses-section",
-            "businesses-results",
-            "products-section",
-            "products-results"
+            "products-section"
         ]
-        .forEach(hideSection);
+        .forEach(id => {
+
+            const element =
+                document.getElementById(id);
+
+
+            if (element) {
+
+                element.hidden =
+                    true;
+            }
+        });
     }
 
 
     /* =========================================================
-       ACCESSIBILITY
+       INITIAL LOAD
        ========================================================= */
 
-    function initializeAccessibility() {
+    async function preloadPlatformData() {
 
-        $$(
-            "[data-platform-action], [data-section]"
-        )
-        .forEach(element => {
+        /*
+         * Load data silently.
+         *
+         * This makes GPS nearby search work
+         * without requiring /api/nearby.
+         */
 
-            const tag =
-                element.tagName
-                    .toLowerCase();
+        const requests = [
+
+            apiRequest(
+                ASEM.api.tourism
+            ),
+
+            apiRequest(
+                ASEM.api.businesses
+            ),
+
+            apiRequest(
+                ASEM.api.products
+            ),
+
+            apiRequest(
+                ASEM.api.projects
+            )
+        ];
 
 
-            if (
-                tag !== "button" &&
-                tag !== "a"
-            ) {
+        try {
 
-                element.setAttribute(
-                    "role",
-                    "button"
-                );
+            const [
+                tourism,
+                businesses,
+                products,
+                projects
+            ] = await Promise.all(
+                requests
+            );
 
 
-                if (
-                    !element.hasAttribute(
-                        "tabindex"
-                    )
-                ) {
+            ASEM.state.datasets.tourism =
+                normalizeArray(tourism);
 
-                    element.setAttribute(
-                        "tabindex",
-                        "0"
-                    );
+
+            ASEM.state.datasets.businesses =
+                normalizeArray(businesses);
+
+
+            ASEM.state.datasets.products =
+                normalizeArray(products);
+
+
+            ASEM.state.datasets.projects =
+                normalizeArray(projects);
+
+
+            console.info(
+                "ASEM platform data loaded.",
+                {
+                    tourism:
+                        ASEM.state.datasets.tourism.length,
+
+                    businesses:
+                        ASEM.state.datasets.businesses.length,
+
+                    products:
+                        ASEM.state.datasets.products.length,
+
+                    projects:
+                        ASEM.state.datasets.projects.length
                 }
-            }
-        });
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "ASEM preload:",
+                error
+            );
+        }
     }
 
 
@@ -2503,42 +2681,25 @@
        GLOBAL API
        ========================================================= */
 
-    window.ASEM =
-        ASEM;
+                 if (typeof window !== "undefined") {
+    window.ASEM = ASEM;
+    window.loadTourism = loadTourism;
+    window.loadBusinesses = loadBusinesses;
+    window.loadProducts = loadProducts;
+    window.loadProjects = loadProjects;
+    window.performASEMSearch = performSearch;
+    window.enableASEMGPS = enableGPS;
+    window.searchASEMNearby = enableGPS;
+    window.toggleASEMTheme = toggleTheme;
+}                
 
-    window.loadTourism =
-        loadTourism;
-
-    window.loadBusinesses =
-        loadBusinesses;
-
-    window.loadProducts =
-        loadProducts;
-
-    window.loadProjects =
-        loadProjects;
-
-    window.performASEMSearch =
-        performSearch;
-
-    window.enableASEMGPS =
-        enableGPS;
-
-    window.searchASEMNearby =
-        searchNearby;
-
-    window.toggleASEMTheme =
-        toggleTheme;
-
-    window.openPageSection =
-        openPageSection;
 
 
     /* =========================================================
        START
        ========================================================= */
 
-    function initializeApplication() {
+    async function initializeApplication() {
 
         initializeTheme();
 
@@ -2554,20 +2715,27 @@
 
         initializeScrollTop();
 
-        initializeAccessibility();
-
         initializeResultSections();
 
         updateLocationUI();
 
 
         console.info(
-            "ASEM Global Platform v2 initialized."
+            "ASEM Global Platform initialized."
         );
-    }
 
 
-    if (
+        /*
+         * Database/API preload.
+         */
+
+
+
+
+
+
+
+if (
         document.readyState ===
         "loading"
     ) {
@@ -2585,4 +2753,4 @@
         initializeApplication();
     }
 
-})();
+}
