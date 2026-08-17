@@ -1,11 +1,25 @@
 const CONFIG = {
     api: {
-        real: "http://localhost:5050/api",
-        location: "http://localhost:5050/api/location"
+        development: "http://localhost:5050/api",
+
+        // Replace this with the actual public HTTPS API URL
+        // when the API server is deployed.
+        production: "https://YOUR-PRODUCTION-API-DOMAIN/api"
     },
 
     timeout: 15000
 };
+
+const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
+CONFIG.api.real = isLocalhost
+    ? CONFIG.api.development
+    : CONFIG.api.production;
+
+CONFIG.api.location =
+    `${CONFIG.api.real}/location`;
 
 export { CONFIG };
 export default CONFIG;

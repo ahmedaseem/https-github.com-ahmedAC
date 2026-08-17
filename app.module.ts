@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CacheModule } from './cache.module.js';
-import { RedisModule } from './redis.module.js';
-import { TestApiModule } from './test-api/test-api.module.js';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
-    RedisModule,
-    CacheModule,
-    TestApiModule,
+    LocationModule,
+    // باقي الموديولات
   ],
 })
 export class AppModule {}
