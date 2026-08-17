@@ -1016,10 +1016,6 @@ async function loadBusinesses() {
 
     } catch (error) {
 
-        console.error(
-            "ASEM Businesses:",
-            error
-        );
 
         setGridError(
             grid,
