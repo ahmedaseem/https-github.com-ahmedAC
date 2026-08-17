@@ -1,10 +1,11 @@
-const API_CONFIG = {
-    local: {
-        baseURL: "http://localhost:3001/api"
+const CONFIG = {
+    api: {
+        real: "http://localhost:5050/api",
+        location: "http://localhost:5050/api/location"
     },
-    production: {
-        baseURL: "/api"
-    }
+
+    timeout: 15000
 };
 
-export default API_CONFIG;
+export { CONFIG };
+export default CONFIG;
