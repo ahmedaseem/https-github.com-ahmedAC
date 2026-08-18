@@ -2,17 +2,24 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api');
+    app.setGlobalPrefix('api');
 
-  const port = Number(process.env.PORT) || 5050;
+    app.enableCors({
+        origin: [
+            'https://gov-server.github.io'
+        ],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        credentials: false
+    });
 
-  await app.listen(port, '0.0.0.0');
+    const port = Number(process.env.PORT) || 5050;
 
-  console.log(
-    `ASEM API running on http://0.0.0.0:${port}`
-  );
+    await app.listen(port, '0.0.0.0');
+
+    console.log(`ASEM API running on http://0.0.0.0:${port}`);
 }
 
 bootstrap();
