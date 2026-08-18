@@ -1,9 +1,6 @@
 const CONFIG = {
     api: {
         development: "http://localhost:5050/api",
-
-        // Replace this with the actual public HTTPS API URL
-        // when the API server is deployed.
         production: "https://YOUR-PRODUCTION-API-DOMAIN/api"
     },
 

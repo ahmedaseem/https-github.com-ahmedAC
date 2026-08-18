@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { LocationModule } from './location/location.module';
+import { TestApiModule } from './test-api/test-api.module.js';
+import { LocationModule } from './location/location.module.js';
 
 @Module({
   imports: [
+    TestApiModule,
     LocationModule,
-    // باقي الموديولات
   ],
 })
 export class AppModule {}

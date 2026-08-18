@@ -1,17 +1,17 @@
 ASEM Global Platform
 
-Tourism Model
+Product Model
 """
 
 from app.extensions import db
 
 
-class Tourism(db.Model):
+class Product(db.Model):
     """
-    Represents a tourism attraction or activity.
+    Represents a product or service offered on the platform.
     """
 
-    __tablename__ = "tourism"
+    __tablename__ = "products"
 
 
     id = db.Column(
@@ -20,9 +20,9 @@ class Tourism(db.Model):
     )
 
 
-    city_id = db.Column(
+    business_id = db.Column(
         db.Integer,
-        db.ForeignKey("cities.id"),
+        db.ForeignKey("businesses.id"),
         nullable=False,
         index=True
     )
@@ -46,9 +46,15 @@ class Tourism(db.Model):
     )
 
 
-    address = db.Column(
-        db.String(255),
+    price = db.Column(
+        db.Float,
         nullable=True
+    )
+
+
+    currency = db.Column(
+        db.String(20),
+        default="USD"
     )
 
 
@@ -64,27 +70,16 @@ class Tourism(db.Model):
     )
 
 
-    latitude = db.Column(
-        db.Float,
-        nullable=True
+    stock = db.Column(
+        db.Integer,
+        default=0
     )
 
 
-    longitude = db.Column(
-        db.Float,
-        nullable=True
-    )
-
-
-    opening_hours = db.Column(
-        db.String(255),
-        nullable=True
-    )
-
-
-    ticket_price = db.Column(
-        db.Float,
-        nullable=True
+    sku = db.Column(
+        db.String(100),
+        nullable=True,
+        unique=True
     )
 
 
@@ -94,9 +89,9 @@ class Tourism(db.Model):
     )
 
 
-    verified = db.Column(
+    is_available = db.Column(
         db.Boolean,
-        default=False,
+        default=True,
         nullable=False
     )
 
@@ -121,11 +116,11 @@ class Tourism(db.Model):
     )
 
 
-    # العلاقة مع المدينة
-    city = db.relationship(
-        "City",
+    # العلاقة مع الأعمال
+    business = db.relationship(
+        "Business",
         backref=db.backref(
-            "tourism_places",
+            "products",
             lazy=True,
             cascade="all, delete-orphan"
         )
@@ -133,25 +128,24 @@ class Tourism(db.Model):
 
 
     def __repr__(self):
-        return f"<Tourism {self.name}>"
+        return f"<Product {self.name}>"
 
 
     def to_dict(self):
         return {
             "id": self.id,
-            "city_id": self.city_id,
+            "business_id": self.business_id,
             "name": self.name,
             "category": self.category,
             "description": self.description,
-            "address": self.address,
+            "price": self.price,
+            "currency": self.currency,
             "image": self.image,
             "gallery": self.gallery,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "opening_hours": self.opening_hours,
-            "ticket_price": self.ticket_price,
+            "stock": self.stock,
+            "sku": self.sku,
             "rating": self.rating,
-            "verified": self.verified,
+            "is_available": self.is_available,
             "is_active": self.is_active,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None
@@ -159,17 +153,17 @@ class Tourism(db.Model):
 from app.extensions import db
 
 
-class Tourism(db.Model):
-    __tablename__ = "tourism"
+class Product(db.Model):
+    __tablename__ = "products"
 
     id = db.Column(
         db.Integer,
         primary_key=True
     )
 
-    city_id = db.Column(
+    business_id = db.Column(
         db.Integer,
-        db.ForeignKey("cities.id"),
+        db.ForeignKey("businesses.id"),
         nullable=False,
         index=True
     )
@@ -184,36 +178,27 @@ class Tourism(db.Model):
         nullable=False
     )
 
-    description = db.Column(
-        db.Text
+    description = db.Column(db.Text)
+
+    price = db.Column(db.Float)
+
+    currency = db.Column(
+        db.String(20),
+        default="USD"
     )
 
-    address = db.Column(
-        db.String(255)
+    image = db.Column(db.String(255))
+
+    gallery = db.Column(db.JSON)
+
+    stock = db.Column(
+        db.Integer,
+        default=0
     )
 
-    image = db.Column(
-        db.String(255)
-    )
-
-    gallery = db.Column(
-        db.JSON
-    )
-
-    latitude = db.Column(
-        db.Float
-    )
-
-    longitude = db.Column(
-        db.Float
-    )
-
-    opening_hours = db.Column(
-        db.String(255)
-    )
-
-    ticket_price = db.Column(
-        db.Float
+    sku = db.Column(
+        db.String(100),
+        unique=True
     )
 
     rating = db.Column(
@@ -221,9 +206,9 @@ class Tourism(db.Model):
         default=0
     )
 
-    verified = db.Column(
+    is_available = db.Column(
         db.Boolean,
-        default=False,
+        default=True,
         nullable=False
     )
 
@@ -244,34 +229,30 @@ class Tourism(db.Model):
         onupdate=db.func.now()
     )
 
-
-    # العلاقة مع المدينة
-    city = db.relationship(
-        "City",
-        back_populates="tourism_places"
+    # العلاقة مع النشاط التجاري
+    business = db.relationship(
+        "Business",
+        back_populates="products"
     )
 
-
     def __repr__(self):
-        return f"<Tourism {self.name}>"
-
+        return f"<Product {self.name}>"
 
     def to_dict(self):
         return {
             "id": self.id,
-            "city_id": self.city_id,
+            "business_id": self.business_id,
             "name": self.name,
             "category": self.category,
             "description": self.description,
-            "address": self.address,
+            "price": self.price,
+            "currency": self.currency,
             "image": self.image,
             "gallery": self.gallery,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "opening_hours": self.opening_hours,
-            "ticket_price": self.ticket_price,
+            "stock": self.stock,
+            "sku": self.sku,
             "rating": self.rating,
-            "verified": self.verified,
+            "is_available": self.is_available,
             "is_active": self.is_active,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None
