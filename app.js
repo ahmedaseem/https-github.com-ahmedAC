@@ -3195,20 +3195,4 @@ if (
 
 
 
-/* ========================================================
-   APPLICATION STARTUP
-======================================================== */
 
-if (document.readyState === "loading") {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initialize,
-        { once: true }
-    );
-
-} else {
-
-    initialize();
-
-}

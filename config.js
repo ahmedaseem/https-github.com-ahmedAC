@@ -1,7 +1,7 @@
 const CONFIG = {
     api: {
         development: "http://localhost:5050/api",
-        production: "https://YOUR-PRODUCTION-API-DOMAIN/api"
+        production: `${window.location.origin}/api`
     },
 
     timeout: 15000
