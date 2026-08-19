@@ -1016,6 +1016,10 @@ async function loadBusinesses() {
 
     } catch (error) {
 
+        console.error(
+            "ASEM Businesses:",
+            error
+        );
 
         setGridError(
             grid,
@@ -1131,7 +1135,7 @@ async function loadProjects() {
 
 
 /* ========================================================
-   PORTFOLIO
+   PORTFOLIO / WORK
 ======================================================== */
 
 function openPortfolio() {
@@ -1174,6 +1178,144 @@ function openPortfolio() {
             </article>
         `;
     }
+}
+
+
+/*
+ * "Work" is kept as a separate action because the
+ * frontend icon may use data-platform-action="work".
+ * It intentionally opens the existing portfolio section.
+ */
+function openWork() {
+
+    return openPortfolio();
+}
+
+
+/* ========================================================
+   RESTAURANTS
+======================================================== */
+
+/*
+ * Restaurants are currently represented by the
+ * businesses API. This keeps the existing backend
+ * unchanged while allowing a Restaurants icon to work.
+ */
+function openRestaurants() {
+
+    return handleSection(
+        "businesses-section",
+        loadBusinesses
+    );
+}
+
+
+/* ========================================================
+   AI
+======================================================== */
+
+/*
+ * The previous initializeAI() function only contained
+ * comments, so the AI action had no actual frontend
+ * behavior.
+ *
+ * The function below first looks for a dedicated AI
+ * section. It supports both:
+ *
+ *     #ai
+ *     #ai-section
+ *
+ * If neither exists, it looks for a dedicated AI page.
+ */
+function openAI() {
+
+    const aiSection =
+        document.getElementById("ai") ||
+        document.getElementById("ai-section");
+
+    if (aiSection) {
+
+        aiSection.hidden = false;
+
+        aiSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "asem:ai:open"
+            )
+        );
+
+        return true;
+    }
+
+    /*
+     * If another AI module is installed on the page,
+     * give it an event to initialize/open itself.
+     */
+    const aiEvent =
+        new CustomEvent(
+            "asem:ai:open"
+        );
+
+    document.dispatchEvent(
+        aiEvent
+    );
+
+    /*
+     * If an AI page exists in the project,
+     * this provides a final navigation fallback.
+     */
+    const aiLink =
+        document.querySelector(
+            'a[href="ai.html"], a[href="./ai.html"]'
+        );
+
+    if (aiLink) {
+
+        openExternalPage(
+            aiLink.getAttribute("href")
+        );
+
+        return true;
+    }
+
+    console.warn(
+        "ASEM: AI section or AI page not found"
+    );
+
+    return false;
+}
+
+
+function initializeAI() {
+
+    /*
+     * The AI runtime can listen for this event:
+     *
+     * document.addEventListener(
+     *     "asem:ai:open",
+     *     () => {
+     *         // open AI interface
+     *     }
+     * );
+     *
+     * No external AI service is called here.
+     * This keeps the frontend stable until the
+     * actual AI interface/runtime is connected.
+     */
+
+    document.addEventListener(
+        "asem:ai:open",
+        () => {
+
+            console.log(
+                "ASEM AI: open request received"
+            );
+        }
+    );
 }
 
 
@@ -1521,10 +1663,38 @@ const actions = {
             loadBusinesses
         ),
 
+    /*
+     * Restaurant aliases.
+     * Restaurants currently use the businesses backend.
+     */
+    restaurant: () =>
+        openRestaurants(),
+
+    restaurants: () =>
+        openRestaurants(),
+
+    /*
+     * Product aliases.
+     */
+    product: () =>
+        handleSection(
+            "products-section",
+            loadProducts
+        ),
+
     products: () =>
         handleSection(
             "products-section",
             loadProducts
+        ),
+
+    /*
+     * Project aliases.
+     */
+    project: () =>
+        handleSection(
+            "projects",
+            loadProjects
         ),
 
     projects: () =>
@@ -1533,8 +1703,26 @@ const actions = {
             loadProjects
         ),
 
+    /*
+     * Work / Portfolio aliases.
+     */
+    work: () =>
+        openWork(),
+
     portfolio: () =>
         openPortfolio(),
+
+    /*
+     * AI aliases.
+     */
+    ai: () =>
+        openAI(),
+
+    assistant: () =>
+        openAI(),
+
+    artificialintelligence: () =>
+        openAI(),
 
     services: () =>
         openPageSection(
@@ -2663,6 +2851,19 @@ function initializeActionRouter() {
                 return;
             }
 
+            /*
+             * Normalize action names so small differences
+             * in the HTML do not break the buttons.
+             */
+            action =
+                String(action)
+                    .trim()
+                    .toLowerCase()
+                    .replace(
+                        /[\s_-]+/g,
+                        ""
+                    );
+
             const handler =
                 actions[action];
 
@@ -2800,9 +3001,22 @@ function initializeKeyboard() {
                 return;
             }
 
-            const action =
+            let action =
                 element.dataset
                     .platformAction;
+
+            if (!action) {
+                return;
+            }
+
+            action =
+                String(action)
+                    .trim()
+                    .toLowerCase()
+                    .replace(
+                        /[\s_-]+/g,
+                        ""
+                    );
 
             const handler =
                 actions[action];
@@ -3074,22 +3288,6 @@ function initializeRetryActions() {
 
 
 /* ========================================================
-   AI MODULE
-======================================================== */
-
-function initializeAI() {
-    // AI initialization
-    // AI conversation runtime
-    // AI memory
-    // AI model selection
-    // AI streaming
-    // AI tools
-    // AI search
-    // AI nearby integration
-}
-
-
-/* ========================================================
    GLOBAL COMPATIBILITY API
 ======================================================== */
 
@@ -3113,6 +3311,15 @@ window.loadProjects =
 
 window.openPortfolio =
     openPortfolio;
+
+window.openWork =
+    openWork;
+
+window.openRestaurants =
+    openRestaurants;
+
+window.openAI =
+    openAI;
 
 window.openPageSection =
     openPageSection;

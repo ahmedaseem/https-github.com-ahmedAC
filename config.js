@@ -1,18 +1,23 @@
+const CONFIG = {
+    api: {
+        development: "http://localhost:3001/api",
+        production: "/api"
+    },
+
+    timeout: 15000
+};
+
 const isLocalhost =
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1";
 
-const API_BASE_URL = isLocalhost
-    ? "http://localhost:5050/api"
-    : "https://api.asem.digital/api";
+CONFIG.api.real =
+    isLocalhost
+        ? CONFIG.api.development
+        : CONFIG.api.production;
 
-const CONFIG = {
-    api: {
-        base: API_BASE_URL,
-        location: `${API_BASE_URL}/location`,
-    },
-    timeout: 15000,
-};
+CONFIG.api.location =
+    `${CONFIG.api.real}/location`;
 
 export { CONFIG };
 export default CONFIG;
