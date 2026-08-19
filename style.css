@@ -1629,3 +1629,32 @@ body {
     max-width: 180px;
     object-fit: contain;
 }
+
+/* TEMP SVG ICON DIAGNOSTIC */
+.platform-icon {
+    display: grid !important;
+    place-items: center !important;
+    width: 64px !important;
+    height: 64px !important;
+    min-width: 64px !important;
+    min-height: 64px !important;
+    color: #000 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.platform-svg-icon {
+    display: block !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2.5 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow: visible !important;
+}
