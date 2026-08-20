@@ -1184,8 +1184,8 @@ function openPortfolio() {
 /*
  * "Work" is kept as a separate action because the
  * frontend icon may use data-platform-action="work".
- * It intentionally opens the existing portfolio section.
- */
+* It intentionally opens the existing portfolio section.
+ */ 
 function openWork() {
 
     return openPortfolio();
