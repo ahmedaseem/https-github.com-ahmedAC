@@ -2814,17 +2814,24 @@ function initializeActionRouter() {
 
     console.log("ASEM ACTION ROUTER STARTED");
 
+    if (window.__ASEM_ACTION_ROUTER_INITIALIZED__) {
+        console.warn(
+            "ASEM: action router already initialized"
+        );
+        return;
+    }
+
+    window.__ASEM_ACTION_ROUTER_INITIALIZED__ = true;
+
     document.addEventListener(
         "click",
         event => {
 
-            const target =
-                event.target;
+            const target = event.target;
 
             if (
                 !target ||
-                typeof target.closest !==
-                    "function"
+                typeof target.closest !== "function"
             ) {
                 return;
             }
@@ -2837,19 +2844,15 @@ function initializeActionRouter() {
             if (!element) {
                 return;
             }
-console.log(
-    "ASEM CLICK:",
-    element.dataset.platformAction ||
-    element.dataset.gps
-);
-            event.preventDefault();
 
             let action =
-                element.dataset.platformAction;
+                element.getAttribute(
+                    "data-platform-action"
+                );
 
             if (
                 !action &&
-                element.matches("[data-gps]")
+                element.hasAttribute("data-gps")
             ) {
                 action = "gps";
             }
@@ -2858,10 +2861,6 @@ console.log(
                 return;
             }
 
-            /*
-             * Normalize action names so small differences
-             * in the HTML do not break the buttons.
-             */
             action =
                 String(action)
                     .trim()
@@ -2871,20 +2870,25 @@ console.log(
                         ""
                     );
 
+            console.log(
+                "ASEM ACTION:",
+                action,
+                element
+            );
+
             const handler =
                 actions[action];
 
             if (
-                typeof handler !==
-                "function"
+                typeof handler !== "function"
             ) {
-
                 console.warn(
-                    `ASEM: unknown action ${action}`
+                    `ASEM: unknown action "${action}"`
                 );
-
                 return;
             }
+
+            event.preventDefault();
 
             try {
 
@@ -2894,14 +2898,14 @@ console.log(
                 if (
                     result &&
                     typeof result.then ===
-                    "function"
+                        "function"
                 ) {
 
                     result.catch(
                         error => {
 
                             console.error(
-                                "ASEM action:",
+                                `ASEM action "${action}" failed:`,
                                 error
                             );
                         }
