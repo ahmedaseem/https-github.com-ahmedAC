@@ -2812,6 +2812,8 @@ function initializeScrollTop() {
 
 function initializeActionRouter() {
 
+    console.log("ASEM ACTION ROUTER STARTED");
+
     document.addEventListener(
         "click",
         event => {
@@ -2835,7 +2837,11 @@ function initializeActionRouter() {
             if (!element) {
                 return;
             }
-
+console.log(
+    "ASEM CLICK:",
+    element.dataset.platformAction ||
+    element.dataset.gps
+);
             event.preventDefault();
 
             let action =
