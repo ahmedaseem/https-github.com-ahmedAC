@@ -60,4 +60,11 @@ function filterCards() {
         card.style.display = text.includes(input) ? "block" : "none";
     });
 }
-</script>
+
+{
+  "project_name": "ASEM Global Platform",
+  "category": "Web Application",
+  "technologies": ["HTML", "JavaScript", "AI"],
+  "version": "1.0.0",
+  "status": "Completed"
+}

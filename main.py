@@ -36,3 +36,22 @@ app = App()
 
 # مثال فتح أي صفحة:
 app.open_page("tourism")
+from src.multilingual_core import build_reply
+
+def main():
+    print("🌍 نظام كشف لغة عالمي (باستخدام FastText lid.176.ftz)")
+    print("اكتب أي نص بأي لغة (اكتب quit للخروج)\n")
+
+    while True:
+        msg = input("أنت: ").strip()
+        if msg.lower() == "quit":
+            break
+        if not msg:
+            continue
+
+        reply = build_reply(msg)
+        print("النظام:", reply, "\n")
+
+
+if __name__ == "__main__":
+    main()

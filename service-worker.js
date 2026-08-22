@@ -32,7 +32,13 @@ self.addEventListener("fetch", event => {
 
             return response || fetch(event.request);
 
-        })
+        {
+  "project_name": "ASEM Global Platform",
+  "category": "Web Application",
+  "technologies": ["HTML", "JavaScript", "AI"],
+  "version": "1.0.0",
+  "status": "Completed"
+}
     );
 
-});
+};

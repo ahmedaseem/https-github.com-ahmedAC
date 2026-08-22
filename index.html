@@ -721,7 +721,31 @@
                     </p>
 
                 </button>
+<!-- =================================================
+     AI ASSISTANT
+     ================================================= -->
+<button
+    type="button"
+    class="card platform-card"
+    data-platform-action="ai"
+    data-section="ai-section"
+    aria-controls="ai-section"
+>
+    <span
+        class="platform-icon"
+        aria-hidden="true"
+    >
+        🤖
+    </span>
 
+    <h3>
+        AI Assistant
+    </h3>
+
+    <p>
+        Ask ASEM AI for intelligent assistance.
+    </p>
+</button>
 
                 <!-- =================================================
                      SEARCH
@@ -911,44 +935,76 @@
                     aria-busy="false"
                 ></div>
 
-            <section id="ai-section">
-
-
-        </section>
+          </section>  
+    
+        
 
 
         <!-- =================================================
-             GLOBAL SEARCH RESULTS
-             ================================================= -->
+     GLOBAL SEARCH RESULTS
+     ================================================= -->
 
-        <section
-            id="platform-search-results"
-            class="platform-results"
-            aria-labelledby="platform-search-title"
-            hidden
-        >
+<section
+    id="platform-search-results"
+    class="platform-results"
+    aria-labelledby="platform-search-title"
+    hidden
+>
 
-            <div class="section-header">
+    <div class="section-header">
 
-                <h3 id="platform-search-title">
-                    🔎 Global Search
-                </h3>
+        <h3 id="platform-search-title">
+            🔎 Global Search
+        </h3>
 
-                <p>
-                    Search across tourism,
-                    businesses, products and projects.
-                </p>
+        <p>
+            Search across tourism,
+            businesses, products and projects.
+        </p>
 
-            </div>
+    </div>
 
-            <div
-                id="searchGrid"
-                class="cards"
-                aria-live="polite"
-                aria-busy="false"
-            ></div>
+    <div
+        id="productsGrid"
+        class="cards"
+        aria-live="polite"
+        aria-busy="false"
+    ></div>
 
-        </section>
+</section>
+
+
+<!-- =================================================
+     AI ASSISTANT
+     ================================================= -->
+
+<section
+    id="ai-section"
+    class="platform-results"
+    aria-labelledby="ai-title"
+    hidden
+>
+
+    <div class="section-header">
+
+        <h3 id="ai-title">
+            🤖 AI Assistant
+        </h3>
+
+        <p>
+            Ask ASEM AI for assistance.
+        </p>
+
+    </div>
+
+    <div
+        id="ai-chat"
+        class="cards"
+        aria-live="polite"
+    ></div>
+
+</section>
+
 
 
         <!-- =====================================================
