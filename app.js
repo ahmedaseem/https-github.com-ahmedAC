@@ -2812,26 +2812,17 @@ function initializeScrollTop() {
 
 function initializeActionRouter() {
 
-    console.log("ASEM ACTION ROUTER STARTED");
-
-    if (window.__ASEM_ACTION_ROUTER_INITIALIZED__) {
-        console.warn(
-            "ASEM: action router already initialized"
-        );
-        return;
-    }
-
-    window.__ASEM_ACTION_ROUTER_INITIALIZED__ = true;
-
     document.addEventListener(
         "click",
         event => {
 
-            const target = event.target;
+            const target =
+                event.target;
 
             if (
                 !target ||
-                typeof target.closest !== "function"
+                typeof target.closest !==
+                    "function"
             ) {
                 return;
             }
@@ -2845,14 +2836,14 @@ function initializeActionRouter() {
                 return;
             }
 
+            event.preventDefault();
+
             let action =
-                element.getAttribute(
-                    "data-platform-action"
-                );
+                element.dataset.platformAction;
 
             if (
                 !action &&
-                element.hasAttribute("data-gps")
+                element.matches("[data-gps]")
             ) {
                 action = "gps";
             }
@@ -2861,6 +2852,10 @@ function initializeActionRouter() {
                 return;
             }
 
+            /*
+             * Normalize action names so small differences
+             * in the HTML do not break the buttons.
+             */
             action =
                 String(action)
                     .trim()
@@ -2870,25 +2865,20 @@ function initializeActionRouter() {
                         ""
                     );
 
-            console.log(
-                "ASEM ACTION:",
-                action,
-                element
-            );
-
             const handler =
                 actions[action];
 
             if (
-                typeof handler !== "function"
+                typeof handler !==
+                "function"
             ) {
+
                 console.warn(
-                    `ASEM: unknown action "${action}"`
+                    `ASEM: unknown action ${action}`
                 );
+
                 return;
             }
-
-            event.preventDefault();
 
             try {
 
@@ -2898,14 +2888,14 @@ function initializeActionRouter() {
                 if (
                     result &&
                     typeof result.then ===
-                        "function"
+                    "function"
                 ) {
 
                     result.catch(
                         error => {
 
                             console.error(
-                                `ASEM action "${action}" failed:`,
+                                "ASEM action:",
                                 error
                             );
                         }
