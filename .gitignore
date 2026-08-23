@@ -118,5 +118,6 @@ web-ext.cnf
 # ==================================
 
 asem-world/
+
 # Local env file without extension
 /env

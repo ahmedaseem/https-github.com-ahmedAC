@@ -62,6 +62,6 @@ function addProject() {
     // تجميع العناصر
     card.append(statusSpan, img, title, ver, added, btn);
 
-    // إضافة الكارد
+    // إضاف الكارد
     document.getElementById("projectsGrid").prepend(card);
 }

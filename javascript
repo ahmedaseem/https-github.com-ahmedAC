@@ -5,7 +5,7 @@ function addProject() {
     let version = prompt("الإصدار", "1.0");
     let status = prompt("الحالة", "جديد");
 
-    let email = prompt("بريدك للتواصل (اختياري)");
+    let email = prompt("mail للتواصل (اختياري)");
     let whatsapp = prompt("رابط واتساب (اختياري)");
     let facebook = prompt("رابط فيسبوك (اختياري)");
     let instagram = prompt("رابط إنستجرام (اختياري)");
