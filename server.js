@@ -4,7 +4,7 @@ import http from "node:http";
 import { URL } from "node:url";
 
 const HOST = process.env.HOST || "127.0.0.1";
-const PORT = Number(process.env.PORT || 3001);
+const PORT = Number(process.env.PORT || 5050);
 
 const server = http.createServer(async (req, res) => {
     setCorsHeaders(res);
@@ -261,3 +261,4 @@ function shutdown() {
 
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
+

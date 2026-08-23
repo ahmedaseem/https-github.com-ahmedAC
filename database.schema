@@ -69,3 +69,4 @@ ON businesses(latitude, longitude);
 
 CREATE INDEX products_location_idx
 ON products(latitude, longitude);
+

@@ -9,3 +9,4 @@ SET location_point =
     )::geography
 WHERE latitude IS NOT NULL
   AND longitude IS NOT NULL;
+

@@ -1,20 +1,22 @@
 const CONFIG = {
-    mode: "api",
-
-    demoDelay: 1000,
-
-    timeout: 15000,
-
     api: {
-        real: "https://gov-server.com/api",
-        location: "https://gov-server.com/api/location"
+        development: "http://localhost:5050/api",
+        production: "https://api.asem.digital/api"
     },
 
-    storage: {
-        theme: "light",
-        language: "en"
-    }
+    timeout: 15000
 };
+
+const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
+CONFIG.api.real = isLocalhost
+    ? CONFIG.api.development
+    : CONFIG.api.production;
+
+CONFIG.api.location =
+    `${CONFIG.api.real}/location`;
 
 export { CONFIG };
 export default CONFIG;

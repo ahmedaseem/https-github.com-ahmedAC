@@ -41,3 +41,4 @@ ON projects USING GIN (name gin_trgm_ops);
 
 CREATE INDEX IF NOT EXISTS projects_description_trgm_idx
 ON projects USING GIN (description gin_trgm_ops);
+
