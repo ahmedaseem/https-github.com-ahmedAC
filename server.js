@@ -105,7 +105,49 @@ const server = http.createServer(async (req, res) => {
                 jobs: []
             });
         }
+// --------------------------------------------------
+        // Platform data endpoints
+        // --------------------------------------------------
 
+        if (
+            req.method === "GET" &&
+            url.pathname === "/api/tourism"
+        ) {
+            return sendJson(res, 200, {
+                success: true,
+                data: []
+            });
+        }
+
+        if (
+            req.method === "GET" &&
+            url.pathname === "/api/businesses"
+        ) {
+            return sendJson(res, 200, {
+                success: true,
+                data: []
+            });
+        }
+
+        if (
+            req.method === "GET" &&
+            url.pathname === "/api/products"
+        ) {
+            return sendJson(res, 200, {
+                success: true,
+                data: []
+            });
+        }
+
+        if (
+            req.method === "GET" &&
+            url.pathname === "/api/projects"
+        ) {
+            return sendJson(res, 200, {
+                success: true,
+                data: []
+            });
+        }
         // --------------------------------------------------
         // 404
         // --------------------------------------------------
