@@ -9,5 +9,10 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@nestjs/bullmq": "^11.0.5",
+    "bullmq": "^6.2.0",
+    "ioredis": "^6.0.0"
   }
 }

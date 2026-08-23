@@ -12,3 +12,4 @@ class Router:
             return page()
         else:
             print(f"⚠️ الصفحة '{name}' غير موجودة")
+

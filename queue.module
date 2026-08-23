@@ -12,3 +12,4 @@ import { SearchQueueService } from './search-queue.service';
   exports: [SearchQueueService],
 })
 export class SearchQueueModule {}
+

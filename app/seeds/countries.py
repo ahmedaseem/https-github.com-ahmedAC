@@ -81,3 +81,4 @@ def seed_countries():
         "Countries skipped:",
         skipped
     )
+

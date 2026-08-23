@@ -7,3 +7,4 @@ export interface UserSearchDocument {
   isActive: boolean;
   createdAt: Date;
 }
+

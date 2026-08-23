@@ -14,3 +14,4 @@ def run_all_seeds():
     print(
         "Global seed process completed"
     )
+

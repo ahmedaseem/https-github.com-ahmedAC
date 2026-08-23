@@ -3,3 +3,4 @@ export enum SearchJobs {
   UPDATE_USER = 'update-user',
   DELETE_USER = 'delete-user',
 }
+

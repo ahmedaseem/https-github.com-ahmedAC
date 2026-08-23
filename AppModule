@@ -7,3 +7,4 @@ import { CacheController } from './modules/cache/cache.controller';
   controllers: [CacheController],
 })
 export class AppModule {}
+
