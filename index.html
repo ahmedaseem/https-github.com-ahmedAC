@@ -105,10 +105,15 @@
 
     <!-- CSS -->
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
+
+<!-- Leaflet Map -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+<div id="map"></div>
 
     <!-- Structured Data -->
 
@@ -1258,48 +1263,35 @@
 
             <div class="section-header">
 
-                <h2
+                
                     id="payments-title"
                     data-i18n="payments"
                 >
                     Supported Payment Methods
-                </h2>
+                </section>
+
 
             </div>
 <div class="payments">
+    
 
-                <span>
-                    Visa
-                </span>
+    <div class="payments">
+        < src="assets/visa.png" loading="lazy" alt="Visa">
+        < src="assets/mastercard.png" loading="lazy" alt="Mastercard">
+        < src="assets/paypal.png" loading="lazy" alt="PayPal">
+        < src="assets/googlepay.png" loading="lazy" alt="Google Pay">
+        < src="assets/applepay.png" loading="lazy" alt="Apple Pay">
+    </div>
+<button onclick="pay()">Pay Now</button>
 
-                <span>
-                    Mastercard
-                </span>
+                
+</div>
+</section>
 
-                <span>
-                    PayPal
-                </span>
-
-                <span>
-                    Google Pay
-                </span>
-
-                <span>
-<span>
-                    Apple Pay
-                </span>
-
-            </div>
-
-        </section>
-
-    </main>
 
     <!-- =====================================================
          FOOTER
          ===================================================== -->
-
-    <footer>
 
         <div
             class="social"
@@ -1316,7 +1308,6 @@
                 GitHub
             </a>
 
-            <!-- Replace # when the official LinkedIn URL exists. -->
 
             <a
                 href="#"
@@ -1324,29 +1315,17 @@
             >
                 <span aria-hidden="true">💼</span>
                 LinkedIn
-            </a>
-
-            <!-- Replace # when the official X/Twitter URL exists. -->
-
             <a
-                href="#"
-                aria-label="Twitter"
-            >
-                <span aria-hidden="true">𝕏</span>
-                Twitter
-            </a>
+    <a href="https://www.facebook.com/" target="_blank">Facebook</a>
+    <a href="https://www.youtube.com/" target="_blank">YouTube</a>
+    <a href="https://x.com/" target="_blank">X / Twitter</a>
+    <a href="https://web.whatsapp.com/" target="_blank">WhatsApp</a>
+</div>
 
-            <!-- Replace # when the official YouTube URL exists. -->
 
-            <a
-                href="#"
-                aria-label="YouTube"
-            >
-                <span aria-hidden="true">▶️</span>
-                YouTube
-            </a>
 
-        </div>
+
+
 
 
         <p>
@@ -1479,3 +1458,5 @@
         <script type="module" src="app.js"></script>
 
 
+</body>
+</html>
