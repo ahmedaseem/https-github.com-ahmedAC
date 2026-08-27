@@ -1,6 +1,6 @@
 const CONFIG = {
     api: {
-        development: "http://localhost:3001/api",
+        development: "http://localhost:3000/api",
         production: "https://api.asemroot.com/api"
     },
 

@@ -4,7 +4,7 @@ import http from "node:http";
 import { URL } from "node:url";
 
 const HOST = process.env.HOST || "127.0.0.1";
-const PORT = Number(process.env.PORT || 3001);
+const PORT = Number(process.env.PORT || 3000);
 
 const server = http.createServer(async (req, res) => {
     setCorsHeaders(res);
