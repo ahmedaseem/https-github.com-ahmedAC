@@ -33,3 +33,4 @@ export class AiController {
     return this.aiService.ask(message);
   }
 }
+

@@ -17,3 +17,4 @@ import { AiService } from './ai.service.js';
   ],
 })
 export class AiModule {}
+
