@@ -1,6 +1,5 @@
 """
 ASEM Global Platform
-
 Country Model
 """
 
@@ -8,16 +7,15 @@ from app.extensions import db
 
 
 class Country(db.Model):
-    """
-    Represents a country in the platform.
-    """
 
     __tablename__ = "countries"
+
 
     id = db.Column(
         db.Integer,
         primary_key=True
     )
+
 
     name = db.Column(
         db.String(100),
@@ -25,47 +23,50 @@ class Country(db.Model):
         unique=True
     )
 
+
     code = db.Column(
         db.String(10),
         nullable=False,
         unique=True
     )
 
+
     phone_code = db.Column(
-        db.String(20),
-        nullable=True
+        db.String(20)
     )
+
 
     currency = db.Column(
-        db.String(50),
-        nullable=True
+        db.String(50)
     )
+
 
     language = db.Column(
-        db.String(100),
-        nullable=True
+        db.String(100)
     )
+
 
     description = db.Column(
-        db.Text,
-        nullable=True
+        db.Text
     )
 
+
     flag = db.Column(
-        db.String(255),
-        nullable=True
+        db.String(255)
     )
+
 
     is_active = db.Column(
         db.Boolean,
-        default=True,
-        nullable=False
+        default=True
     )
+
 
     created_at = db.Column(
         db.DateTime,
         server_default=db.func.now()
     )
+
 
     updated_at = db.Column(
         db.DateTime,
@@ -74,7 +75,6 @@ class Country(db.Model):
     )
 
 
-    # العلاقة مع المدن
     cities = db.relationship(
         "City",
         back_populates="country",
@@ -82,11 +82,8 @@ class Country(db.Model):
     )
 
 
-    def __repr__(self):
-        return f"<Country {self.name}>"
-
-
     def to_dict(self):
+
         return {
             "id": self.id,
             "name": self.name,
@@ -96,7 +93,5 @@ class Country(db.Model):
             "language": self.language,
             "description": self.description,
             "flag": self.flag,
-            "is_active": self.is_active,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "is_active": self.is_active
         }

@@ -1,7 +1,7 @@
 const CONFIG = {
     api: {
-        development: "http://localhost:5050/api",
-        production: "https://api.asem.digital/api"
+        development: "http://localhost:3001/api",
+        production: "https://api.asemroot.com/api"
     },
 
     timeout: 15000
