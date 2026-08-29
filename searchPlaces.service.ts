@@ -34,7 +34,7 @@ class SearchService {
     async searchPlaces() {
 
         const response = await fetch(
-            "http://localhost:3000/api/search?q=restaurant"
+            "http://localhost:3001/api/search?q=restaurant"
         );
 
         const data = await response.json();
