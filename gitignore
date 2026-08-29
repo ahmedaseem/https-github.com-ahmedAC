@@ -141,3 +141,22 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Database backups and dumps
+*.dump
+*.bak
+*.backup
+*.sql.gz
+*.dump.gz
+
+# PostgreSQL local data
+postgres-data/
+pgdata/
+
+# Application uploads and private storage
+uploads/
+storage/private/

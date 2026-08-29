@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         // تحميل مشروعك
         webView.loadUrl(
-            "https://your-domain.com"
+            "https://asemroot.com"
         )
     }
 

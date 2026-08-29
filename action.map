@@ -1,0 +1,37 @@
+const actions = {
+    tourism: () =>
+        handleSection("tourism-section", loadTourism),
+
+    businesses: () =>
+        handleSection("businesses-section", loadBusinesses),
+
+    products: () =>
+        handleSection("products-section", loadProducts),
+
+    projects: () =>
+        handleSection("projects", loadProjects),
+
+    portfolio: () =>
+        openPageSection("portfolio"),
+
+    services: () =>
+        openPageSection("services"),
+
+    contact: () =>
+        openExternalPage("contact.html"),
+
+    search: () =>
+        focusSearch(),
+
+    gps: () =>
+        requestGPS(),
+
+    location: () =>
+        requestGPS(),
+
+    top: () =>
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        })
+};
