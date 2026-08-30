@@ -141,3 +141,4 @@ class Country(db.Model):
             data["cities"] = [city.to_dict() for city in self.cities.all()]
 
         return data
+
