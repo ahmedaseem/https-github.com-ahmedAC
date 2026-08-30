@@ -7,3 +7,4 @@ export class EmailService {
     return emailQueue.add('sendEmail', payload);
   }
 }
+

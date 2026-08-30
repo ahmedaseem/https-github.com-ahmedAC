@@ -7,3 +7,4 @@ function buildSearchIndex(data) {
         ...data.portfolio.map(item => ({ ...item, type: "Portfolio" }))
     ];
 }
+

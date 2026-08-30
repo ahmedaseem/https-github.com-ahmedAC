@@ -5,3 +5,5 @@ import { LocationController } from './location.controller.js';
   controllers: [LocationController],
 })
 export class LocationModule {}
+
+
