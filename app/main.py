@@ -1,17 +1,77 @@
-from .country import Country
-from .city import City
-from .business import Business
-from .tourism import Tourism
-from .product import Product
-import os
-from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
-load_dotenv()
+from app.database.connection import get_db
+from app.models import Country, City, Business, Tourism, Product
 
-DATABASE_URL = (
-    f"postgresql://{os.getenv('DATABASE_USER')}:"
-    f"{os.getenv('DATABASE_PASSWORD')}@"
-    f"{os.getenv('DATABASE_HOST')}:"
-    f"{os.getenv('DATABASE_PORT')}/"
-    f"{os.getenv('DATABASE_NAME')}"
+
+app = FastAPI(
+    title="ASEM Global API",
+    version="1.0.0",
 )
+
+
+@app.get("/")
+def home():
+    return {
+        "project": "ASEM Global Platform",
+        "status": "online",
+    }
+
+
+@app.get("/health")
+def health(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+
+        return {
+            "database": "connected",
+            "status": "healthy",
+        }
+
+    except Exception:
+        raise HTTPException(
+            status_code=503,
+            detail="Database unavailable",
+        )
+
+
+@app.get("/countries")
+def countries(db: Session = Depends(get_db)):
+    return [
+        item.to_dict()
+        for item in db.query(Country).all()
+    ]
+
+
+@app.get("/cities")
+def cities(db: Session = Depends(get_db)):
+    return [
+        item.to_dict()
+        for item in db.query(City).all()
+    ]
+
+
+@app.get("/businesses")
+def businesses(db: Session = Depends(get_db)):
+    return [
+        item.to_dict()
+        for item in db.query(Business).all()
+    ]
+
+
+@app.get("/tourism")
+def tourism(db: Session = Depends(get_db)):
+    return [
+        item.to_dict()
+        for item in db.query(Tourism).all()
+    ]
+
+
+@app.get("/products")
+def products(db: Session = Depends(get_db)):
+    return [
+        item.to_dict()
+        for item in db.query(Product).all()
+    ]
