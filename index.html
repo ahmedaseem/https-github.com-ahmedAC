@@ -1,1462 +1,362 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
-
 <head>
-    
- <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ASEM Digital Solutions</title>
+  <meta name="description" content="A global digital platform connecting technology, tourism, businesses, products and digital services." />
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
-
-    <title>ASEM Digital Solutions | Global Digital Platform</title>
-
-    <meta
-        name="description"
-        content="ASEM Digital Solutions — Global digital platform for software solutions, tourism, businesses, products and worldwide services."
-    >
-
-    <meta
-        name="keywords"
-        content="ASEM, Digital Solutions, Software, Web Development, AI, Cloud, Tourism, Businesses, Products"
-    >
-
-    <meta
-        name="author"
-        content="ASEM Digital Solutions"
-    >
-
-    <meta
-        name="theme-color"
-        content="#00aeea"
-    >
-
-    <link
-        rel="canonical"
-        href="https://asemdigital.github.io/"
-    >
-
-    <!-- Optional assets.
-         Enable these only when the files exist.
-
-    <link
-        rel="icon"
-        href="assets/favicon.png"
-    >
-
-    <link
-        rel="manifest"
-        href="manifest.json"
-    >
-    -->
-
-    <!-- Open Graph -->
-
-    <meta
-        property="og:title"
-        content="ASEM Digital Solutions"
-    >
-
-    <meta
-        property="og:description"
-        content="A global digital platform connecting technology, tourism, businesses and products."
-    >
-
-    <meta
-        property="og:type"
-        content="website"
-    >
-
-    <meta
-        property="og:url"
-        content="https://asemdigital.github.io/"
-    >
-
-    <!-- Enable when the image exists.
-
-    <meta
-        property="og:image"
-        content="https://asemdigital.github.io/assets/og-image.png"
-    >
-    -->
-
-    <meta
-        name="twitter:card"
-        content="summary_large_image"
-    >
-
-    <meta
-        name="twitter:title"
-        content="ASEM Digital Solutions"
-    >
-
-    <meta
-        name="twitter:description"
-        content="A global digital platform connecting technology, tourism, businesses and products."
-    >
-
-    <!-- Security -->
-
-    <meta
-        http-equiv="Referrer-Policy"
-        content="strict-origin-when-cross-origin"
-    >
-
-    <!-- CSS -->
-
-    <link rel="stylesheet" href="style.css">
-
-<!-- Leaflet Map -->
-<link rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-<script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-<div id="map"></div>
-
-    <!-- Structured Data -->
-
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "ASEM Digital Solutions",
-        "url": "https://asemdigital.github.io/",
-        "description": "Global digital platform for software solutions, tourism, businesses, products and worldwide services."
+  <style>
+    /* =========================================================
+       01. Design Tokens and Reset
+    ========================================================= */
+    :root {
+      --primary: #00aeea;
+      --primary-dark: #007db5;
+      --accent: #7c3aed;
+      --dark: #071827;
+      --muted: #617183;
+      --surface: #ffffff;
+      --surface-soft: #f4f9fc;
+      --border: #dceaf2;
+      --shadow: 0 18px 50px rgba(7, 24, 39, 0.10);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --container: 1180px;
     }
-    </script>
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      color: var(--dark);
+      background: linear-gradient(180deg, #ffffff 0%, #f4faff 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .container { width: min(100% - 40px, var(--container)); margin-inline: auto; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+
+    /* =========================================================
+       02. Shared Components
+    ========================================================= */
+    .section { padding: 92px 0; }
+    .section-heading { max-width: 720px; margin-bottom: 38px; }
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 12px;
+      color: var(--primary-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { line-height: 1.15; }
+    h1 { font-size: clamp(2.8rem, 7vw, 5.8rem); letter-spacing: -.06em; }
+    h2 { font-size: clamp(2rem, 4vw, 3.3rem); letter-spacing: -.04em; }
+    h3 { font-size: 1.25rem; }
+    .section-heading p, .hero-copy { color: var(--muted); font-size: 1.08rem; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 14px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 22px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .button:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0, 174, 234, .20); }
+    .button-primary { color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+    .button-secondary { color: var(--dark); background: #fff; border-color: var(--border); }
+    .card {
+      padding: 26px;
+      background: rgba(255, 255, 255, .88);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 32px rgba(7, 24, 39, .05);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+    .icon { display: block; margin-bottom: 16px; font-size: 2rem; }
+    .card p { margin-top: 10px; color: var(--muted); }
+    .grid { display: grid; gap: 20px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    /* =========================================================
+       03. Navigation
+    ========================================================= */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, .86);
+      border-bottom: 1px solid rgba(220, 234, 242, .85);
+      backdrop-filter: blur(18px);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 76px; }
+    .brand { color: var(--dark); font-size: 1.1rem; font-weight: 900; text-decoration: none; }
+    .brand span { color: var(--primary); }
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
+    .nav-links a { color: var(--muted); font-size: .9rem; font-weight: 700; text-decoration: none; }
+    .nav-links a:hover { color: var(--primary-dark); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .small-control { border: 1px solid var(--border); border-radius: 10px; padding: 8px; background: #fff; }
+
+    /* =========================================================
+       04. Hero Section
+    ========================================================= */
+    .hero { position: relative; overflow: hidden; padding: 120px 0 105px; }
+    .hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; filter: blur(4px); pointer-events: none; }
+    .hero::before { width: 360px; height: 360px; top: -120px; right: 5%; background: rgba(0, 174, 234, .14); }
+    .hero::after { width: 280px; height: 280px; bottom: -120px; left: 5%; background: rgba(124, 58, 237, .10); }
+    .hero-content { position: relative; z-index: 1; max-width: 850px; }
+    .hero h1 { max-width: 850px; margin-bottom: 24px; }
+    .hero-copy { max-width: 650px; margin-bottom: 30px; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+    .badge { padding: 8px 13px; color: var(--primary-dark); background: #e8f8fd; border-radius: 999px; font-size: .84rem; font-weight: 800; }
+
+    /* =========================================================
+       05. Global Platform Section
+    ========================================================= */
+    .platform { background: var(--surface-soft); }
+    .platform-card { display: block; width: 100%; border: 0; text-align: left; }
+    .platform-card h3 { color: var(--dark); }
+
+    /* =========================================================
+       06. Services Section
+    ========================================================= */
+    .service-card { position: relative; overflow: hidden; }
+    .service-card::after { content: ""; position: absolute; right: -30px; bottom: -45px; width: 120px; height: 120px; background: rgba(0, 174, 234, .08); border-radius: 50%; }
+
+    /* =========================================================
+       07. Projects and Portfolio Sections
+    ========================================================= */
+    .project-card { min-height: 220px; }
+    .project-label { color: var(--primary-dark); font-size: .8rem; font-weight: 900; text-transform: uppercase; }
+    .portfolio-card { min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; }
+    .portfolio-card strong { color: var(--accent); }
+
+    /* =========================================================
+       08. Benefits Section
+    ========================================================= */
+    .benefits { background: var(--dark); color: #fff; }
+    .benefits .section-heading p, .benefit-card p { color: #b6c9d7; }
+    .benefit-card { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .12); }
+
+    /* =========================================================
+       09. Registration Call To Action
+    ========================================================= */
+    .cta-box { padding: 58px; color: #fff; background: linear-gradient(135deg, #007db5, #7c3aed); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+    .cta-box p { max-width: 650px; margin: 16px 0 25px; color: rgba(255, 255, 255, .84); }
+    .cta-box .button-secondary { border: 0; }
+
+    /* =========================================================
+       10. Footer
+    ========================================================= */
+    .footer { padding: 34px 0; color: #bfd1dc; background: #04101b; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .footer strong { color: #fff; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 16px; }
+    .footer a { color: #bfd1dc; text-decoration: none; }
+
+    /* =========================================================
+       11. Responsive Layout
+    ========================================================= */
+    @media (max-width: 980px) {
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-inner { flex-wrap: wrap; padding: 14px 0; }
+      .nav-links { order: 3; width: 100%; }
+    }
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, var(--container)); }
+      .section { padding: 68px 0; }
+      .hero { padding: 82px 0 72px; }
+      .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .cta-box { padding: 34px 24px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+      .nav-actions { width: 100%; }
+      .nav-actions input { min-width: 0; flex: 1; }
+    }
+  </style>
 </head>
-
-
 <body>
-
- <!-- =====================================================
-     NAVIGATION
-     ===================================================== -->
-
-<nav
-    class="navbar"
-    aria-label="Main Navigation"
->
-
-    <a
-        href="index.html"
-        class="logo"
-        aria-label="ASEM Digital Solutions Home"
-    >
-        <img src="assets/logos/asem-logo.png" alt="ASEM Logo">
-    </a>
-
-
-
-        <div
-            class="nav-links"
-            aria-label="Primary navigation"
-        >
-
-            <a
-                href="#global-platform"
-                data-i18n="platform"
-            >
-                Global Platform
-            </a>
-
-            <a
-                href="#services"
-                data-i18n="services"
-            >
-                Services
-            </a>
-
-            <a
-                href="#projects"
-                data-i18n="projects"
-            >
-                Projects
-            </a>
-
-            <a
-                href="#portfolio"
-                data-i18n="portfolio"
-            >
-                Portfolio
-            </a>
-
-            <a
-                href="about.html"
-                data-i18n="about"
-            >
-                About
-            </a>
-
-            <a
-                href="contact.html"
-                data-i18n="contact"
-            >
-                Contact
-            </a>
-
-        </div>
-
-
-        <div class="controls">
-
-            <!-- Global Search -->
-
-            <label
-                class="sr-only"
-                for="searchBox"
-            >
-                Search the ASEM platform
-            </label>
-
-            <input
-                type="search"
-                id="searchBox"
-                class="search-box"
-                placeholder="🔍 Search..."
-                aria-label="Search the ASEM platform"
-                autocomplete="off"
-                spellcheck="false"
-            >
-
-
-            <!-- Language -->
-
-            <label
-                class="sr-only"
-                for="langSwitch"
-            >
-                Select language
-            </label>
-
-            <select
-                id="langSwitch"
-                aria-label="Language"
-            >
-
-                <option value="auto">
-                    Auto
-                </option>
-
-                <option value="ar">
-                    العربية
-                </option>
-
-                <option value="en">
-                    English
-                </option>
-
-                <option value="fr">
-                    Français
-                </option>
-
-                <option value="de">
-                    Deutsch
-                </option>
-
-                <option value="it">
-                    Italiano
-                </option>
-
-                <option value="es">
-                    Español
-                </option>
-
-                <option value="nl">
-                    Nederlands
-                </option>
-
-            </select>
-
-
-            <!-- Location -->
-
-            <button
-                id="locationToggle"
-                type="button"
-                class="icon-button"
-                data-platform-action="location"
-                aria-label="Use my location"
-                title="Use my location"
-            >
-                <span aria-hidden="true">
-                    📍
-                </span>
-            </button>
-
-
-            <!-- Theme -->
-
-            <button
-                id="themeToggle"
-                type="button"
-                class="icon-button"
-                aria-label="Switch to dark mode"
-                title="Switch theme"
-            >
-                <span aria-hidden="true">
-                    🌙
-                </span>
-            </button>
-
-        </div>
-
-    </nav>
-
-
-    <!-- =====================================================
-         LOCATION STATUS
-         ===================================================== -->
-
-    <div
-        id="locationStatus"
-        class="location-status"
-        role="status"
-        aria-live="polite"
-    >
-        Location not enabled
+  <!-- =======================================================
+       01. Navigation
+  ======================================================== -->
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a class="brand" href="#top">ASEM <span>Digital</span></a>
+      <div class="nav-links">
+        <a href="#platform">Platform</a>
+        <a href="#services">Services</a>
+        <a href="#projects">Projects</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <label class="sr-only" for="search">Search</label>
+        <input id="search" class="small-control" type="search" placeholder="Search" />
+        <select id="language" class="small-control" aria-label="Language">
+          <option>EN</option>
+          <option>AR</option>
+        </select>
+      </div>
     </div>
+  </nav>
 
-
+  <main id="top">
     <!-- =====================================================
-         HERO
-         ===================================================== -->
-
+         02. Hero Section
+    ====================================================== -->
     <header class="hero">
-
-        <h1 data-i18n="hero_title">
-            ASEM Digital Solutions
-        </h1>
-
-        <p data-i18n="hero_desc">
-            Free digital projects and custom software solutions
-            for individuals and companies worldwide.
-        </p>
-
-
-        <div class="hero-actions">
-
-            <a
-                class="btn"
-                href="#projects"
-                data-i18n="start_project"
-            >
-                Start Your Free Project
-            </a>
-
-            <a
-                class="btn"
-                href="contact.html"
-                data-i18n="contact"
-            >
-                Contact Us
-            </a>
-
+      <div class="container hero-content">
+        <span class="eyebrow">One global digital platform</span>
+        <h1>Discover the world. Build what comes next.</h1>
+        <p class="hero-copy">Explore technology projects, global products, tourism, businesses and digital services through one modern, connected experience.</p>
+        <div class="button-row">
+          <a class="button button-primary" href="#register">Create Your Account</a>
+          <a class="button button-secondary" href="#platform">Explore the Platform</a>
         </div>
-
+        <div class="hero-badges" aria-label="Platform highlights">
+          <span class="badge">Technology</span>
+          <span class="badge">Tourism</span>
+          <span class="badge">Global Products</span>
+          <span class="badge">Digital Services</span>
+        </div>
+      </div>
     </header>
 
+    <!-- =====================================================
+         03. Global Platform Section
+    ====================================================== -->
+    <section id="platform" class="section platform">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Explore more</span>
+          <h2>Everything you want to discover, in one place.</h2>
+          <p>ASEM Digital connects people with ideas, places, products and services from around the world.</p>
+        </div>
+        <div class="grid grid-4">
+          <article class="card platform-card"><span class="icon">🏝️</span><h3>Global Tourism</h3><p>Discover destinations, attractions and unforgettable experiences.</p></article>
+          <article class="card platform-card"><span class="icon">🌍</span><h3>Global Businesses</h3><p>Find businesses, restaurants, services and organizations worldwide.</p></article>
+          <article class="card platform-card"><span class="icon">🛒</span><h3>Global Products</h3><p>Explore products and offerings from businesses around the world.</p></article>
+          <article class="card platform-card"><span class="icon">🤖</span><h3>AI Assistant</h3><p>Get intelligent help while exploring the ASEM platform.</p></article>
+        </div>
+      </div>
+    </section>
 
     <!-- =====================================================
-         MAIN CONTENT
-         ===================================================== -->
-
-    <main id="main-content">
-
-
-        <!-- =================================================
-             GLOBAL PLATFORM
-             ================================================= -->
-
-        <section
-            id="global-platform"
-            aria-labelledby="global-platform-title"
-        >
-
-            <div class="section-header">
-
-                <h2
-                    id="global-platform-title"
-                    data-i18n="global_platform"
-                >
-                    ASEM Global Platform 🌏
-                </h2>
-
-                <p data-i18n="global_platform_desc">
-                    Explore tourism destinations, global businesses,
-                    products and digital services through one unified platform.
-                </p>
-
-            </div>
-
-
-            <div class="cards platform-cards">
-
-
-                <!-- =================================================
-                     TOURISM
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="tourism"
-                    data-section="tourism-section"
-                    aria-controls="tourism-section"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <path d="M12 48h40"></path>
-                            <path d="M18 48c2-12 8-20 14-28 6 8 12 16 14 28"></path>
-                            <path d="M32 20v28"></path>
-                            <path d="M24 32h16"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="tourism">
-                        Tourism
-                    </h3>
-
-                    <p data-i18n="tourism_desc">
-                        Discover destinations, attractions and
-                        experiences around the world.
-                    </p>
-
-                </button>
-
-
-                <!-- =================================================
-                     BUSINESSES
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="businesses"
-                    data-section="businesses-section"
-                    aria-controls="businesses-section"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <circle
-                                cx="32"
-                                cy="32"
-                                r="22"
-                            ></circle>
-
-                            <path d="M10 32h44"></path>
-
-                            <path d="M32 10c7 6 10 14 10 22s-3 16-10 22"></path>
-
-                            <path d="M32 10c-7 6-10 14-10 22s3 16 10 22"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="businesses">
-                        Global Businesses
-                    </h3>
-
-                    <p data-i18n="businesses_desc">
-                        Explore businesses, restaurants,
-                        services and organizations worldwide.
-                    </p>
-
-                </button>
-
-
-                <!-- =================================================
-                     PRODUCTS
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="products"
-                    data-section="products-section"
-                    aria-controls="products-section"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <path d="M10 12h7l5 29h25l7-21H19"></path>
-                            <circle
-                                cx="27"
-                                cy="51"
-                                r="3"
-                            ></circle>
-                            <circle
-                                cx="45"
-                                cy="51"
-                                r="3"
-                            ></circle>
-                            <path d="M27 20h22"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="products">
-                        Global Products
-                    </h3>
-
-                    <p data-i18n="products_desc">
-                        Discover products and offerings
-                        from businesses around the world.
-                    </p>
-
-                </button>
-
-
-                <!-- =================================================
-                     PROJECTS
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="projects"
-                    data-section="projects"
-                    aria-controls="projects"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <rect
-                                x="10"
-                                y="12"
-                                width="44"
-                                height="30"
-                                rx="3"
-                            ></rect>
-
-                            <path d="M5 50h54"></path>
-
-                            <path d="M25 50l2-8h10l2 8"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="projects">
-                        Projects
-                    </h3>
-
-                    <p data-i18n="projects_desc">
-                        Explore ASEM digital projects
-                        and software solutions.
-                    </p>
-
-                </button>
-
-
-                <!-- =================================================
-                     PORTFOLIO
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="portfolio"
-                    data-section="portfolio"
-                    aria-controls="portfolio"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <rect
-                                x="10"
-                                y="16"
-                                width="44"
-                                height="36"
-                                rx="4"
-                            ></rect>
-
-                            <path d="M22 16v-5h20v5"></path>
-
-                            <path d="M10 27h44"></path>
-
-                            <path d="M28 27v8h8v-8"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="portfolio">
-                        Portfolio
-                    </h3>
-
-                    <p data-i18n="portfolio_desc">
-                        Discover selected ASEM
-                        digital solutions.
-                    </p>
-
-                </button>
-
-
-                <!-- =================================================
-                     SERVICES
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="services"
-                    data-section="services"
-                    aria-controls="services"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <circle
-                                cx="32"
-                                cy="32"
-                                r="9"
-                            ></circle>
-
-                            <path d="M32 8v9"></path>
-                            <path d="M32 47v9"></path>
-                            <path d="M8 32h9"></path>
-                            <path d="M47 32h9"></path>
-                            <path d="M15 15l6 6"></path>
-                            <path d="M43 43l6 6"></path>
-                            <path d="M49 15l-6 6"></path>
-                            <path d="M21 43l-6 6"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="services">
-                        Services
-                    </h3>
-
-                    <p data-i18n="services_desc">
-                        Explore web development,
-                        AI, automation and cloud services.
-                    </p>
-
-                </button>
-
-
-                <!-- =================================================
-                     CONTACT
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="contact"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <rect
-                                x="8"
-                                y="14"
-                                width="48"
-                                height="36"
-                                rx="4"
-                            ></rect>
-
-                            <path d="M10 18l22 18 22-18"></path>
-                            <path d="M10 48l17-16"></path>
-                            <path d="M54 48L37 32"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="contact">
-                        Contact
-                    </h3>
-
-                    <p data-i18n="contact_desc">
-                        Contact ASEM Digital Solutions.
-                    </p>
-
-                </button>
-<!-- =================================================
-     AI ASSISTANT
-     ================================================= -->
-<button
-    type="button"
-    class="card platform-card"
-    data-platform-action="ai"
-    data-section="ai-section"
-    aria-controls="ai-section"
->
-    <span
-        class="platform-icon"
-        aria-hidden="true"
-    >
-        🤖
-    </span>
-
-    <h3>
-        AI Assistant
-    </h3>
-
-    <p>
-        Ask ASEM AI for intelligent assistance.
-    </p>
-</button>
-
-                <!-- =================================================
-                     SEARCH
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="search"
-                    aria-controls="platform-search-results"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <circle
-                                cx="28"
-                                cy="28"
-                                r="17"
-                            ></circle>
-
-                            <path d="M41 41l14 14"></path>
-                        </svg>
-                    </span>
-
-                    <h3 data-i18n="global_search">
-                        Global Search
-                    </h3>
-
-                    <p data-i18n="global_search_desc">
-                        Search across the ASEM platform.
-                    </p>
-
-                </button>
-
-
-                <!-- =================================================
-                     LOCATION / NEARBY
-                     ================================================= -->
-
-                <button
-                    type="button"
-                    class="card platform-card"
-                    data-platform-action="nearby"
-                    aria-controls="platform-search-results"
-                >
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        <svg
-                            viewBox="0 0 64 64"
-                            class="platform-svg-icon"
-                            focusable="false"
-                            aria-hidden="true"
-                        >
-                            <path
-                                d="M32 56s18-17 18-31a18 18 0 1 0-36 0c0 14 18 31 18 31z"
-                            ></path>
-
-                            <circle
-                                cx="32"
-                                cy="25"
-                                r="6"
-                            ></circle>
-                        </svg>
-                    </span>
-
-                    <h3>
-                        Nearby
-                    </h3>
-
-                    <p>
-                        Find nearby businesses,
-                        products and platform results.
-                    </p>
-
-                </button>
-
-            </div>
-
-
-            <!-- =================================================
-                 TOURISM RESULTS
-                 ================================================= -->
-
-            <section
-                id="tourism-section"
-                class="platform-results"
-                aria-labelledby="tourism-title"
-                hidden
-            >
-
-                <div class="section-header">
-
-                    <h3 id="tourism-title">
-                        🏝️ Global Tourism
-                    </h3>
-
-                    <p>
-                        Discover destinations and attractions
-                        around the world.
-                    </p>
-
-                </div>
-
-                <div
-                    id="tourismGrid"
-                    class="cards"
-                    aria-live="polite"
-                    aria-busy="false"
-                ></div>
-
-            </section>
-
-
-            <!-- =================================================
-                 BUSINESSES RESULTS
-                 ================================================= -->
-
-            <section
-                id="businesses-section"
-                class="platform-results"
-                aria-labelledby="businesses-title"
-                hidden
-            >
-
-                <div class="section-header">
-
-                    <h3 id="businesses-title">
-                        🌍 Global Businesses
-                    </h3>
-
-                    <p>
-                        Explore businesses, restaurants,
-                        services and organizations worldwide.
-                    </p>
-
-                </div>
-
-                <div
-                    id="businessesGrid"
-                    class="cards"
-                    aria-live="polite"
-                    aria-busy="false"
-                ></div>
-
-            </section>
-
-
-            <!-- =================================================
-                 PRODUCTS RESULTS
-                 ================================================= -->
-
-            <section
-                id="products-section"
-                class="platform-results"
-                aria-labelledby="products-title"
-                hidden
-            >
-
-                <div class="section-header">
-
-                    <h3 id="products-title">
-                        🛒 Global Products
-                    </h3>
-
-                    <p>
-                        Discover products and offerings
-                        from businesses around the world.
-                    </p>
-
-                </div>
-
-                <div
-                    id="productsGrid"
-                    class="cards"
-                    aria-live="polite"
-                    aria-busy="false"
-                ></div>
-
-          </section>  
-    
-        
-
-
-        <!-- =================================================
-     GLOBAL SEARCH RESULTS
-     ================================================= -->
-
-<section
-    id="platform-search-results"
-    class="platform-results"
-    aria-labelledby="platform-search-title"
-    hidden
->
-
-    <div class="section-header">
-
-        <h3 id="platform-search-title">
-            🔎 Global Search
-        </h3>
-
-        <p>
-            Search across tourism,
-            businesses, products and projects.
-        </p>
-
+         04. Services Section
+    ====================================================== -->
+    <section id="services" class="section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">What we create</span>
+          <h2>Digital solutions designed for real-world growth.</h2>
+          <p>From the first idea to a complete digital experience, ASEM helps turn opportunities into useful products.</p>
+        </div>
+        <div class="grid grid-3">
+          <article class="card service-card"><span class="icon">🌐</span><h3>Web Development</h3><p>Modern, fast and secure websites and digital platforms for individuals and organizations.</p></article>
+          <article class="card service-card"><span class="icon">🤖</span><h3>AI &amp; Automation</h3><p>Smart workflows and practical artificial intelligence solutions that save time and improve decisions.</p></article>
+          <article class="card service-card"><span class="icon">☁️</span><h3>Cloud Solutions</h3><p>Scalable and reliable cloud experiences built for modern digital operations.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         05. Projects Section
+    ====================================================== -->
+    <section id="projects" class="section platform">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Our work</span>
+          <h2>Projects with purpose.</h2>
+          <p>Explore digital ideas and software solutions created to connect people, businesses and opportunities.</p>
+        </div>
+        <div class="grid grid-3">
+          <article class="card project-card"><span class="project-label">Featured project</span><h3>Global Discovery Platform</h3><p>A connected experience for exploring places, businesses, products and services worldwide.</p></article>
+          <article class="card project-card"><span class="project-label">Digital solution</span><h3>Smart Business Tools</h3><p>Practical digital tools that help organizations present their services and reach new audiences.</p></article>
+          <article class="card project-card"><span class="project-label">Innovation</span><h3>AI-Powered Experiences</h3><p>Helpful intelligent features that make digital discovery faster and more personal.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         06. Portfolio Section
+    ====================================================== -->
+    <section id="portfolio" class="section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Portfolio</span>
+          <h2>A growing collection of digital experiences.</h2>
+          <p>Browse selected solutions and discover how technology can make ideas easier to find, use and share.</p>
+        </div>
+        <div class="grid grid-3">
+          <article class="card portfolio-card"><div><span class="icon">🚀</span><h3>Digital Platforms</h3></div><strong>Explore solutions →</strong></article>
+          <article class="card portfolio-card"><div><span class="icon">📱</span><h3>Web Experiences</h3></div><strong>View experiences →</strong></article>
+          <article class="card portfolio-card"><div><span class="icon">⚙️</span><h3>Business Systems</h3></div><strong>Discover systems →</strong></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         07. Benefits Section
+    ====================================================== -->
+    <section class="section benefits">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Why ASEM Digital</span>
+          <h2>One platform. More possibilities.</h2>
+          <p>Join a growing digital ecosystem built around discovery, innovation and global connection.</p>
+        </div>
+        <div class="grid grid-4">
+          <article class="card benefit-card"><span class="icon">🔐</span><h3>Built with care</h3><p>A clear and organized experience designed for easy exploration.</p></article>
+          <article class="card benefit-card"><span class="icon">🌎</span><h3>Global by nature</h3><p>Connect with ideas, places and businesses from different parts of the world.</p></article>
+          <article class="card benefit-card"><span class="icon">⚡</span><h3>Modern technology</h3><p>Useful digital experiences powered by current tools and smart solutions.</p></article>
+          <article class="card benefit-card"><span class="icon">✨</span><h3>Always discovering</h3><p>Find something new, useful or inspiring every time you return.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         08. Registration CTA Section
+    ====================================================== -->
+    <section id="register" class="section">
+      <div class="container">
+        <div class="cta-box">
+          <span class="eyebrow">Start today</span>
+          <h2>Ready to discover what comes next?</h2>
+          <p>Create your account and become part of the ASEM Digital experience.</p>
+          <div class="button-row">
+            <button class="button button-secondary" type="button">Create Your Account</button>
+            <button class="button button-secondary" type="button">Sign In</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =======================================================
+       09. Footer and Contact
+  ======================================================== -->
+  <footer id="contact" class="footer">
+    <div class="container footer-inner">
+      <p><strong>ASEM Digital Solutions</strong><br />Connecting technology, people and possibilities.</p>
+      <div class="footer-links">
+        <a href="#platform">Platform</a>
+        <a href="#services">Services</a>
+        <a href="#projects">Projects</a>
+        <a href="#register">Register</a>
+      </div>
     </div>
-
-    <div
-        id="productsGrid"
-        class="cards"
-        aria-live="polite"
-        aria-busy="false"
-    ></div>
-
-</section>
-
-
-<!-- =================================================
-     AI ASSISTANT
-     ================================================= -->
-
-<section
-    id="ai-section"
-    class="platform-results"
-    aria-labelledby="ai-title"
-    hidden
->
-
-    <div class="section-header">
-
-        <h3 id="ai-title">
-            🤖 AI Assistant
-        </h3>
-
-        <p>
-            Ask ASEM AI for assistance.
-        </p>
-
-    </div>
-
-    <div
-        id="ai-chat"
-        class="cards"
-        aria-live="polite"
-    ></div>
-
-</section>
-
-
-
-        <!-- =====================================================
-             SERVICES
-             ===================================================== -->
-
-        <section
-            id="services"
-            aria-labelledby="services-title"
-        >
-
-            <div class="section-header">
-
-                <h2
-                    id="services-title"
-                    data-i18n="services"
-                >
-                    Our Services
-                </h2>
-
-            </div>
-
-
-            <div class="cards">
-
-                <article class="card">
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        🌐
-                    </span>
-
-                    <h3 data-i18n="web_dev">
-                        Web Development
-                    </h3>
-
-                    <p data-i18n="web_dev_desc">
-                        Modern, fast, secure websites
-                        and digital platforms.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        🤖
-                    </span>
-
-                    <h3 data-i18n="ai_auto">
-                        AI &amp; Automation
-                    </h3>
-
-                    <p data-i18n="ai_auto_desc">
-                        Smart solutions powered by modern
-                        artificial intelligence and automation.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <span
-                        class="platform-icon"
-                        aria-hidden="true"
-                    >
-                        ☁️
-                    </span>
-
-                    <h3 data-i18n="cloud">
-                        Cloud Solutions
-                    </h3>
-
-                    <p data-i18n="cloud_desc">
-                        Scalable and reliable cloud
-                        infrastructure for modern organizations.
-                    </p>
-
-                </article>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             PROJECTS
-             ===================================================== -->
-
-        <section
-            id="projects"
-            aria-labelledby="projects-title"
-        >
-
-            <div class="section-header">
-
-                <h2
-                    id="projects-title"
-                    data-i18n="projects"
-                >
-                    Projects
-                </h2>
-
-                <p data-i18n="projects_desc">
-                    Explore ASEM digital projects and software solutions.
-                </p>
-
-            </div>
-
-
-<button
-    type="button"
-    onclick="addProject()"
-    class="card"
->
-    ➕ Add New Project
-</button>
-
-<div
-    id="projectsGrid"
-    class="cards"
-    aria-live="polite"
-    aria-busy="false"
-></div>
-
-        </section>
-
-
-        <!-- =====================================================
-             PORTFOLIO
-             ===================================================== -->
-
-        <section
-            id="portfolio"
-            aria-labelledby="portfolio-title"
-        >
-
-            <div class="section-header">
-
-                <h2
-                    id="portfolio-title"
-                    data-i18n="portfolio"
-                >
-                    Portfolio
-                </h2>
-
-                <p data-i18n="portfolio_desc">
-                    A selection of our global digital solutions.
-                </p>
-
-            </div>
-
-            <div
-                id="portfolioGrid"
-                class="portfolio-grid"
-                aria-live="polite"
-            ></div>
-
-        </section>
-
-
-        <!-- =====================================================
-             WHY ASEM
-             ===================================================== -->
-
-        <section
-            id="why"
-            aria-labelledby="why-title"
-        >
-
-            <div class="section-header">
-
-                <h2
-                    id="why-title"
-                    data-i18n="why_asem"
-                >
-                    Why Choose ASEM
-                </h2>
-
-            </div>
-
-
-            <ul>
-
-                <li data-i18n="secure">
-                    Enterprise-grade security
-                </li>
-
-                <li data-i18n="modern_tech">
-                    Modern technologies
-                </li>
-
-                <li data-i18n="full_solutions">
-                    Complete digital solutions
-                </li>
-
-                <li data-i18n="trusted_world">
-                    Global digital platform
-                </li>
-
-            </ul>
-
-        </section>
-
-
-        <!-- =====================================================
-             GLOBAL REACH
-             ===================================================== -->
-
-        <section
-            id="trusted"
-            aria-labelledby="trusted-title"
-        >
-
-            <div class="section-header">
-
-                <h2
-                    id="trusted-title"
-                    data-i18n="trusted_world"
-                >
-                    Trusted Worldwide
-                </h2>
-
-                <p data-i18n="trusted_desc">
-                    ASEM is building a global digital ecosystem
-                    connecting people, businesses, services,
-                    tourism and technology.
-                </p>
-
-            </div>
-
-        </section>
-
-
-    </main>
-<!-- =====================================================
-             PAYMENTS
-             ===================================================== -->
-
-        <section
-            id="payments"
-            aria-labelledby="payments-title"
-        >
-
-            <div class="section-header">
-
-                
-                    id="payments-title"
-                    data-i18n="payments"
-                >
-                    Supported Payment Methods
-                </section>
-
-
-            </div>
-<div class="payments">
-    
-
-    <div class="payments">
-        < src="assets/visa.png" loading="lazy" alt="Visa">
-        < src="assets/mastercard.png" loading="lazy" alt="Mastercard">
-        < src="assets/paypal.png" loading="lazy" alt="PayPal">
-        < src="assets/googlepay.png" loading="lazy" alt="Google Pay">
-        < src="assets/applepay.png" loading="lazy" alt="Apple Pay">
-    </div>
-<button onclick="pay()">Pay Now</button>
-
-                
-</div>
-</section>
-
-
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
-
-        <div
-            class="social"
-            aria-label="Social media"
-        >
-
-            <a
-                href="https://github.com/gov-server"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="ASEM GitHub"
-            >
-                <span aria-hidden="true">💻</span>
-                GitHub
-            </a>
-
-
-            <a
-                href="#"
-                aria-label="LinkedIn"
-            >
-                <span aria-hidden="true">💼</span>
-                LinkedIn
-            <a
-    <a href="https://www.facebook.com/" target="_blank">Facebook</a>
-    <a href="https://www.youtube.com/" target="_blank">YouTube</a>
-    <a href="https://x.com/" target="_blank">X / Twitter</a>
-    <a href="https://web.whatsapp.com/" target="_blank">WhatsApp</a>
-</div>
-
-
-
-
-
-
-
-        <p>
-            © 2026 ASEM Digital Solutions
-        </p>
-
-    </footer>
-
-
-    <!-- =====================================================
-         SCROLL TO TOP
-         ===================================================== -->
-
-    <button
-        id="scrollTop"
-        type="button"
-        aria-label="Scroll to top"
-        title="Scroll to top"
-        hidden
-    >
-        <span aria-hidden="true">↑</span>
-    </button>
-
-
-    <!-- =====================================================
-         ADVERTISEMENT PLACEHOLDER
-         ===================================================== -->
-
-    <aside
-        class="ad-container"
-        data-ad-placement="homepage-top"
-        aria-label="Advertisement"
-    ></aside>
-
-
-    <!-- =====================================================
-         ASEM JAVASCRIPT
-         =====================================================
-
-         app.js should contain:
-
-         - API configuration
-         - API requests
-         - search
-         - tourism loading
-         - business loading
-         - product loading
-         - project loading
-         - GPS
-         - nearby search
-         - theme
-         - language
-         - event routing
-
-         defer allows HTML parsing to finish before execution.
-    <!-- =========================================
-              Fallback GPS Request
-     ========================================= -->
-
-<script>
-
-  // 1. Basic GPS Location Request
-  navigator.geolocation.getCurrentPosition(
-    p => console.log("GPS OK:", p.coords),
-
-    e => console.error("GPS ERROR:", e.code, e.message),
-
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
-    }
-  );
-
-
-  // 2. GPS Error Handling
-  function handleGPSError(error) {
-    switch (error.code) {
-
-      case error.PERMISSION_DENIED:
-        console.log("User/browser denied location");
-        break;
-
-      case error.POSITION_UNAVAILABLE:
-        console.log("Location provider couldn't provide a usable position");
-        break;
-
-      case error.TIMEOUT:
-        console.log("Location request timed out");
-        break;
-    }
-  }
-
-
-  // 3. ASEM GPS - Detailed Location Logging
-  navigator.geolocation.getCurrentPosition(
-    position => {
-      console.log("ASEM GPS: Location acquired", {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        accuracy: position.coords.accuracy
-      });
-    },
-
-    error => {
-      console.error("ASEM GPS: Geolocation failed", {
-        code: error.code,
-        message: error.message
-      });
-
-      handleGPSError(error);
-    },
-
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
-    }
-  );
-
-</script>
-
-</body>
-
-
-
-
-
-
-        <script type="module" src="app.js"></script>
-
-
+  </footer>
 </body>
 </html>
