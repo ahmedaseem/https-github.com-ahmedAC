@@ -1,7 +1,7 @@
 const CONFIG = {
     api: {
         development: "http://localhost:3000/api",
-        production: "https://api.asemroot.com/api"
+        production: "/api"
     },
 
     timeout: 15000
@@ -15,8 +15,7 @@ CONFIG.api.real = isLocalhost
     ? CONFIG.api.development
     : CONFIG.api.production;
 
-CONFIG.api.location =
-    `${CONFIG.api.real}/location`;
+CONFIG.api.location = `${CONFIG.api.real}/location`;
 
 export { CONFIG };
 export default CONFIG;

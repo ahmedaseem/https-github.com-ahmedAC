@@ -1,14 +1,10 @@
-
 import http from "node:http";
 import { URL } from "node:url";
 
- HEAD
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 3000);
 
-const HOST = process.env.HOST || "0.0.0.0";
-const PORT = Number(process.env.PORT || 3001);
- (Improve layout and fix responsive design)
+// Improve layout and fix responsive design
 
 const server = http.createServer(async (req, res) => {
     setCorsHeaders(res);
