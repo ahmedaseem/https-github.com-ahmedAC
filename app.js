@@ -2,21 +2,25 @@
 
 import { CONFIG } from "./config.js";
 
+/* ========================================================
+   ASEM GLOBAL PLATFORM
+   Complete Frontend Controller
+======================================================== */
+
 const API_BASE =
     CONFIG?.api?.real || "";
 
-console.log(
-    "ASEM: app.js STARTED"
-);
+const REQUEST_TIMEOUT =
+    Number(CONFIG?.timeout) || 15000;
+
+console.log("ASEM: app.js STARTED");
 
 
 /* ========================================================
-   ASEM GLOBAL PLATFORM
-   Main Frontend Controller
+   CONFIGURATION
 ======================================================== */
 
 const ASEM = {
-
 
     selectors: {
 
@@ -80,7 +84,7 @@ const ASEM = {
     },
 
     requestTimeout:
-        CONFIG?.timeout || 15000
+        REQUEST_TIMEOUT
 };
 
 
@@ -88,55 +92,45 @@ const ASEM = {
    DOM HELPERS
 ======================================================== */
 
-const $ = (
-    selector,
-    root = document
-) =>
-    root.querySelector(selector);
+function $(selector, root = document) {
+    return root.querySelector(selector);
+}
 
 
-const $$ = (
-    selector,
-    root = document
-) =>
-    Array.from(
+function $$(selector, root = document) {
+    return Array.from(
         root.querySelectorAll(selector)
     );
+}
 
 
 const DOM = {
 
     get search() {
-        return $(
-            ASEM.selectors.search
-        );
+        return $(ASEM.selectors.search);
     },
 
     get language() {
-        return $(
-            ASEM.selectors.language
-        );
+        return $(ASEM.selectors.language);
     },
 
     get theme() {
-        return $(
-            ASEM.selectors.theme
-        );
+        return $(ASEM.selectors.theme);
     },
 
     get scrollTop() {
-        return $(
-            ASEM.selectors.scrollTop
-        );
+        return $(ASEM.selectors.scrollTop);
     },
 
     get locationStatus() {
-        return $(
-            ASEM.selectors.locationStatus
-        );
+        return $(ASEM.selectors.locationStatus);
     }
 };
 
+
+/* ========================================================
+   SAFE HELPERS
+======================================================== */
 
 function escapeHTML(value) {
 
@@ -148,26 +142,11 @@ function escapeHTML(value) {
     }
 
     return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
@@ -185,7 +164,6 @@ function normalizeArray(data) {
     }
 
     const keys = [
-
         "data",
         "items",
         "results",
@@ -197,11 +175,7 @@ function normalizeArray(data) {
 
     for (const key of keys) {
 
-        if (
-            Array.isArray(
-                data[key]
-            )
-        ) {
+        if (Array.isArray(data[key])) {
             return data[key];
         }
     }
@@ -210,11 +184,24 @@ function normalizeArray(data) {
 }
 
 
+function normalizeAction(action) {
+
+    return String(action || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s_-]+/g, "");
+}
+
+
 /* ========================================================
    NAVIGATION
 ======================================================== */
 
 function openPageSection(id) {
+
+    if (!id) {
+        return false;
+    }
 
     const section =
         document.getElementById(id);
@@ -239,34 +226,25 @@ function openPageSection(id) {
 }
 
 
-function handleSection(
-    sectionId,
-    loader
-) {
+function handleSection(sectionId, loader) {
 
     const opened =
-        openPageSection(
-            sectionId
-        );
+        openPageSection(sectionId);
 
     if (!opened) {
         return false;
     }
 
-    if (
-        typeof loader ===
-        "function"
-    ) {
-        Promise.resolve(
-            loader()
-        ).catch(
-            error => {
+    if (typeof loader === "function") {
+
+        Promise.resolve(loader())
+            .catch(error => {
+
                 console.error(
                     "ASEM section loader:",
                     error
                 );
-            }
-        );
+            });
     }
 
     return true;
@@ -276,11 +254,12 @@ function handleSection(
 function openExternalPage(page) {
 
     if (!page) {
-        return;
+        return false;
     }
 
-    window.location.href =
-        page;
+    window.location.href = page;
+
+    return true;
 }
 
 
@@ -288,26 +267,25 @@ function openExternalPage(page) {
    API
 ======================================================== */
 
-async function apiRequest(
-    endpoint,
-    options = {}
-) {
+async function apiRequest(endpoint, options = {}) {
+
+    if (!endpoint) {
+        throw new Error("API endpoint is empty");
+    }
 
     const controller =
         new AbortController();
 
     const timer =
         window.setTimeout(
-            () =>
-                controller.abort(),
+            () => controller.abort(),
             ASEM.requestTimeout
         );
 
     const requestOptions = {
 
         method:
-            options.method ||
-            "GET",
+            options.method || "GET",
 
         headers: {
 
@@ -318,17 +296,13 @@ async function apiRequest(
         },
 
         cache:
-            options.cache ||
-            "no-store",
+            options.cache || "no-store",
 
         signal:
             controller.signal
     };
 
-    if (
-        options.body !==
-        undefined
-    ) {
+    if (options.body !== undefined) {
         requestOptions.body =
             options.body;
     }
@@ -369,9 +343,7 @@ async function apiRequest(
 
     } finally {
 
-        window.clearTimeout(
-            timer
-        );
+        window.clearTimeout(timer);
     }
 }
 
@@ -380,18 +352,14 @@ async function apiRequest(
    GRID STATES
 ======================================================== */
 
-function setGridLoading(
-    grid,
-    message
-) {
+function setGridLoading(grid, message) {
 
     if (!grid) {
         return;
     }
 
     grid.innerHTML = `
-        <article
-            class="card platform-state loading-state">
+        <article class="card platform-state loading-state">
 
             <div
                 class="loading-spinner"
@@ -400,8 +368,7 @@ function setGridLoading(
 
             <h3>
                 ${escapeHTML(
-                    message ||
-                    "Loading..."
+                    message || "Loading..."
                 )}
             </h3>
 
@@ -430,8 +397,7 @@ function setGridEmpty(
     }
 
     grid.innerHTML = `
-        <article
-            class="card platform-state empty-state">
+        <article class="card platform-state empty-state">
 
             <span
                 class="platform-state-icon"
@@ -441,15 +407,13 @@ function setGridEmpty(
 
             <h3>
                 ${escapeHTML(
-                    title ||
-                    "No data available"
+                    title || "No data available"
                 )}
             </h3>
 
             <p>
                 ${escapeHTML(
-                    message ||
-                    "No items available."
+                    message || "No items available."
                 )}
             </p>
 
@@ -474,8 +438,7 @@ function setGridError(
     }
 
     grid.innerHTML = `
-        <article
-            class="card platform-state error-state">
+        <article class="card platform-state error-state">
 
             <span
                 class="platform-state-icon"
@@ -485,15 +448,13 @@ function setGridError(
 
             <h3>
                 ${escapeHTML(
-                    title ||
-                    "Unable to load data"
+                    title || "Unable to load data"
                 )}
             </h3>
 
             <p>
                 ${escapeHTML(
-                    message ||
-                    "Please try again later."
+                    message || "Please try again later."
                 )}
             </p>
 
@@ -518,13 +479,14 @@ function setGridError(
 
 function finishGrid(grid) {
 
-    if (grid) {
-
-        grid.setAttribute(
-            "aria-busy",
-            "false"
-        );
+    if (!grid) {
+        return;
     }
+
+    grid.setAttribute(
+        "aria-busy",
+        "false"
+    );
 }
 
 
@@ -532,7 +494,7 @@ function finishGrid(grid) {
    CARD BUILDERS
 ======================================================== */
 
-function buildTourismCard(item) {
+function buildTourismCard(item = {}) {
 
     const name =
         item.name ||
@@ -550,13 +512,20 @@ function buildTourismCard(item) {
     const image =
         item.image || "";
 
+    const rating =
+        item.rating !== undefined
+            ? `
+                <div class="platform-rating">
+                    ⭐ ${escapeHTML(item.rating)}
+                </div>
+              `
+            : "";
+
     return `
         <article
             class="card platform-result-card"
             data-type="tourism"
-            data-id="${escapeHTML(
-                item.id || ""
-            )}">
+            data-id="${escapeHTML(item.id || "")}">
 
             ${
                 image
@@ -579,8 +548,7 @@ function buildTourismCard(item) {
 
             <div class="platform-card-content">
 
-                <span
-                    class="platform-card-category">
+                <span class="platform-card-category">
                     ${escapeHTML(category)}
                 </span>
 
@@ -592,17 +560,7 @@ function buildTourismCard(item) {
                     ${escapeHTML(description)}
                 </p>
 
-                ${
-                    item.rating !== undefined
-                        ? `
-                            <div class="platform-rating">
-                                ⭐ ${escapeHTML(
-                                    item.rating
-                                )}
-                            </div>
-                          `
-                        : ""
-                }
+                ${rating}
 
                 <button
                     type="button"
@@ -620,7 +578,7 @@ function buildTourismCard(item) {
 }
 
 
-function buildBusinessCard(item) {
+function buildBusinessCard(item = {}) {
 
     const name =
         item.name ||
@@ -648,9 +606,7 @@ function buildBusinessCard(item) {
         <article
             class="card platform-result-card"
             data-type="business"
-            data-id="${escapeHTML(
-                item.id || ""
-            )}">
+            data-id="${escapeHTML(item.id || "")}">
 
             ${
                 image
@@ -673,8 +629,7 @@ function buildBusinessCard(item) {
 
             <div class="platform-card-content">
 
-                <span
-                    class="platform-card-category">
+                <span class="platform-card-category">
                     ${escapeHTML(category)}
                 </span>
 
@@ -700,9 +655,7 @@ function buildBusinessCard(item) {
                     item.rating !== undefined
                         ? `
                             <div class="platform-rating">
-                                ⭐ ${escapeHTML(
-                                    item.rating
-                                )}
+                                ⭐ ${escapeHTML(item.rating)}
                             </div>
                           `
                         : ""
@@ -724,7 +677,7 @@ function buildBusinessCard(item) {
 }
 
 
-function buildProductCard(item) {
+function buildProductCard(item = {}) {
 
     const name =
         item.name ||
@@ -746,9 +699,7 @@ function buildProductCard(item) {
         <article
             class="card platform-result-card"
             data-type="product"
-            data-id="${escapeHTML(
-                item.id || ""
-            )}">
+            data-id="${escapeHTML(item.id || "")}">
 
             ${
                 image
@@ -771,8 +722,7 @@ function buildProductCard(item) {
 
             <div class="platform-card-content">
 
-                <span
-                    class="platform-card-category">
+                <span class="platform-card-category">
                     ${escapeHTML(category)}
                 </span>
 
@@ -788,12 +738,9 @@ function buildProductCard(item) {
                     item.price !== undefined
                         ? `
                             <strong class="product-price">
+                                ${escapeHTML(item.price)}
                                 ${escapeHTML(
-                                    item.price
-                                )}
-                                ${escapeHTML(
-                                    item.currency ||
-                                    "USD"
+                                    item.currency || "USD"
                                 )}
                             </strong>
                           `
@@ -804,9 +751,7 @@ function buildProductCard(item) {
                     item.rating !== undefined
                         ? `
                             <div class="platform-rating">
-                                ⭐ ${escapeHTML(
-                                    item.rating
-                                )}
+                                ⭐ ${escapeHTML(item.rating)}
                             </div>
                           `
                         : ""
@@ -828,7 +773,7 @@ function buildProductCard(item) {
 }
 
 
-function buildProjectCard(item) {
+function buildProjectCard(item = {}) {
 
     const name =
         item.name ||
@@ -844,11 +789,9 @@ function buildProjectCard(item) {
 
     return `
         <article
-            class="card project-card"
+            class="card project-card platform-result-card"
             data-type="project"
-            data-id="${escapeHTML(
-                item.id || ""
-            )}">
+            data-id="${escapeHTML(item.id || "")}">
 
             ${
                 image
@@ -869,22 +812,26 @@ function buildProjectCard(item) {
                       `
             }
 
-            <h3>
-                ${escapeHTML(name)}
-            </h3>
+            <div class="platform-card-content">
 
-            <p>
-                ${escapeHTML(description)}
-            </p>
+                <h3>
+                    ${escapeHTML(name)}
+                </h3>
 
-            <button
-                type="button"
-                class="btn copy-card-btn"
-                data-copy="${escapeHTML(
-                    `${name}\n${description}`
-                )}">
-                Copy
-            </button>
+                <p>
+                    ${escapeHTML(description)}
+                </p>
+
+                <button
+                    type="button"
+                    class="btn copy-card-btn"
+                    data-copy="${escapeHTML(
+                        `${name}\n${description}`
+                    )}">
+                    Copy
+                </button>
+
+            </div>
 
         </article>
     `;
@@ -930,16 +877,12 @@ function renderGrid(
 async function loadTourism() {
 
     const grid =
-        $(
-            ASEM.selectors.tourismGrid
-        );
+        $(ASEM.selectors.tourismGrid);
 
     if (!grid) {
-
         console.warn(
             "ASEM: tourismGrid not found"
         );
-
         return;
     }
 
@@ -982,16 +925,12 @@ async function loadTourism() {
 async function loadBusinesses() {
 
     const grid =
-        $(
-            ASEM.selectors.businessesGrid
-        );
+        $(ASEM.selectors.businessesGrid);
 
     if (!grid) {
-
         console.warn(
             "ASEM: businessesGrid not found"
         );
-
         return;
     }
 
@@ -1034,16 +973,12 @@ async function loadBusinesses() {
 async function loadProducts() {
 
     const grid =
-        $(
-            ASEM.selectors.productsGrid
-        );
+        $(ASEM.selectors.productsGrid);
 
     if (!grid) {
-
         console.warn(
             "ASEM: productsGrid not found"
         );
-
         return;
     }
 
@@ -1086,16 +1021,12 @@ async function loadProducts() {
 async function loadProjects() {
 
     const grid =
-        $(
-            ASEM.selectors.projectsGrid
-        );
+        $(ASEM.selectors.projectsGrid);
 
     if (!grid) {
-
         console.warn(
             "ASEM: projectsGrid not found"
         );
-
         return;
     }
 
@@ -1116,7 +1047,7 @@ async function loadProjects() {
             normalizeArray(data),
             buildProjectCard,
             "ASEM Projects",
-            "Our projects will appear here."
+            "Our project showcase will appear here."
         );
 
     } catch (error) {
@@ -1133,30 +1064,46 @@ async function loadProjects() {
         );
     }
 }
+
+
 /* ========================================================
    PORTFOLIO / WORK
 ======================================================== */
 
 function openPortfolio() {
 
-    openPageSection(
-        "portfolio"
-    );
+    const opened =
+        openPageSection("portfolio");
+
+    if (!opened) {
+
+        const section =
+            document.getElementById(
+                "portfolio-section"
+            );
+
+        if (section) {
+
+            section.hidden = false;
+
+            section.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    }
 
     const grid =
-        $(
-            ASEM.selectors.portfolioGrid
-        );
+        $(ASEM.selectors.portfolioGrid);
 
     if (!grid) {
-        return;
+        return true;
     }
 
     if (!grid.children.length) {
 
         grid.innerHTML = `
-            <article
-                class="card portfolio-card">
+            <article class="card portfolio-card">
 
                 <div
                     class="platform-card-icon"
@@ -1177,16 +1124,12 @@ function openPortfolio() {
             </article>
         `;
     }
+
+    return true;
 }
 
 
-/*
- * "Work" is kept as a separate action because the
- * frontend icon may use data-platform-action="work".
-* It intentionally opens the existing portfolio section.
- */ 
 function openWork() {
-
     return openPortfolio();
 }
 
@@ -1195,12 +1138,30 @@ function openWork() {
    RESTAURANTS
 ======================================================== */
 
-/*
- * Restaurants are currently represented by the
- * businesses API. This keeps the existing backend
- * unchanged while allowing a Restaurants icon to work.
- */
 function openRestaurants() {
+
+    const section =
+        document.getElementById(
+            "restaurants-section"
+        );
+
+    if (section) {
+
+        section.hidden = false;
+
+        section.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "asem:restaurants:open"
+            )
+        );
+
+        return true;
+    }
 
     return handleSection(
         "businesses-section",
@@ -1213,19 +1174,6 @@ function openRestaurants() {
    AI
 ======================================================== */
 
-/*
- * The previous initializeAI() function only contained
- * comments, so the AI action had no actual frontend
- * behavior.
- *
- * The function below first looks for a dedicated AI
- * section. It supports both:
- *
- *     #ai
- *     #ai-section
- *
- * If neither exists, it looks for a dedicated AI page.
- */
 function openAI() {
 
     const aiSection =
@@ -1250,23 +1198,12 @@ function openAI() {
         return true;
     }
 
-    /*
-     * If another AI module is installed on the page,
-     * give it an event to initialize/open itself.
-     */
-    const aiEvent =
+    document.dispatchEvent(
         new CustomEvent(
             "asem:ai:open"
-        );
-
-    document.dispatchEvent(
-        aiEvent
+        )
     );
 
-    /*
-     * If an AI page exists in the project,
-     * this provides a final navigation fallback.
-     */
     const aiLink =
         document.querySelector(
             'a[href="ai.html"], a[href="./ai.html"]'
@@ -1274,11 +1211,9 @@ function openAI() {
 
     if (aiLink) {
 
-        openExternalPage(
+        return openExternalPage(
             aiLink.getAttribute("href")
         );
-
-        return true;
     }
 
     console.warn(
@@ -1290,21 +1225,6 @@ function openAI() {
 
 
 function initializeAI() {
-
-    /*
-     * The AI runtime can listen for this event:
-     *
-     * document.addEventListener(
-     *     "asem:ai:open",
-     *     () => {
-     *         // open AI interface
-     *     }
-     * );
-     *
-     * No external AI service is called here.
-     * This keeps the frontend stable until the
-     * actual AI interface/runtime is connected.
-     */
 
     document.addEventListener(
         "asem:ai:open",
@@ -1325,12 +1245,10 @@ function initializeAI() {
 function focusSearch() {
 
     const input =
-        $(
-            ASEM.selectors.search
-        );
+        DOM.search;
 
     if (!input) {
-        return;
+        return false;
     }
 
     input.focus();
@@ -1339,6 +1257,8 @@ function focusSearch() {
         behavior: "smooth",
         block: "center"
     });
+
+    return true;
 }
 
 
@@ -1350,30 +1270,27 @@ function search(value) {
             .trim();
 
     const cards =
-        $$(
+        $(
             ".platform-result-card, .project-card"
-        );
+        )
+        ? $$(
+            ".platform-result-card, .project-card"
+        )
+        : [];
 
-    if (!query) {
+    cards.forEach(card => {
 
-        cards.forEach(
-            card => {
-                card.hidden = false;
-            }
-        );
+        if (!query) {
 
-        return;
-    }
-
-    cards.forEach(
-        card => {
-
-            card.hidden =
-                !card.textContent
-                    .toLowerCase()
-                    .includes(query);
+            card.hidden = false;
+            return;
         }
-    );
+
+        card.hidden =
+            !card.textContent
+                .toLowerCase()
+                .includes(query);
+    });
 }
 
 
@@ -1395,9 +1312,7 @@ function applyTheme(theme) {
         );
 
     const button =
-        $(
-            ASEM.selectors.theme
-        );
+        DOM.theme;
 
     if (button) {
 
@@ -1458,7 +1373,6 @@ function initializeTheme() {
     ) {
 
         applyTheme(saved);
-
         return;
     }
 
@@ -1484,7 +1398,7 @@ function toggleTheme() {
                 "data-theme"
             );
 
-    applyTheme(
+    return applyTheme(
         current === "dark"
             ? "light"
             : "dark"
@@ -1493,7 +1407,7 @@ function toggleTheme() {
 
 
 /* ========================================================
-   GPS / GEOLOCATION
+   GPS
 ======================================================== */
 
 function showLocationStatus(message) {
@@ -1523,10 +1437,14 @@ async function sendLocationToBackend(location) {
             ASEM.api.location,
             {
                 method: "POST",
+
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type":
+                        "application/json"
                 },
-                body: JSON.stringify(location)
+
+                body:
+                    JSON.stringify(location)
             }
         );
 
@@ -1550,7 +1468,7 @@ function requestGPS() {
             "GPS / Geolocation is not supported by this browser."
         );
 
-        return;
+        return false;
     }
 
     showLocationStatus(
@@ -1558,6 +1476,7 @@ function requestGPS() {
     );
 
     navigator.geolocation.getCurrentPosition(
+
         async position => {
 
             const location = {
@@ -1614,6 +1533,11 @@ function requestGPS() {
                         "Location request timed out.";
 
                     break;
+
+                default:
+
+                    message =
+                        "Unable to get location.";
             }
 
             showLocationStatus(
@@ -1632,13 +1556,11 @@ function requestGPS() {
             maximumAge: 0
         }
     );
+
+    return true;
 }
 
 
-/*
- * Kept for compatibility.
- * GPS clicks are handled by initializeActionRouter().
- */
 function initializeGPS() {
     return true;
 }
@@ -1650,111 +1572,142 @@ function initializeGPS() {
 
 const actions = {
 
-    tourism: () =>
-        handleSection(
-            "tourism-section",
-            loadTourism
-        ),
+    tourism:
+        () =>
+            handleSection(
+                "tourism-section",
+                loadTourism
+            ),
 
-    businesses: () =>
-        handleSection(
-            "businesses-section",
-            loadBusinesses
-        ),
+    globaltourism:
+        () =>
+            handleSection(
+                "tourism-section",
+                loadTourism
+            ),
 
-    /*
-     * Restaurant aliases.
-     * Restaurants currently use the businesses backend.
-     */
-    restaurant: () =>
-        openRestaurants(),
+    businesses:
+        () =>
+            handleSection(
+                "businesses-section",
+                loadBusinesses
+            ),
 
-    restaurants: () =>
-        openRestaurants(),
+    business:
+        () =>
+            handleSection(
+                "businesses-section",
+                loadBusinesses
+            ),
 
-    /*
-     * Product aliases.
-     */
-    product: () =>
-        handleSection(
-            "products-section",
-            loadProducts
-        ),
+    globalbusinesses:
+        () =>
+            handleSection(
+                "businesses-section",
+                loadBusinesses
+            ),
 
-    products: () =>
-        handleSection(
-            "products-section",
-            loadProducts
-        ),
+    restaurant:
+        () =>
+            openRestaurants(),
 
-    /*
-     * Project aliases.
-     */
-    project: () =>
-        handleSection(
-            "projects",
-            loadProjects
-        ),
+    restaurants:
+        () =>
+            openRestaurants(),
 
-    projects: () =>
-        handleSection(
-            "projects",
-            loadProjects
-        ),
+    product:
+        () =>
+            handleSection(
+                "products-section",
+                loadProducts
+            ),
 
-    /*
-     * Work / Portfolio aliases.
-     */
-    work: () =>
-        openWork(),
+    products:
+        () =>
+            handleSection(
+                "products-section",
+                loadProducts
+            ),
 
-    portfolio: () =>
-        openPortfolio(),
+    globalproducts:
+        () =>
+            handleSection(
+                "products-section",
+                loadProducts
+            ),
 
-    /*
-     * AI aliases.
-     */
-    ai: () =>
-        openAI(),
+    project:
+        () =>
+            handleSection(
+                "projects",
+                loadProjects
+            ),
 
-    assistant: () =>
-        openAI(),
+    projects:
+        () =>
+            handleSection(
+                "projects",
+                loadProjects
+            ),
 
-    artificialintelligence: () =>
-        openAI(),
+    work:
+        () =>
+            openWork(),
 
-    services: () =>
-        openPageSection(
-            "services"
-        ),
+    portfolio:
+        () =>
+            openPortfolio(),
 
-    contact: () =>
-        openExternalPage(
-            "contact.html"
-        ),
+    ai:
+        () =>
+            openAI(),
 
-    about: () =>
-        openExternalPage(
-            "about.html"
-        ),
+    assistant:
+        () =>
+            openAI(),
 
-    search: () =>
-        focusSearch(),
+    artificialintelligence:
+        () =>
+            openAI(),
 
-    gps: () =>
-        requestGPS(),
+    services:
+        () =>
+            openPageSection("services"),
 
-    location: () =>
-        requestGPS(),
+    contact:
+        () =>
+            openExternalPage("contact.html"),
 
-    nearby: () =>
-        requestGPS(),
+    about:
+        () =>
+            openExternalPage("about.html"),
 
-    top: () =>
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        })
+    search:
+        () =>
+            focusSearch(),
+
+    globalsearch:
+        () =>
+            focusSearch(),
+
+    gps:
+        () =>
+            requestGPS(),
+
+    location:
+        () =>
+            requestGPS(),
+
+    nearby:
+        () =>
+            requestGPS(),
+
+    top:
+        () =>
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            })
 };
 
 
@@ -2522,6 +2475,10 @@ const I18N = {
 };
 
 
+/* ========================================================
+   LANGUAGE FUNCTIONS
+======================================================== */
+
 function detectLanguage() {
 
     const language =
@@ -2570,6 +2527,7 @@ function applyTranslations(language) {
                     key
                 )
             ) {
+
                 element.textContent =
                     dictionary[key];
             }
@@ -2603,9 +2561,7 @@ function applyLanguage(language) {
                 : "ltr"
         );
 
-    applyTranslations(
-        selected
-    );
+    applyTranslations(selected);
 
     try {
 
@@ -2634,7 +2590,7 @@ function applyLanguage(language) {
 function initializeLanguage() {
 
     const selector =
-        $(ASEM.selectors.language);
+        DOM.language;
 
     let saved = "auto";
 
@@ -2679,9 +2635,7 @@ function initializeLanguage() {
 function initializeThemeEvents() {
 
     const button =
-        $(
-            ASEM.selectors.theme
-        );
+        DOM.theme;
 
     if (!button) {
         return;
@@ -2697,9 +2651,7 @@ function initializeThemeEvents() {
 function initializeLanguageEvents() {
 
     const selector =
-        $(
-            ASEM.selectors.language
-        );
+        DOM.language;
 
     if (!selector) {
         return;
@@ -2720,9 +2672,7 @@ function initializeLanguageEvents() {
 function initializeSearch() {
 
     const input =
-        $(
-            ASEM.selectors.search
-        );
+        DOM.search;
 
     if (!input) {
         return;
@@ -2743,8 +2693,7 @@ function initializeSearch() {
         event => {
 
             if (
-                event.key ===
-                "Escape"
+                event.key === "Escape"
             ) {
 
                 input.value = "";
@@ -2761,9 +2710,7 @@ function initializeSearch() {
 function initializeScrollTop() {
 
     const button =
-        $(
-            ASEM.selectors.scrollTop
-        );
+        DOM.scrollTop;
 
     if (!button) {
         return;
@@ -2808,6 +2755,66 @@ function initializeScrollTop() {
    ACTION ROUTER
 ======================================================== */
 
+function executeAction(action) {
+
+    const normalized =
+        normalizeAction(action);
+
+    if (!normalized) {
+        return false;
+    }
+
+    const handler =
+        actions[normalized];
+
+    if (
+        typeof handler !==
+        "function"
+    ) {
+
+        console.warn(
+            `ASEM: unknown action "${action}"`
+        );
+
+        return false;
+    }
+
+    try {
+
+        const result =
+            handler();
+
+        if (
+            result &&
+            typeof result.then ===
+                "function"
+        ) {
+
+            result.catch(
+                error => {
+
+                    console.error(
+                        `ASEM action "${action}" failed:`,
+                        error
+                    );
+                }
+            );
+        }
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            `ASEM action "${action}" failed:`,
+            error
+        );
+
+        return false;
+    }
+}
+
+
 function initializeActionRouter() {
 
     document.addEventListener(
@@ -2834,8 +2841,6 @@ function initializeActionRouter() {
                 return;
             }
 
-            event.preventDefault();
-
             let action =
                 element.dataset.platformAction;
 
@@ -2843,6 +2848,7 @@ function initializeActionRouter() {
                 !action &&
                 element.matches("[data-gps]")
             ) {
+
                 action = "gps";
             }
 
@@ -2850,63 +2856,9 @@ function initializeActionRouter() {
                 return;
             }
 
-            /*
-             * Normalize action names so small differences
-             * in the HTML do not break the buttons.
-             */
-            action =
-                String(action)
-                    .trim()
-                    .toLowerCase()
-                    .replace(
-                        /[\s_-]+/g,
-                        ""
-                    );
+            event.preventDefault();
 
-            const handler =
-                actions[action];
-
-            if (
-                typeof handler !==
-                "function"
-            ) {
-
-                console.warn(
-                    `ASEM: unknown action ${action}`
-                );
-
-                return;
-            }
-
-            try {
-
-                const result =
-                    handler();
-
-                if (
-                    result &&
-                    typeof result.then ===
-                    "function"
-                ) {
-
-                    result.catch(
-                        error => {
-
-                            console.error(
-                                "ASEM action:",
-                                error
-                            );
-                        }
-                    );
-                }
-
-            } catch (error) {
-
-                console.error(
-                    `ASEM action "${action}" failed:`,
-                    error
-                );
-            }
+            executeAction(action);
         }
     );
 }
@@ -2928,12 +2880,9 @@ function initializeKeyboard() {
             const isInput =
                 active &&
                 (
-                    active.tagName ===
-                        "INPUT" ||
-                    active.tagName ===
-                        "TEXTAREA" ||
-                    active.tagName ===
-                        "SELECT" ||
+                    active.tagName === "INPUT" ||
+                    active.tagName === "TEXTAREA" ||
+                    active.tagName === "SELECT" ||
                     active.isContentEditable
                 );
 
@@ -2950,8 +2899,7 @@ function initializeKeyboard() {
             }
 
             if (
-                event.key ===
-                "Escape"
+                event.key === "Escape"
             ) {
 
                 const input =
@@ -2965,10 +2913,8 @@ function initializeKeyboard() {
             }
 
             if (
-                event.key !==
-                    "Enter" &&
-                event.key !==
-                    " "
+                event.key !== "Enter" &&
+                event.key !== " "
             ) {
                 return;
             }
@@ -2986,7 +2932,7 @@ function initializeKeyboard() {
 
             const element =
                 target.closest(
-                    "[data-platform-action]"
+                    "[data-platform-action], [data-gps]"
                 );
 
             if (!element) {
@@ -3001,63 +2947,23 @@ function initializeKeyboard() {
             }
 
             let action =
-                element.dataset
-                    .platformAction;
+                element.dataset.platformAction;
+
+            if (
+                !action &&
+                element.matches("[data-gps]")
+            ) {
+
+                action = "gps";
+            }
 
             if (!action) {
                 return;
             }
 
-            action =
-                String(action)
-                    .trim()
-                    .toLowerCase()
-                    .replace(
-                        /[\s_-]+/g,
-                        ""
-                    );
-
-            const handler =
-                actions[action];
-
-            if (
-                typeof handler !==
-                "function"
-            ) {
-                return;
-            }
-
             event.preventDefault();
 
-            try {
-
-                const result =
-                    handler();
-
-                if (
-                    result &&
-                    typeof result.then ===
-                    "function"
-                ) {
-
-                    result.catch(
-                        error => {
-
-                            console.error(
-                                "ASEM keyboard action:",
-                                error
-                            );
-                        }
-                    );
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "ASEM keyboard action:",
-                    error
-                );
-            }
+            executeAction(action);
         }
     );
 }
@@ -3094,9 +3000,7 @@ function initializeNavigation() {
             }
 
             const href =
-                link.getAttribute(
-                    "href"
-                );
+                link.getAttribute("href");
 
             if (!href) {
                 return;
@@ -3110,9 +3014,7 @@ function initializeNavigation() {
             }
 
             const section =
-                document.getElementById(
-                    id
-                );
+                document.getElementById(id);
 
             if (!section) {
                 return;
@@ -3127,7 +3029,7 @@ function initializeNavigation() {
 
 
 /* ========================================================
-   COPY ACTIONS
+   COPY
 ======================================================== */
 
 function initializeCopyActions() {
@@ -3159,8 +3061,7 @@ function initializeCopyActions() {
             event.preventDefault();
 
             const value =
-                button.dataset.copy ||
-                "";
+                button.dataset.copy || "";
 
             if (!value) {
                 return;
@@ -3170,8 +3071,7 @@ function initializeCopyActions() {
 
                 if (
                     navigator.clipboard &&
-                    typeof navigator.clipboard
-                        .writeText ===
+                    typeof navigator.clipboard.writeText ===
                         "function"
                 ) {
 
@@ -3181,3 +3081,490 @@ function initializeCopyActions() {
                 } else {
 
                     window.prompt(
+                        "Copy this text:",
+                        value
+                    );
+
+                    return;
+                }
+
+                const original =
+                    button.textContent;
+
+                button.textContent =
+                    "Copied ✓";
+
+                window.setTimeout(
+                    () => {
+
+                        button.textContent =
+                            original;
+
+                    },
+                    1500
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "ASEM: copy failed",
+                    error
+                );
+
+                window.prompt(
+                    "Copy this text:",
+                    value
+                );
+            }
+        }
+    );
+}
+
+
+/* ========================================================
+   RETRY
+======================================================== */
+
+function initializeRetryActions() {
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const target =
+                event.target;
+
+            if (
+                !target ||
+                typeof target.closest !==
+                    "function"
+            ) {
+                return;
+            }
+
+            const button =
+                target.closest(
+                    "[data-retry-grid]"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const gridId =
+                button.dataset.retryGrid;
+
+            const loaders = {
+
+                tourismGrid:
+                    loadTourism,
+
+                businessesGrid:
+                    loadBusinesses,
+
+                productsGrid:
+                    loadProducts,
+
+                projectsGrid:
+                    loadProjects
+            };
+
+            const loader =
+                loaders[gridId];
+
+            if (
+                typeof loader ===
+                "function"
+            ) {
+
+                Promise.resolve(
+========================================================
+   RETRY
+======================================================== */
+
+function initializeRetryActions() {
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const target =
+                event.target;
+
+            if (
+                !target ||
+                typeof target.closest !==
+                    "function"
+            ) {
+                return;
+            }
+
+            const button =
+                target.closest(
+                    "[data-retry-grid]"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const gridId =
+                button.dataset.retryGrid;
+
+            const loaders = {
+
+                tourismGrid:
+                    loadTourism,
+
+                businessesGrid:
+                    loadBusinesses,
+
+                productsGrid:
+                    loadProducts,
+
+                projectsGrid:
+                    loadProjects
+            };
+
+            const loader =
+                loaders[gridId];
+
+            if (
+                typeof loader ===
+                "function"
+            ) {
+
+                Promise.resolve(
+                    loader()
+                ).catch(
+                    error =>
+                        console.error(
+                            "ASEM retry:",
+                            error
+                        )
+                );
+            }
+        }
+    );
+}
+
+
+/* ========================================================
+   ADD PROJECT
+======================================================== */
+
+function addProject() {
+
+    const name =
+        window.prompt(
+            "اسم المشروع"
+        );
+
+    if (!name) {
+        return false;
+    }
+
+    const version =
+        window.prompt(
+            "الإصدار",
+            "1.0"
+        );
+
+    const status =
+        window.prompt(
+            "الحالة",
+            "جديد"
+        );
+
+    const email =
+        window.prompt(
+            "بريدك للتواصل (اختياري)"
+        );
+
+    const whatsapp =
+        window.prompt(
+            "رابط واتساب (اختياري)"
+        );
+
+    const facebook =
+        window.prompt(
+            "رابط فيسبوك (اختياري)"
+        );
+
+    const instagram =
+        window.prompt(
+            "رابط إنستجرام (اختياري)"
+        );
+
+    const grid =
+        document.getElementById(
+            "projectsGrid"
+        );
+
+    if (!grid) {
+
+        console.warn(
+            "ASEM: projectsGrid not found"
+        );
+
+        return false;
+    }
+
+    const card =
+        document.createElement("article");
+
+    card.className =
+        "card project-card platform-result-card";
+
+    const safeName =
+        escapeHTML(name);
+
+    const safeVersion =
+        escapeHTML(version || "1.0");
+
+    const safeStatus =
+        escapeHTML(status || "جديد");
+
+    const safeEmail =
+        escapeHTML(email || "");
+
+    const safeWhatsapp =
+        escapeHTML(whatsapp || "");
+
+    const safeFacebook =
+        escapeHTML(facebook || "");
+
+    const safeInstagram =
+        escapeHTML(instagram || "");
+
+    card.innerHTML = `
+
+        <span class="status">
+            🆕 ${safeStatus}
+        </span>
+
+        <div
+            class="platform-card-icon"
+            aria-hidden="true">
+            🚀
+        </div>
+
+        <h2>
+            ${safeName}
+        </h2>
+
+        <p>
+            <strong>الإصدار:</strong>
+            ${safeVersion}
+        </p>
+
+        <p>
+            تمت إضافته بواسطة أحد مستخدمي ASEM.
+        </p>
+
+        <div class="buttons">
+
+            ${
+                safeEmail
+                    ? `
+                        <a
+                            href="mailto:${safeEmail}">
+                            📧 إيميل
+                        </a>
+                      `
+                    : ""
+            }
+
+            ${
+                safeWhatsapp
+                    ? `
+                        <a
+                            href="${safeWhatsapp}"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            💬 واتساب
+                        </a>
+                      `
+                    : ""
+            }
+
+            ${
+                safeFacebook
+                    ? `
+                        <a
+                            href="${safeFacebook}"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            📘 فيسبوك
+                        </a>
+                      `
+                    : ""
+            }
+
+            ${
+                safeInstagram
+                    ? `
+                        <a
+                            href="${safeInstagram}"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            📸 إنستجرام
+                        </a>
+                      `
+                    : ""
+            }
+
+            <button
+                type="button"
+                class="btn copy-card-btn"
+                data-copy="${escapeHTML(
+                    `${name}\nالإصدار: ${version || "1.0"}\nالحالة: ${status || "جديد"}`
+                )}">
+                Copy
+            </button>
+
+        </div>
+    `;
+
+    grid.prepend(card);
+
+    return true;
+}
+
+
+/* ========================================================
+   GLOBAL COMPATIBILITY API
+======================================================== */
+
+window.ASEM =
+    ASEM;
+
+window.ASEM.actions =
+    actions;
+
+window.ASEM.executeAction =
+    executeAction;
+
+window.ASEM.apiRequest =
+    apiRequest;
+
+window.requestGPS =
+    requestGPS;
+
+window.loadTourism =
+    loadTourism;
+
+window.loadBusinesses =
+    loadBusinesses;
+
+window.loadProducts =
+    loadProducts;
+
+window.loadProjects =
+    loadProjects;
+
+window.openPortfolio =
+    openPortfolio;
+
+window.openWork =
+    openWork;
+
+window.openRestaurants =
+    openRestaurants;
+
+window.openAI =
+    openAI;
+
+window.openPageSection =
+    openPageSection;
+
+window.focusASEMSearch =
+    focusSearch;
+
+window.focusSearch =
+    focusSearch;
+
+window.searchASEM =
+    search;
+
+window.applyASEMTheme =
+    applyTheme;
+
+window.toggleASEMTheme =
+    toggleTheme;
+
+window.applyASEMLanguage =
+    applyLanguage;
+
+window.addProject =
+    addProject;
+
+
+/* ========================================================
+   STARTUP
+======================================================== */
+
+let initialized = false;
+
+
+function initialize() {
+
+    if (initialized) {
+        return;
+    }
+
+    initialized = true;
+
+    initializeTheme();
+
+    initializeLanguage();
+
+    initializeThemeEvents();
+
+    initializeLanguageEvents();
+
+    initializeSearch();
+
+    initializeScrollTop();
+
+    initializeGPS();
+
+    initializeActionRouter();
+
+    initializeKeyboard();
+
+    initializeNavigation();
+
+    initializeCopyActions();
+
+    initializeRetryActions();
+
+    initializeAI();
+
+    console.info(
+        "ASEM Global Platform READY"
+    );
+}
+
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initialize,
+        {
+            once: true
+        }
+    );
+
+} else {
+
+    initialize();
+}
