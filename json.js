@@ -1,4 +1,3 @@
-
 // تحميل المشاريع من JSON
 fetch("projects.json")
 .then(res => res.json())
@@ -60,4 +59,3 @@ function filterCards() {
         card.style.display = text.includes(input) ? "block" : "none";
     });
 }
-

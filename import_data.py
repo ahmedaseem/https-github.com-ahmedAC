@@ -1,47 +1,82 @@
 import json
 import os
+from datetime import datetime
 
 
-DATABASE_PATH = "../database/world"
-
-
-def load_data(file_name):
-    path = os.path.join(DATABASE_PATH, file_name)
-
-    with open(path, "r", encoding="utf-8") as file:
-        return json.load(file)
-
-
-def save_data(file_name, content):
-    path = os.path.join(DATABASE_PATH, file_name)
-
-    with open(path, "w", encoding="utf-8") as file:
-        json.dump(
-            content,
-            file,
-            ensure_ascii=False,
-            indent=2
+class ASEMDataPipeline:
+    def __init__(self):
+        self.database_path = os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                "../../database/world"
+            )
         )
 
+    def load_source(self, source_file):
+        with open(source_file, "r", encoding="utf-8") as file:
+            return json.load(file)
 
-def add_record(file_name, record):
-    database = load_data(file_name)
+    def validate_record(self, record):
+        required_fields = ["id", "names"]
 
-    database["data"].append(record)
+        for field in required_fields:
+            if field not in record:
+                return False
 
-    save_data(file_name, database)
+        return True
+
+    def import_data(self, database_file, records):
+        database_path = os.path.join(
+            self.database_path,
+            database_file
+        )
+
+        with open(database_path, "r", encoding="utf-8") as file:
+            database = json.load(file)
+
+        imported = 0
+
+        for record in records:
+
+            if self.validate_record(record):
+
+                exists = any(
+                    item["id"] == record["id"]
+                    for item in database["data"]
+                )
+
+                if not exists:
+                    database["data"].append(record)
+                    imported += 1
+
+        with open(database_path, "w", encoding="utf-8") as file:
+            json.dump(
+                database,
+                file,
+                ensure_ascii=False,
+                indent=2
+            )
+
+        return imported
 
 
-# اختبار المضخة
-new_country = {
-    "id": "COUNTRY_ID",
-    "names": [],
-    "continent": "",
-    "languages": [],
-    "currency": "",
-    "cities": []
-}
+def run_pipeline():
 
-add_record("countries.json", new_country)
+    pipeline = ASEMDataPipeline()
 
-print("ASEM Data Pump: Record Added")
+    print(
+        "ASEM Global Data Pipeline Started",
+        datetime.now()
+    )
+
+    # هنا سيتم ربط مصادر البيانات الحقيقية
+    # Countries API
+    # Cities Dataset
+    # Business Sources
+    # Tourism Sources
+
+    print("Pipeline Ready")
+
+
+if __name__ == "__main__":
+    run_pipeline()

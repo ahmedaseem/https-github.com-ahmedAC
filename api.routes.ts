@@ -1,3 +1,21 @@
+@api_bp.route("", methods=["GET"])
+def api_index():
+    return jsonify({
+        "service": "ASEM API",
+        "status": "ok",
+        "version": "1.0",
+        "endpoints": {
+            "health": "/api/health",
+            "countries": "/api/countries",
+            "cities": "/api/cities",
+            "businesses": "/api/businesses",
+            "tourism": "/api/tourism",
+            "products": "/api/products",
+            "projects": "/api/projects",
+            "location": "/api/location"
+        }
+    }), 200
+> cat api.routes.ts
 import {
   Controller,
   Get,

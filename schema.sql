@@ -1,3 +1,4 @@
+
 -- ASEM Global Platform Database Schema
 -- PostgreSQL
 

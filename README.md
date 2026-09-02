@@ -1,22 +1,10 @@
-# ASEM Digital Solutions
+ASEM Global Platform
 
-A modern digital solutions company website.
+A multilingual global platform connecting:
+Countries, Cities, Places, Businesses, Culture, Tourism and Services.
 
-## Features
-
-- Responsive design
-- Dark mode
-- Multi-language support
-- Dynamic projects loading
-- PWA support
-
-## Technologies
-
-- HTML5
-- CSS3
-- JavaScript
-- JSON# deploy
-# asem.digital-solutions.
-# https-github.com-asemroot.com-git
-# https-github.com-asemroot.com-git
-# http-asemroot.com_git
+Core principles:
+- Multilingual
+- RTL/LTR support
+- Scalable architecture
+- Global data system

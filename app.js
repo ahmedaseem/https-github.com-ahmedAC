@@ -2,1069 +2,12 @@
 
 import { CONFIG } from "./config.js";
 
-/* ========================================================
-   ASEM GLOBAL PLATFORM
-   Complete Frontend Controller
-======================================================== */
-
 const API_BASE =
     CONFIG?.api?.real || "";
 
-const REQUEST_TIMEOUT =
-    Number(CONFIG?.timeout) || 15000;
-
-console.log("ASEM: app.js STARTED");
-
-
-/* ========================================================
-   CONFIGURATION
-======================================================== */
-
-const ASEM = {
-
-    selectors: {
-
-        search:
-            "#searchBox",
-
-        language:
-            "#langSwitch",
-
-        theme:
-            "#themeToggle",
-
-        scrollTop:
-            "#scrollTop",
-
-        locationStatus:
-            "#locationStatus",
-
-        tourismGrid:
-            "#tourismGrid",
-
-        businessesGrid:
-            "#businessesGrid",
-
-        productsGrid:
-            "#productsGrid",
-
-        projectsGrid:
-            "#projectsGrid",
-
-        portfolioGrid:
-            "#portfolioGrid"
-    },
-
-    api: {
-
-        tourism:
-            `${API_BASE}/tourism`,
-
-        businesses:
-            `${API_BASE}/businesses`,
-
-        products:
-            `${API_BASE}/products`,
-
-        projects:
-            `${API_BASE}/projects`,
-
-        location:
-            CONFIG?.api?.location ||
-            `${API_BASE}/location`
-    },
-
-    storage: {
-
-        theme:
-            "asem-theme",
-
-        language:
-            "asem-language"
-    },
-
-    requestTimeout:
-        REQUEST_TIMEOUT
-};
-
-
-/* ========================================================
-   DOM HELPERS
-======================================================== */
-
-function $(selector, root = document) {
-    return root.querySelector(selector);
-}
-
-
-function $$(selector, root = document) {
-    return Array.from(
-        root.querySelectorAll(selector)
-    );
-}
-
-
-const DOM = {
-
-    get search() {
-        return $(ASEM.selectors.search);
-    },
-
-    get language() {
-        return $(ASEM.selectors.language);
-    },
-
-    get theme() {
-        return $(ASEM.selectors.theme);
-    },
-
-    get scrollTop() {
-        return $(ASEM.selectors.scrollTop);
-    },
-
-    get locationStatus() {
-        return $(ASEM.selectors.locationStatus);
-    }
-};
-
-
-/* ========================================================
-   SAFE HELPERS
-======================================================== */
-
-function escapeHTML(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "";
-    }
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-function normalizeArray(data) {
-
-    if (Array.isArray(data)) {
-        return data;
-    }
-
-    if (
-        !data ||
-        typeof data !== "object"
-    ) {
-        return [];
-    }
-
-    const keys = [
-        "data",
-        "items",
-        "results",
-        "tourism",
-        "businesses",
-        "products",
-        "projects"
-    ];
-
-    for (const key of keys) {
-
-        if (Array.isArray(data[key])) {
-            return data[key];
-        }
-    }
-
-    return [];
-}
-
-
-function normalizeAction(action) {
-
-    return String(action || "")
-        .trim()
-        .toLowerCase()
-        .replace(/[\s_-]+/g, "");
-}
-
-
-/* ========================================================
-   NAVIGATION
-======================================================== */
-
-function openPageSection(id) {
-
-    if (!id) {
-        return false;
-    }
-
-    const section =
-        document.getElementById(id);
-
-    if (!section) {
-
-        console.warn(
-            `ASEM: section #${id} not found`
-        );
-
-        return false;
-    }
-
-    section.hidden = false;
-
-    section.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-
-    return true;
-}
-
-
-function handleSection(sectionId, loader) {
-
-    const opened =
-        openPageSection(sectionId);
-
-    if (!opened) {
-        return false;
-    }
-
-    if (typeof loader === "function") {
-
-        Promise.resolve(loader())
-            .catch(error => {
-
-                console.error(
-                    "ASEM section loader:",
-                    error
-                );
-            });
-    }
-
-    return true;
-}
-
-
-function openExternalPage(page) {
-
-    if (!page) {
-        return false;
-    }
-
-    window.location.href = page;
-
-    return true;
-}
-
-
-/* ========================================================
-   API
-======================================================== */
-
-async function apiRequest(endpoint, options = {}) {
-
-    if (!endpoint) {
-        throw new Error("API endpoint is empty");
-    }
-
-    const controller =
-        new AbortController();
-
-    const timer =
-        window.setTimeout(
-            () => controller.abort(),
-            ASEM.requestTimeout
-        );
-
-    const requestOptions = {
-
-        method:
-            options.method || "GET",
-
-        headers: {
-
-            Accept:
-                "application/json",
-
-            ...(options.headers || {})
-        },
-
-        cache:
-            options.cache || "no-store",
-
-        signal:
-            controller.signal
-    };
-
-    if (options.body !== undefined) {
-        requestOptions.body =
-            options.body;
-    }
-
-    try {
-
-        const response =
-            await fetch(
-                endpoint,
-                requestOptions
-            );
-
-        if (!response.ok) {
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
-        const contentType =
-            response.headers.get(
-                "content-type"
-            ) || "";
-
-        if (
-            contentType &&
-            !contentType.includes(
-                "application/json"
-            )
-        ) {
-
-            throw new Error(
-                "API did not return JSON"
-            );
-        }
-
-        return await response.json();
-
-    } finally {
-
-        window.clearTimeout(timer);
-    }
-}
-
-
-/* ========================================================
-   GRID STATES
-======================================================== */
-
-function setGridLoading(grid, message) {
-
-    if (!grid) {
-        return;
-    }
-
-    grid.innerHTML = `
-        <article class="card platform-state loading-state">
-
-            <div
-                class="loading-spinner"
-                aria-hidden="true">
-            </div>
-
-            <h3>
-                ${escapeHTML(
-                    message || "Loading..."
-                )}
-            </h3>
-
-            <p>
-                Please wait...
-            </p>
-
-        </article>
-    `;
-
-    grid.setAttribute(
-        "aria-busy",
-        "true"
-    );
-}
-
-
-function setGridEmpty(
-    grid,
-    title,
-    message
-) {
-
-    if (!grid) {
-        return;
-    }
-
-    grid.innerHTML = `
-        <article class="card platform-state empty-state">
-
-            <span
-                class="platform-state-icon"
-                aria-hidden="true">
-                🌐
-            </span>
-
-            <h3>
-                ${escapeHTML(
-                    title || "No data available"
-                )}
-            </h3>
-
-            <p>
-                ${escapeHTML(
-                    message || "No items available."
-                )}
-            </p>
-
-        </article>
-    `;
-
-    grid.setAttribute(
-        "aria-busy",
-        "false"
-    );
-}
-
-
-function setGridError(
-    grid,
-    title,
-    message
-) {
-
-    if (!grid) {
-        return;
-    }
-
-    grid.innerHTML = `
-        <article class="card platform-state error-state">
-
-            <span
-                class="platform-state-icon"
-                aria-hidden="true">
-                ⚠️
-            </span>
-
-            <h3>
-                ${escapeHTML(
-                    title || "Unable to load data"
-                )}
-            </h3>
-
-            <p>
-                ${escapeHTML(
-                    message || "Please try again later."
-                )}
-            </p>
-
-            <button
-                type="button"
-                class="btn"
-                data-retry-grid="${escapeHTML(
-                    grid.id
-                )}">
-                Retry
-            </button>
-
-        </article>
-    `;
-
-    grid.setAttribute(
-        "aria-busy",
-        "false"
-    );
-}
-
-
-function finishGrid(grid) {
-
-    if (!grid) {
-        return;
-    }
-
-    grid.setAttribute(
-        "aria-busy",
-        "false"
-    );
-}
-
-
-/* ========================================================
-   CARD BUILDERS
-======================================================== */
-
-function buildTourismCard(item = {}) {
-
-    const name =
-        item.name ||
-        item.title ||
-        "Tourism Destination";
-
-    const category =
-        item.category ||
-        "Tourism";
-
-    const description =
-        item.description ||
-        "Discover this destination.";
-
-    const image =
-        item.image || "";
-
-    const rating =
-        item.rating !== undefined
-            ? `
-                <div class="platform-rating">
-                    ⭐ ${escapeHTML(item.rating)}
-                </div>
-              `
-            : "";
-
-    return `
-        <article
-            class="card platform-result-card"
-            data-type="tourism"
-            data-id="${escapeHTML(item.id || "")}">
-
-            ${
-                image
-                    ? `
-                        <img
-                            src="${escapeHTML(image)}"
-                            alt="${escapeHTML(name)}"
-                            loading="lazy"
-                            class="platform-card-image"
-                            onerror="this.style.display='none'">
-                      `
-                    : `
-                        <div
-                            class="platform-card-icon"
-                            aria-hidden="true">
-                            🏝️
-                        </div>
-                      `
-            }
-
-            <div class="platform-card-content">
-
-                <span class="platform-card-category">
-                    ${escapeHTML(category)}
-                </span>
-
-                <h3>
-                    ${escapeHTML(name)}
-                </h3>
-
-                <p>
-                    ${escapeHTML(description)}
-                </p>
-
-                ${rating}
-
-                <button
-                    type="button"
-                    class="btn copy-card-btn"
-                    data-copy="${escapeHTML(
-                        `${name}\n${category}\n${description}`
-                    )}">
-                    Copy
-                </button>
-
-            </div>
-
-        </article>
-    `;
-}
-
-
-function buildBusinessCard(item = {}) {
-
-    const name =
-        item.name ||
-        item.title ||
-        "Global Business";
-
-    const category =
-        item.category ||
-        "Business";
-
-    const description =
-        item.description ||
-        "Discover this business.";
-
-    const image =
-        item.logo ||
-        item.cover_image ||
-        item.image ||
-        "";
-
-    const address =
-        item.address || "";
-
-    return `
-        <article
-            class="card platform-result-card"
-            data-type="business"
-            data-id="${escapeHTML(item.id || "")}">
-
-            ${
-                image
-                    ? `
-                        <img
-                            src="${escapeHTML(image)}"
-                            alt="${escapeHTML(name)}"
-                            loading="lazy"
-                            class="platform-card-image"
-                            onerror="this.style.display='none'">
-                      `
-                    : `
-                        <div
-                            class="platform-card-icon"
-                            aria-hidden="true">
-                            🌍
-                        </div>
-                      `
-            }
-
-            <div class="platform-card-content">
-
-                <span class="platform-card-category">
-                    ${escapeHTML(category)}
-                </span>
-
-                <h3>
-                    ${escapeHTML(name)}
-                </h3>
-
-                <p>
-                    ${escapeHTML(description)}
-                </p>
-
-                ${
-                    address
-                        ? `
-                            <small>
-                                📍 ${escapeHTML(address)}
-                            </small>
-                          `
-                        : ""
-                }
-
-                ${
-                    item.rating !== undefined
-                        ? `
-                            <div class="platform-rating">
-                                ⭐ ${escapeHTML(item.rating)}
-                            </div>
-                          `
-                        : ""
-                }
-
-                <button
-                    type="button"
-                    class="btn copy-card-btn"
-                    data-copy="${escapeHTML(
-                        `${name}\n${category}\n${description}${address ? `\n${address}` : ""}`
-                    )}">
-                    Copy
-                </button>
-
-            </div>
-
-        </article>
-    `;
-}
-
-
-function buildProductCard(item = {}) {
-
-    const name =
-        item.name ||
-        item.title ||
-        "Global Product";
-
-    const category =
-        item.category ||
-        "Product";
-
-    const description =
-        item.description ||
-        "Discover this product.";
-
-    const image =
-        item.image || "";
-
-    return `
-        <article
-            class="card platform-result-card"
-            data-type="product"
-            data-id="${escapeHTML(item.id || "")}">
-
-            ${
-                image
-                    ? `
-                        <img
-                            src="${escapeHTML(image)}"
-                            alt="${escapeHTML(name)}"
-                            loading="lazy"
-                            class="platform-card-image"
-                            onerror="this.style.display='none'">
-                      `
-                    : `
-                        <div
-                            class="platform-card-icon"
-                            aria-hidden="true">
-                            🛒
-                        </div>
-                      `
-            }
-
-            <div class="platform-card-content">
-
-                <span class="platform-card-category">
-                    ${escapeHTML(category)}
-                </span>
-
-                <h3>
-                    ${escapeHTML(name)}
-                </h3>
-
-                <p>
-                    ${escapeHTML(description)}
-                </p>
-
-                ${
-                    item.price !== undefined
-                        ? `
-                            <strong class="product-price">
-                                ${escapeHTML(item.price)}
-                                ${escapeHTML(
-                                    item.currency || "USD"
-                                )}
-                            </strong>
-                          `
-                        : ""
-                }
-
-                ${
-                    item.rating !== undefined
-                        ? `
-                            <div class="platform-rating">
-                                ⭐ ${escapeHTML(item.rating)}
-                            </div>
-                          `
-                        : ""
-                }
-
-                <button
-                    type="button"
-                    class="btn copy-card-btn"
-                    data-copy="${escapeHTML(
-                        `${name}\n${category}\n${description}${item.price !== undefined ? `\n${item.price} ${item.currency || "USD"}` : ""}`
-                    )}">
-                    Copy
-                </button>
-
-            </div>
-
-        </article>
-    `;
-}
-
-
-function buildProjectCard(item = {}) {
-
-    const name =
-        item.name ||
-        item.title ||
-        "ASEM Project";
-
-    const description =
-        item.description ||
-        "ASEM Digital Solutions project.";
-
-    const image =
-        item.image || "";
-
-    return `
-        <article
-            class="card project-card platform-result-card"
-            data-type="project"
-            data-id="${escapeHTML(item.id || "")}">
-
-            ${
-                image
-                    ? `
-                        <img
-                            src="${escapeHTML(image)}"
-                            alt="${escapeHTML(name)}"
-                            loading="lazy"
-                            class="platform-card-image"
-                            onerror="this.style.display='none'">
-                      `
-                    : `
-                        <div
-                            class="platform-card-icon"
-                            aria-hidden="true">
-                            🚀
-                        </div>
-                      `
-            }
-
-            <div class="platform-card-content">
-
-                <h3>
-                    ${escapeHTML(name)}
-                </h3>
-
-                <p>
-                    ${escapeHTML(description)}
-                </p>
-
-                <button
-                    type="button"
-                    class="btn copy-card-btn"
-                    data-copy="${escapeHTML(
-                        `${name}\n${description}`
-                    )}">
-                    Copy
-                </button>
-
-            </div>
-
-        </article>
-    `;
-}
-
-
-function renderGrid(
-    grid,
-    items,
-    builder,
-    emptyTitle,
-    emptyMessage
-) {
-
-    if (!grid) {
-        return;
-    }
-
-    if (!items.length) {
-
-        setGridEmpty(
-            grid,
-            emptyTitle,
-            emptyMessage
-        );
-
-        return;
-    }
-
-    grid.innerHTML =
-        items
-            .map(builder)
-            .join("");
-
-    finishGrid(grid);
-}
-
-
-/* ========================================================
-   LOADERS
-======================================================== */
-
-async function loadTourism() {
-
-    const grid =
-        $(ASEM.selectors.tourismGrid);
-
-    if (!grid) {
-        console.warn(
-            "ASEM: tourismGrid not found"
-        );
-        return;
-    }
-
-    setGridLoading(
-        grid,
-        "Loading Global Tourism..."
-    );
-
-    try {
-
-        const data =
-            await apiRequest(
-                ASEM.api.tourism
-            );
-
-        renderGrid(
-            grid,
-            normalizeArray(data),
-            buildTourismCard,
-            "No tourism data yet",
-            "Tourism destinations will appear here."
-        );
-
-    } catch (error) {
-
-        console.error(
-            "ASEM Tourism:",
-            error
-        );
-
-        setGridError(
-            grid,
-            "Tourism is temporarily unavailable",
-            "The tourism service could not be reached."
-        );
-    }
-}
-
-
-async function loadBusinesses() {
-
-    const grid =
-        $(ASEM.selectors.businessesGrid);
-
-    if (!grid) {
-        console.warn(
-            "ASEM: businessesGrid not found"
-        );
-        return;
-    }
-
-    setGridLoading(
-        grid,
-        "Loading Global Businesses..."
-    );
-
-    try {
-
-        const data =
-            await apiRequest(
-                ASEM.api.businesses
-            );
-
-        renderGrid(
-            grid,
-            normalizeArray(data),
-            buildBusinessCard,
-            "No businesses yet",
-            "Businesses will appear here."
-        );
-
-    } catch (error) {
-
-        console.error(
-            "ASEM Businesses:",
-            error
-        );
-
-        setGridError(
-            grid,
-            "Businesses are temporarily unavailable",
-            "The business service could not be reached."
-        );
-    }
-}
-
-
-async function loadProducts() {
-
-    const grid =
-        $(ASEM.selectors.productsGrid);
-
-    if (!grid) {
-        console.warn(
-            "ASEM: productsGrid not found"
-        );
-        return;
-    }
-
-    setGridLoading(
-        grid,
-        "Loading Global Products..."
-    );
-
-    try {
-
-        const data =
-            await apiRequest(
-                ASEM.api.products
-            );
-
-        renderGrid(
-            grid,
-            normalizeArray(data),
-            buildProductCard,
-            "No products yet",
-            "Products will appear here."
-        );
-
-    } catch (error) {
-
-        console.error(
-            "ASEM Products:",
-            error
-        );
-
-        setGridError(
-            grid,
-            "Products are temporarily unavailable",
-            "The products service could not be reached."
-        );
-    }
-}
-
-
-async function loadProjects() {
-
-    const grid =
-        $(ASEM.selectors.projectsGrid);
-
-    if (!grid) {
-        console.warn(
-            "ASEM: projectsGrid not found"
-        );
-        return;
-    }
-
-    setGridLoading(
-        grid,
-        "Loading ASEM Projects..."
-    );
-
-    try {
-
-        const data =
-            await apiRequest(
-                ASEM.api.projects
-            );
-
-        renderGrid(
-            grid,
-            normalizeArray(data),
-            buildProjectCard,
-            "ASEM Projects",
-            "Our project showcase will appear here."
-        );
-
-    } catch (error) {
-
-        console.warn(
-            "ASEM Projects:",
-            error
-        );
-
-        setGridEmpty(
-            grid,
-            "ASEM Projects",
-            "Our project showcase will appear here."
-        );
-    }
-}
-
+console.log(
+    "ASEM: app.js STARTED"
+);
 
 /* ========================================================
    PORTFOLIO / WORK
@@ -1072,38 +15,24 @@ async function loadProjects() {
 
 function openPortfolio() {
 
-    const opened =
-        openPageSection("portfolio");
-
-    if (!opened) {
-
-        const section =
-            document.getElementById(
-                "portfolio-section"
-            );
-
-        if (section) {
-
-            section.hidden = false;
-
-            section.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-        }
-    }
+    openPageSection(
+        "portfolio"
+    );
 
     const grid =
-        $(ASEM.selectors.portfolioGrid);
+        $(
+            ASEM.selectors.portfolioGrid
+        );
 
     if (!grid) {
-        return true;
+        return;
     }
 
     if (!grid.children.length) {
 
         grid.innerHTML = `
-            <article class="card portfolio-card">
+            <article
+                class="card portfolio-card">
 
                 <div
                     class="platform-card-icon"
@@ -1124,12 +53,16 @@ function openPortfolio() {
             </article>
         `;
     }
-
-    return true;
 }
 
 
+/*
+ * "Work" is kept as a separate action because the
+ * frontend icon may use data-platform-action="work".
+* It intentionally opens the existing portfolio section.
+ */ 
 function openWork() {
+
     return openPortfolio();
 }
 
@@ -1138,30 +71,12 @@ function openWork() {
    RESTAURANTS
 ======================================================== */
 
+/*
+ * Restaurants are currently represented by the
+ * businesses API. This keeps the existing backend
+ * unchanged while allowing a Restaurants icon to work.
+ */
 function openRestaurants() {
-
-    const section =
-        document.getElementById(
-            "restaurants-section"
-        );
-
-    if (section) {
-
-        section.hidden = false;
-
-        section.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-        document.dispatchEvent(
-            new CustomEvent(
-                "asem:restaurants:open"
-            )
-        );
-
-        return true;
-    }
 
     return handleSection(
         "businesses-section",
@@ -1174,6 +89,19 @@ function openRestaurants() {
    AI
 ======================================================== */
 
+/*
+ * The previous initializeAI() function only contained
+ * comments, so the AI action had no actual frontend
+ * behavior.
+ *
+ * The function below first looks for a dedicated AI
+ * section. It supports both:
+ *
+ *     #ai
+ *     #ai-section
+ *
+ * If neither exists, it looks for a dedicated AI page.
+ */
 function openAI() {
 
     const aiSection =
@@ -1198,12 +126,23 @@ function openAI() {
         return true;
     }
 
-    document.dispatchEvent(
+    /*
+     * If another AI module is installed on the page,
+     * give it an event to initialize/open itself.
+     */
+    const aiEvent =
         new CustomEvent(
             "asem:ai:open"
-        )
+        );
+
+    document.dispatchEvent(
+        aiEvent
     );
 
+    /*
+     * If an AI page exists in the project,
+     * this provides a final navigation fallback.
+     */
     const aiLink =
         document.querySelector(
             'a[href="ai.html"], a[href="./ai.html"]'
@@ -1211,9 +150,11 @@ function openAI() {
 
     if (aiLink) {
 
-        return openExternalPage(
+        openExternalPage(
             aiLink.getAttribute("href")
         );
+
+        return true;
     }
 
     console.warn(
@@ -1225,6 +166,21 @@ function openAI() {
 
 
 function initializeAI() {
+
+    /*
+     * The AI runtime can listen for this event:
+     *
+     * document.addEventListener(
+     *     "asem:ai:open",
+     *     () => {
+     *         // open AI interface
+     *     }
+     * );
+     *
+     * No external AI service is called here.
+     * This keeps the frontend stable until the
+     * actual AI interface/runtime is connected.
+     */
 
     document.addEventListener(
         "asem:ai:open",
@@ -1245,10 +201,12 @@ function initializeAI() {
 function focusSearch() {
 
     const input =
-        DOM.search;
+        $(
+            ASEM.selectors.search
+        );
 
     if (!input) {
-        return false;
+        return;
     }
 
     input.focus();
@@ -1257,8 +215,6 @@ function focusSearch() {
         behavior: "smooth",
         block: "center"
     });
-
-    return true;
 }
 
 
@@ -1270,27 +226,30 @@ function search(value) {
             .trim();
 
     const cards =
-        $(
+        $$(
             ".platform-result-card, .project-card"
-        )
-        ? $$(
-            ".platform-result-card, .project-card"
-        )
-        : [];
+        );
 
-    cards.forEach(card => {
+    if (!query) {
 
-        if (!query) {
+        cards.forEach(
+            card => {
+                card.hidden = false;
+            }
+        );
 
-            card.hidden = false;
-            return;
+        return;
+    }
+
+    cards.forEach(
+        card => {
+
+            card.hidden =
+                !card.textContent
+                    .toLowerCase()
+                    .includes(query);
         }
-
-        card.hidden =
-            !card.textContent
-                .toLowerCase()
-                .includes(query);
-    });
+    );
 }
 
 
@@ -1312,7 +271,9 @@ function applyTheme(theme) {
         );
 
     const button =
-        DOM.theme;
+        $(
+            ASEM.selectors.theme
+        );
 
     if (button) {
 
@@ -1373,6 +334,7 @@ function initializeTheme() {
     ) {
 
         applyTheme(saved);
+
         return;
     }
 
@@ -1398,7 +360,7 @@ function toggleTheme() {
                 "data-theme"
             );
 
-    return applyTheme(
+    applyTheme(
         current === "dark"
             ? "light"
             : "dark"
@@ -1407,7 +369,7 @@ function toggleTheme() {
 
 
 /* ========================================================
-   GPS
+   GPS / GEOLOCATION
 ======================================================== */
 
 function showLocationStatus(message) {
@@ -1437,14 +399,10 @@ async function sendLocationToBackend(location) {
             ASEM.api.location,
             {
                 method: "POST",
-
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 },
-
-                body:
-                    JSON.stringify(location)
+                body: JSON.stringify(location)
             }
         );
 
@@ -1468,7 +426,7 @@ function requestGPS() {
             "GPS / Geolocation is not supported by this browser."
         );
 
-        return false;
+        return;
     }
 
     showLocationStatus(
@@ -1476,7 +434,6 @@ function requestGPS() {
     );
 
     navigator.geolocation.getCurrentPosition(
-
         async position => {
 
             const location = {
@@ -1533,11 +490,6 @@ function requestGPS() {
                         "Location request timed out.";
 
                     break;
-
-                default:
-
-                    message =
-                        "Unable to get location.";
             }
 
             showLocationStatus(
@@ -1556,11 +508,13 @@ function requestGPS() {
             maximumAge: 0
         }
     );
-
-    return true;
 }
 
 
+/*
+ * Kept for compatibility.
+ * GPS clicks are handled by initializeActionRouter().
+ */
 function initializeGPS() {
     return true;
 }
@@ -1572,142 +526,111 @@ function initializeGPS() {
 
 const actions = {
 
-    tourism:
-        () =>
-            handleSection(
-                "tourism-section",
-                loadTourism
-            ),
+    tourism: () =>
+        handleSection(
+            "tourism-section",
+            loadTourism
+        ),
 
-    globaltourism:
-        () =>
-            handleSection(
-                "tourism-section",
-                loadTourism
-            ),
+    businesses: () =>
+        handleSection(
+            "businesses-section",
+            loadBusinesses
+        ),
 
-    businesses:
-        () =>
-            handleSection(
-                "businesses-section",
-                loadBusinesses
-            ),
+    /*
+     * Restaurant aliases.
+     * Restaurants currently use the businesses backend.
+     */
+    restaurant: () =>
+        openRestaurants(),
 
-    business:
-        () =>
-            handleSection(
-                "businesses-section",
-                loadBusinesses
-            ),
+    restaurants: () =>
+        openRestaurants(),
 
-    globalbusinesses:
-        () =>
-            handleSection(
-                "businesses-section",
-                loadBusinesses
-            ),
+    /*
+     * Product aliases.
+     */
+    product: () =>
+        handleSection(
+            "products-section",
+            loadProducts
+        ),
 
-    restaurant:
-        () =>
-            openRestaurants(),
+    products: () =>
+        handleSection(
+            "products-section",
+            loadProducts
+        ),
 
-    restaurants:
-        () =>
-            openRestaurants(),
+    /*
+     * Project aliases.
+     */
+    project: () =>
+        handleSection(
+            "projects",
+            loadProjects
+        ),
 
-    product:
-        () =>
-            handleSection(
-                "products-section",
-                loadProducts
-            ),
+    projects: () =>
+        handleSection(
+            "projects",
+            loadProjects
+        ),
 
-    products:
-        () =>
-            handleSection(
-                "products-section",
-                loadProducts
-            ),
+    /*
+     * Work / Portfolio aliases.
+     */
+    work: () =>
+        openWork(),
 
-    globalproducts:
-        () =>
-            handleSection(
-                "products-section",
-                loadProducts
-            ),
+    portfolio: () =>
+        openPortfolio(),
 
-    project:
-        () =>
-            handleSection(
-                "projects",
-                loadProjects
-            ),
+    /*
+     * AI aliases.
+     */
+    ai: () =>
+        openAI(),
 
-    projects:
-        () =>
-            handleSection(
-                "projects",
-                loadProjects
-            ),
+    assistant: () =>
+        openAI(),
 
-    work:
-        () =>
-            openWork(),
+    artificialintelligence: () =>
+        openAI(),
 
-    portfolio:
-        () =>
-            openPortfolio(),
+    services: () =>
+        openPageSection(
+            "services"
+        ),
 
-    ai:
-        () =>
-            openAI(),
+    contact: () =>
+        openExternalPage(
+            "contact.html"
+        ),
 
-    assistant:
-        () =>
-            openAI(),
+    about: () =>
+        openExternalPage(
+            "about.html"
+        ),
 
-    artificialintelligence:
-        () =>
-            openAI(),
+    search: () =>
+        focusSearch(),
 
-    services:
-        () =>
-            openPageSection("services"),
+    gps: () =>
+        requestGPS(),
 
-    contact:
-        () =>
-            openExternalPage("contact.html"),
+    location: () =>
+        requestGPS(),
 
-    about:
-        () =>
-            openExternalPage("about.html"),
+    nearby: () =>
+        requestGPS(),
 
-    search:
-        () =>
-            focusSearch(),
-
-    globalsearch:
-        () =>
-            focusSearch(),
-
-    gps:
-        () =>
-            requestGPS(),
-
-    location:
-        () =>
-            requestGPS(),
-
-    nearby:
-        () =>
-            requestGPS(),
-
-    top:
-        () =>
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            })
+    top: () =>
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        })
 };
 
 
@@ -1885,7 +808,7 @@ const I18N = {
             "Discover products and offerings from businesses around the world.",
 
         projects_desc:
-https://asemroot-com.github.io/https-github.com-http-asemroot.com-git/            "Explore ASEM digital projects and software solutions.",
+            "Explore ASEM digital projects and software solutions.",
 
         portfolio_desc:
             "A selection of our global digital solutions.",
@@ -1936,7 +859,7 @@ https://asemroot-com.github.io/https-github.com-http-asemroot.com-git/          
     fr: {
 
         platform:
-            "Plateforme mondiale",https://asemroot-com.github.io/https-github.com-http-asemroot.com-git/
+            "Plateforme mondiale",
 
         services:
             "Services",
@@ -2475,10 +1398,6 @@ https://asemroot-com.github.io/https-github.com-http-asemroot.com-git/          
 };
 
 
-/* ========================================================
-   LANGUAGE FUNCTIONS
-======================================================== */
-
 function detectLanguage() {
 
     const language =
@@ -2527,7 +1446,6 @@ function applyTranslations(language) {
                     key
                 )
             ) {
-
                 element.textContent =
                     dictionary[key];
             }
@@ -2561,7 +1479,9 @@ function applyLanguage(language) {
                 : "ltr"
         );
 
-    applyTranslations(selected);
+    applyTranslations(
+        selected
+    );
 
     try {
 
@@ -2590,7 +1510,7 @@ function applyLanguage(language) {
 function initializeLanguage() {
 
     const selector =
-        DOM.language;
+        $(ASEM.selectors.language);
 
     let saved = "auto";
 
@@ -2635,7 +1555,9 @@ function initializeLanguage() {
 function initializeThemeEvents() {
 
     const button =
-        DOM.theme;
+        $(
+            ASEM.selectors.theme
+        );
 
     if (!button) {
         return;
@@ -2651,7 +1573,9 @@ function initializeThemeEvents() {
 function initializeLanguageEvents() {
 
     const selector =
-        DOM.language;
+        $(
+            ASEM.selectors.language
+        );
 
     if (!selector) {
         return;
@@ -2672,7 +1596,9 @@ function initializeLanguageEvents() {
 function initializeSearch() {
 
     const input =
-        DOM.search;
+        $(
+            ASEM.selectors.search
+        );
 
     if (!input) {
         return;
@@ -2693,7 +1619,8 @@ function initializeSearch() {
         event => {
 
             if (
-                event.key === "Escape"
+                event.key ===
+                "Escape"
             ) {
 
                 input.value = "";
@@ -2710,7 +1637,9 @@ function initializeSearch() {
 function initializeScrollTop() {
 
     const button =
-        DOM.scrollTop;
+        $(
+            ASEM.selectors.scrollTop
+        );
 
     if (!button) {
         return;
@@ -2755,66 +1684,6 @@ function initializeScrollTop() {
    ACTION ROUTER
 ======================================================== */
 
-function executeAction(action) {
-
-    const normalized =
-        normalizeAction(action);
-
-    if (!normalized) {
-        return false;
-    }
-
-    const handler =
-        actions[normalized];
-
-    if (
-        typeof handler !==
-        "function"
-    ) {
-
-        console.warn(
-            `ASEM: unknown action "${action}"`
-        );
-
-        return false;
-    }
-
-    try {
-
-        const result =
-            handler();
-
-        if (
-            result &&
-            typeof result.then ===
-                "function"
-        ) {
-
-            result.catch(
-                error => {
-
-                    console.error(
-                        `ASEM action "${action}" failed:`,
-                        error
-                    );
-                }
-            );
-        }
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            `ASEM action "${action}" failed:`,
-            error
-        );
-
-        return false;
-    }
-}
-
-
 function initializeActionRouter() {
 
     document.addEventListener(
@@ -2841,6 +1710,8 @@ function initializeActionRouter() {
                 return;
             }
 
+            event.preventDefault();
+
             let action =
                 element.dataset.platformAction;
 
@@ -2848,7 +1719,6 @@ function initializeActionRouter() {
                 !action &&
                 element.matches("[data-gps]")
             ) {
-
                 action = "gps";
             }
 
@@ -2856,9 +1726,63 @@ function initializeActionRouter() {
                 return;
             }
 
-            event.preventDefault();
+            /*
+             * Normalize action names so small differences
+             * in the HTML do not break the buttons.
+             */
+            action =
+                String(action)
+                    .trim()
+                    .toLowerCase()
+                    .replace(
+                        /[\s_-]+/g,
+                        ""
+                    );
 
-            executeAction(action);
+            const handler =
+                actions[action];
+
+            if (
+                typeof handler !==
+                "function"
+            ) {
+
+                console.warn(
+                    `ASEM: unknown action ${action}`
+                );
+
+                return;
+            }
+
+            try {
+
+                const result =
+                    handler();
+
+                if (
+                    result &&
+                    typeof result.then ===
+                    "function"
+                ) {
+
+                    result.catch(
+                        error => {
+
+                            console.error(
+                                "ASEM action:",
+                                error
+                            );
+                        }
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    `ASEM action "${action}" failed:`,
+                    error
+                );
+            }
         }
     );
 }
@@ -2880,9 +1804,12 @@ function initializeKeyboard() {
             const isInput =
                 active &&
                 (
-                    active.tagName === "INPUT" ||
-                    active.tagName === "TEXTAREA" ||
-                    active.tagName === "SELECT" ||
+                    active.tagName ===
+                        "INPUT" ||
+                    active.tagName ===
+                        "TEXTAREA" ||
+                    active.tagName ===
+                        "SELECT" ||
                     active.isContentEditable
                 );
 
@@ -2899,7 +1826,8 @@ function initializeKeyboard() {
             }
 
             if (
-                event.key === "Escape"
+                event.key ===
+                "Escape"
             ) {
 
                 const input =
@@ -2913,8 +1841,10 @@ function initializeKeyboard() {
             }
 
             if (
-                event.key !== "Enter" &&
-                event.key !== " "
+                event.key !==
+                    "Enter" &&
+                event.key !==
+                    " "
             ) {
                 return;
             }
@@ -2932,7 +1862,7 @@ function initializeKeyboard() {
 
             const element =
                 target.closest(
-                    "[data-platform-action], [data-gps]"
+                    "[data-platform-action]"
                 );
 
             if (!element) {
@@ -2947,23 +1877,63 @@ function initializeKeyboard() {
             }
 
             let action =
-                element.dataset.platformAction;
-
-            if (
-                !action &&
-                element.matches("[data-gps]")
-            ) {
-
-                action = "gps";
-            }
+                element.dataset
+                    .platformAction;
 
             if (!action) {
                 return;
             }
 
+            action =
+                String(action)
+                    .trim()
+                    .toLowerCase()
+                    .replace(
+                        /[\s_-]+/g,
+                        ""
+                    );
+
+            const handler =
+                actions[action];
+
+            if (
+                typeof handler !==
+                "function"
+            ) {
+                return;
+            }
+
             event.preventDefault();
 
-            executeAction(action);
+            try {
+
+                const result =
+                    handler();
+
+                if (
+                    result &&
+                    typeof result.then ===
+                    "function"
+                ) {
+
+                    result.catch(
+                        error => {
+
+                            console.error(
+                                "ASEM keyboard action:",
+                                error
+                            );
+                        }
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "ASEM keyboard action:",
+                    error
+                );
+            }
         }
     );
 }
@@ -3000,7 +1970,9 @@ function initializeNavigation() {
             }
 
             const href =
-                link.getAttribute("href");
+                link.getAttribute(
+                    "href"
+                );
 
             if (!href) {
                 return;
@@ -3014,7 +1986,9 @@ function initializeNavigation() {
             }
 
             const section =
-                document.getElementById(id);
+                document.getElementById(
+                    id
+                );
 
             if (!section) {
                 return;
@@ -3029,7 +2003,7 @@ function initializeNavigation() {
 
 
 /* ========================================================
-   COPY
+   COPY ACTIONS
 ======================================================== */
 
 function initializeCopyActions() {
@@ -3061,7 +2035,8 @@ function initializeCopyActions() {
             event.preventDefault();
 
             const value =
-                button.dataset.copy || "";
+                button.dataset.copy ||
+                "";
 
             if (!value) {
                 return;
@@ -3071,7 +2046,8 @@ function initializeCopyActions() {
 
                 if (
                     navigator.clipboard &&
-                    typeof navigator.clipboard.writeText ===
+                    typeof navigator.clipboard
+                        .writeText ===
                         "function"
                 ) {
 
@@ -3122,7 +2098,7 @@ function initializeCopyActions() {
 
 
 /* ========================================================
-   RETRY
+   RETRY ACTIONS
 ======================================================== */
 
 function initializeRetryActions() {
@@ -3154,7 +2130,8 @@ function initializeRetryActions() {
             event.preventDefault();
 
             const gridId =
-                button.dataset.retryGrid;
+                button.dataset
+                    .retryGrid;
 
             const loaders = {
 
@@ -3178,261 +2155,10 @@ function initializeRetryActions() {
                 typeof loader ===
                 "function"
             ) {
-
-                Promise.resolve(
-========================================================
-   RETRY
-======================================================== */
-
-function initializeRetryActions() {
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            const target =
-                event.target;
-
-            if (
-                !target ||
-                typeof target.closest !==
-                    "function"
-            ) {
-                return;
-            }
-
-            const button =
-                target.closest(
-                    "[data-retry-grid]"
-                );
-
-            if (!button) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const gridId =
-                button.dataset.retryGrid;
-
-            const loaders = {
-
-                tourismGrid:
-                    loadTourism,
-
-                businessesGrid:
-                    loadBusinesses,
-
-                productsGrid:
-                    loadProducts,
-
-                projectsGrid:
-                    loadProjects
-            };
-
-            const loader =
-                loaders[gridId];
-
-            if (
-                typeof loader ===
-                "function"
-            ) {
-
-                Promise.resolve(
-                    loader()
-                ).catch(
-                    error =>
-                        console.error(
-                            "ASEM retry:",
-                            error
-                        )
-                );
+                loader();
             }
         }
     );
-}
-
-
-/* ========================================================
-   ADD PROJECT
-======================================================== */
-
-function addProject() {
-
-    const name =
-        window.prompt(
-            "اسم المشروع"
-        );
-
-    if (!name) {
-        return false;
-    }
-
-    const version =
-        window.prompt(
-            "الإصدار",
-            "1.0"
-        );
-
-    const status =
-        window.prompt(
-            "الحالة",
-            "جديد"
-        );
-
-    const email =
-        window.prompt(
-            "بريدك للتواصل (اختياري)"
-        );
-
-    const whatsapp =
-        window.prompt(
-            "رابط واتساب (اختياري)"
-        );
-
-    const facebook =
-        window.prompt(
-            "رابط فيسبوك (اختياري)"
-        );
-
-    const instagram =
-        window.prompt(
-            "رابط إنستجرام (اختياري)"
-        );
-
-    const grid =
-        document.getElementById(
-            "projectsGrid"
-        );
-
-    if (!grid) {
-
-        console.warn(
-            "ASEM: projectsGrid not found"
-        );
-
-        return false;
-    }
-
-    const card =
-        document.createElement("article");
-
-    card.className =
-        "card project-card platform-result-card";
-
-    const safeName =
-        escapeHTML(name);
-
-    const safeVersion =
-        escapeHTML(version || "1.0");
-
-    const safeStatus =
-        escapeHTML(status || "جديد");
-
-    const safeEmail =
-        escapeHTML(email || "");
-
-    const safeWhatsapp =
-        escapeHTML(whatsapp || "");
-
-    const safeFacebook =
-        escapeHTML(facebook || "");
-
-    const safeInstagram =
-        escapeHTML(instagram || "");
-
-    card.innerHTML = `
-
-        <span class="status">
-            🆕 ${safeStatus}
-        </span>
-
-        <div
-            class="platform-card-icon"
-            aria-hidden="true">
-            🚀
-        </div>
-
-        <h2>
-            ${safeName}
-        </h2>
-
-        <p>
-            <strong>الإصدار:</strong>
-            ${safeVersion}
-        </p>
-
-        <p>
-            تمت إضافته بواسطة أحد مستخدمي ASEM.
-        </p>
-
-        <div class="buttons">
-
-            ${
-                safeEmail
-                    ? `
-                        <a
-                            href="mailto:${safeEmail}">
-                            📧 إيميل
-                        </a>
-                      `
-                    : ""
-            }
-
-            ${
-                safeWhatsapp
-                    ? `
-                        <a
-                            href="${safeWhatsapp}"
-                            target="_blank"
-                            rel="noopener noreferrer">
-                            💬 واتساب
-                        </a>
-                      `
-                    : ""
-            }
-
-            ${
-                safeFacebook
-                    ? `
-                        <a
-                            href="${safeFacebook}"
-                            target="_blank"
-                            rel="noopener noreferrer">
-                            📘 فيسبوك
-                        </a>
-                      `
-                    : ""
-            }
-
-            ${
-                safeInstagram
-                    ? `
-                        <a
-                            href="${safeInstagram}"
-                            target="_blank"
-                            rel="noopener noreferrer">
-                            📸 إنستجرام
-                        </a>
-                      `
-                    : ""
-            }
-
-            <button
-                type="button"
-                class="btn copy-card-btn"
-                data-copy="${escapeHTML(
-                    `${name}\nالإصدار: ${version || "1.0"}\nالحالة: ${status || "جديد"}`
-                )}">
-                Copy
-            </button>
-
-        </div>
-    `;
-
-    grid.prepend(card);
-
-    return true;
 }
 
 
@@ -3442,15 +2168,6 @@ function addProject() {
 
 window.ASEM =
     ASEM;
-
-window.ASEM.actions =
-    actions;
-
-window.ASEM.executeAction =
-    executeAction;
-
-window.ASEM.apiRequest =
-    apiRequest;
 
 window.requestGPS =
     requestGPS;
@@ -3500,24 +2217,109 @@ window.toggleASEMTheme =
 window.applyASEMLanguage =
     applyLanguage;
 
+
+/* ========================================================
+   ADD PROJECT
+======================================================== */
+
+function addProject() {
+
+    let name = prompt("اسم المشروع");
+
+    if (!name) return;
+
+    let version = prompt(
+        "الإصدار",
+        "1.0"
+    );
+
+    let status = prompt(
+        "الحالة",
+        "جديد"
+    );
+
+    let email = prompt(
+        "بريدك للتواصل (اختياري)"
+    );
+
+    let whatsapp = prompt(
+        "رابط واتساب (اختياري)"
+    );
+
+    let facebook = prompt(
+        "رابط فيسبوك (اختياري)"
+    );
+
+    let instagram = prompt(
+        "رابط إنستجرام (اختياري)"
+    );
+
+    let card =
+        document.createElement("div");
+
+    card.className =
+        "card project-card";
+
+    card.innerHTML = `
+        <span class="status">
+            🆕 ${status || "جديد"}
+        </span>
+
+        <img src="project.png" class="project-img">
+
+        <h2>${name}</h2>
+
+        <p>
+            <strong>الإصدار:</strong>
+            ${version || "1.0"}
+        </p>
+
+        <p>
+            تمت إضافته بواسطة أحد مستخدمي ASEM.
+        </p>
+
+        <div class="buttons">
+            ${
+                email
+                ? `<a href="mailto:${email}">📧 إيميل</a>`
+                : ""
+            }
+
+            ${
+                whatsapp
+                ? `<a href="${whatsapp}" target="_blank">💬 واتساب</a>`
+                : ""
+            }
+
+            ${
+                facebook
+                ? `<a href="${facebook}" target="_blank">📘 فيسبوك</a>`
+                : ""
+            }
+
+            ${
+                instagram
+                ? `<a href="${instagram}" target="_blank">📸 إنستجرام</a>`
+                : ""
+            }
+        </div>
+    `;
+
+    document
+        .getElementById("projectsGrid")
+        .prepend(card);
 window.addProject =
     addProject;
+}
+
+
 
 
 /* ========================================================
    STARTUP
 ======================================================== */
 
-let initialized = false;
-
-
 function initialize() {
-
-    if (initialized) {
-        return;
-    }
-
-    initialized = true;
 
     initializeTheme();
 
@@ -3567,4 +2369,5 @@ if (
 } else {
 
     initialize();
+
 }

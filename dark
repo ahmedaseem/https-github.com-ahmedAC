@@ -1,6 +1,0 @@
-class Theme:
-    mode = "light"
-
-    def toggle(self):
-        self.mode = "dark" if self.mode == "light" else "light"
-theme.toggle()

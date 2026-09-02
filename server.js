@@ -2,9 +2,8 @@ import http from "node:http";
 import { URL } from "node:url";
 
 const HOST = process.env.HOST || "0.0.0.0";
-const PORT = Number(process.env.PORT || 3001);
-
-// Improve layout and fix responsive design
+const PORT = Number(process.env.PORT || 3000);
+//  (Improve layout and fix responsive design)
 
 const server = http.createServer(async (req, res) => {
     setCorsHeaders(res);
@@ -303,4 +302,3 @@ function shutdown() {
 
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
-

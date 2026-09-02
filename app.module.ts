@@ -1,16 +1,26 @@
-import { Module } from '@nestjs/common';
-import { TestApiModule } from './test-api/test-api.module.js';
-import { LocationModule } from './location/location.module.js';
-import { AiModule } from './ai/ai.module.js';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module.js';
 
-@Module({
-  imports: [
-    TestApiModule,
-    LocationModule,
-    AiModule,
-  ],
-})
-export class AppModule {}
+async function bootstrap() {
+    const app = await NestFactory.create(AppModule);
 
+    app.setGlobalPrefix('api');
 
+    app.enableCors({
+        origin: [
+            'https://asemroot.com.github.io'
+        ],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        credentials: false
+    });
 
+    const port = Number(process.env.PORT) || 3000;
+
+    await app.listen(port, '0.0.0.0');
+
+    console.log(`ASEM API running on http://0.0.0.0:${port}`);
+}
+
+bootstrap();
+~/m

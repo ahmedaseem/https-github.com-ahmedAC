@@ -1,3 +1,14 @@
+export interface UserSearchDocument {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  isActive: boolean;
+  createdAt: Date;
+}
+
+> cat search-adapter.interface
 // src/search/engine/search.engine.js
 
 
@@ -37,4 +48,3 @@ throw new Error(
 
 
 module.exports =
-SearchEngine;

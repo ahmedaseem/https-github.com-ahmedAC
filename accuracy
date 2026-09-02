@@ -1,5 +1,0 @@
-if accuracy is not None:
-    accuracy = float(accuracy)
-
-    if accuracy < 0:
-        raise ValueError("invalid accuracy")

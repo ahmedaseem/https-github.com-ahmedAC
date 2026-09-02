@@ -1,0 +1,28 @@
+@Module({
+
+    imports: [
+
+        BullModule.registerQueue({
+
+            name: SEARCH_QUEUE,
+
+        }),
+
+    ],
+
+    providers: [
+
+        SearchQueueService,
+
+        SearchProcessor,
+
+    ],
+
+    exports: [
+
+        SearchQueueService,
+
+    ],
+
+})
+export class SearchQueueModule {}

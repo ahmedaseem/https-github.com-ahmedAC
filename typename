@@ -1,5 +1,0 @@
-query {
-  node(id:"MDQ6VXNlcjU4MzIzMQ==") {
-     __typename
-  }
-}

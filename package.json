@@ -1,20 +1,13 @@
 {
-  "name": "debian-node-api",
+  "name": "http-github.com-asem-git",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
+  "main": "server.js",
   "scripts": {
-    "start": "node dist/main.js",
-    "build": "tsc"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "engines": {
-    "node": ">=20"
-  },
-  "dependencies": {
-    "@nestjs/bullmq": "^11.0.5",
-    "@nestjs/platform-express": "^11.2.3",
-    "bullmq": "^6.2.0",
-    "ioredis": "^6.0.0"
+    "node": ">=18"
   }
 }
-

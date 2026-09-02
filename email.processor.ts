@@ -23,4 +23,3 @@ async function sendEmail(data) {
   await new Promise(res => setTimeout(res, 500));
   console.log('Email sent to:', data.to);
 }
-
