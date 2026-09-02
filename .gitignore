@@ -121,3 +121,10 @@ asem-world/
 
 # Local env file without extension
 /env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pyc
+*.tar.gz
