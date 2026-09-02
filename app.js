@@ -1885,7 +1885,7 @@ const I18N = {
             "Discover products and offerings from businesses around the world.",
 
         projects_desc:
-            "Explore ASEM digital projects and software solutions.",
+https://asemroot-com.github.io/https-github.com-http-asemroot.com-git/            "Explore ASEM digital projects and software solutions.",
 
         portfolio_desc:
             "A selection of our global digital solutions.",
@@ -1936,7 +1936,7 @@ const I18N = {
     fr: {
 
         platform:
-            "Plateforme mondiale",
+            "Plateforme mondiale",https://asemroot-com.github.io/https-github.com-http-asemroot.com-git/
 
         services:
             "Services",
