@@ -7,4 +7,4 @@ import { CacheController } from './modules/cache/cache.controller.js';
   providers: [CacheService],
   exports: [CacheService],
 })
-export class CacheModule {}
+
