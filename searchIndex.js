@@ -21,3 +21,4 @@ function searchData(query) {
         return searchable.includes(normalized);
     });
 }
+

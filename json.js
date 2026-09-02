@@ -49,7 +49,7 @@ fetch("projects.json")
     });
 });
 
-// البحث داخل كل محتوى البطاقة
+// البحث داخل كله محتوى البطاقة
 function filterCards() {
     let input = document.getElementById("search").value.toLowerCase();
     let cards = document.querySelectorAll(".card");

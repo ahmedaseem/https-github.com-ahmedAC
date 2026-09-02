@@ -38,3 +38,4 @@ async function initializeASEM() {
         console.error("ASEM initialization failed:", error);
     }
 }
+
