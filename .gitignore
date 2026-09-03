@@ -1,0 +1,16 @@
+# Archive and build artifacts
+node_modules/
+npm-debug.log*
+.DS_Store
+.env
+*.log
+
+# Local development artifacts
+asem.db
+
+# Ignore archives if you don't want them included in other branches by accident
+/archive/
+
+# OS files
+Thumbs.db
+
