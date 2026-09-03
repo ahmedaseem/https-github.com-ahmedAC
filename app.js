@@ -1,5 +1,6 @@
 "use strict";
 
+
 import { CONFIG } from "./config.js";
 
 const API_BASE =
@@ -3127,371 +3128,332 @@ function initializeNavigation() {
 
 
 /* ========================================================
-   COPY ACTIONS
-======================================================== */
+       LIVE API REQUEST
+       ======================================================== */
 
-function initializeCopyActions() {
+    async function apiRequest(endpoint) {
 
-    document.addEventListener(
-        "click",
-        async event => {
+        const controller =
+            new AbortController();
 
-            const target =
-                event.target;
+        const timer =
+            window.setTimeout(
+                () =>
+                    controller.abort(),
+                CONFIG.timeout
+            );
+
+        try {
+
+            const response =
+                await fetch(
+                    endpoint,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            Accept:
+                                "application/json"
+                        },
+
+                        cache: "no-store",
+
+                        signal:
+                            controller.signal
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+            }
+
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
 
             if (
-                !target ||
-                typeof target.closest !==
-                    "function"
+                !contentType.includes(
+                    "application/json"
+                )
             ) {
-                return;
-            }
 
-            const button =
-                target.closest(
-                    "[data-copy]"
-                );
-
-            if (!button) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const value =
-                button.dataset.copy ||
-                "";
-
-            if (!value) {
-                return;
-            }
-
-            try {
-
-                if (
-                    navigator.clipboard &&
-                    typeof navigator.clipboard
-                        .writeText ===
-                        "function"
-                ) {
-
-                    await navigator.clipboard
-                        .writeText(value);
-
-                } else {
-
-                    window.prompt(
-                        "Copy this text:",
-                        value
-                    );
-
-                    return;
-                }
-
-                const original =
-                    button.textContent;
-
-                button.textContent =
-                    "Copied ✓";
-
-                window.setTimeout(
-                    () => {
-
-                        button.textContent =
-                            original;
-
-                    },
-                    1500
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "ASEM: copy failed",
-                    error
-                );
-
-                window.prompt(
-                    "Copy this text:",
-                    value
+                throw new Error(
+                    "Expected JSON response"
                 );
             }
+
+            return normalizeArray(
+                await response.json()
+            );
+
+        } finally {
+
+            window.clearTimeout(
+                timer
+            );
         }
-    );
-}
+    }
 
 
 /* ========================================================
-   RETRY ACTIONS
-======================================================== */
+       SCROLL TOP
+       ======================================================== */
 
-function initializeRetryActions() {
+    function initializeScrollTop() {
 
-    document.addEventListener(
-        "click",
-        event => {
+        const button =
+            document.getElementById(
+                "scrollTop"
+            );
 
-            const target =
-                event.target;
+        if (!button) {
+            return;
+        }
 
-            if (
-                !target ||
-                typeof target.closest !==
-                    "function"
-            ) {
-                return;
-            }
 
-            const button =
-                target.closest(
-                    "[data-retry-grid]"
+        const update =
+            () => {
+
+                const visible =
+                    window.scrollY > 400;
+
+                button.hidden =
+                    !visible;
+
+                button.classList.toggle(
+                    "visible",
+                    visible
                 );
 
-            if (!button) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const gridId =
-                button.dataset
-                    .retryGrid;
-
-            const loaders = {
-
-                tourismGrid:
-                    loadTourism,
-
-                businessesGrid:
-                    loadBusinesses,
-
-                productsGrid:
-                    loadProducts,
-
-                projectsGrid:
-                    loadProjects
             };
 
-            const loader =
-                loaders[gridId];
 
-            if (
-                typeof loader ===
-                "function"
-            ) {
-                loader();
+        window.addEventListener(
+            "scroll",
+            update,
+            {
+                passive: true
             }
+        );
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                window.scrollTo({
+
+                    top: 0,
+
+                    behavior: "smooth"
+
+                });
+
+            }
+        );
+
+
+        update();
+
+    }
+
+
+    /* ========================================================
+       INITIAL RESULT STATE
+       ======================================================== */
+
+    function initializeResults() {
+
+        [
+            "tourism-section",
+
+            "businesses-section",
+
+            "products-section"
+
+        ].forEach(
+            id => {
+
+                const section =
+                    document.getElementById(
+                        id
+                    );
+
+                if (section) {
+                    section.hidden = true;
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ========================================================
+       DEMO MODE BADGE
+       ======================================================== */
+
+    function initializeDemoIndicator() {
+
+        if (
+            CONFIG.mode !== "demo"
+        ) {
+            return;
         }
-    );
-}
 
+        const badge =
+            document.createElement(
+                "div"
+            );
 
-/* ========================================================
-   GLOBAL COMPATIBILITY API
-======================================================== */
+        badge.id =
+            "asem-demo-mode";
 
-window.ASEM =
-    ASEM;
+        badge.textContent =
+            "ASEM DEMO MODE";
 
-window.requestGPS =
-    requestGPS;
+        Object.assign(
+            badge.style,
+            {
 
-window.loadTourism =
-    loadTourism;
+                position: "fixed",
 
-window.loadBusinesses =
-    loadBusinesses;
+                bottom: "12px",
 
-window.loadProducts =
-    loadProducts;
+                left: "12px",
 
-window.loadProjects =
-    loadProjects;
+                zIndex: "99999",
 
-window.openPortfolio =
-    openPortfolio;
+                padding:
+                    "7px 12px",
 
-window.openWork =
-    openWork;
+                borderRadius:
+                    "999px",
 
-window.openRestaurants =
-    openRestaurants;
+                fontSize:
+                    "12px",
 
-window.openAI =
-    openAI;
+                fontWeight:
+                    "700",
 
-window.openPageSection =
-    openPageSection;
+                background:
+                    "#00aeea",
 
-window.focusASEMSearch =
-    focusSearch;
+                color:
+                    "#ffffff",
 
-window.focusSearch =
-    focusSearch;
+                boxShadow:
+                    "0 4px 15px rgba(0,0,0,.18)",
 
-window.searchASEM =
-    search;
+                pointerEvents:
+                    "none"
 
-window.applyASEMTheme =
-    applyTheme;
-
-window.toggleASEMTheme =
-    toggleTheme;
-
-window.applyASEMLanguage =
-    applyLanguage;
-
-
-/* ========================================================
-   ADD PROJECT
-======================================================== */
-
-function addProject() {
-
-    let name = prompt("اسم المشروع");
-
-    if (!name) return;
-
-    let version = prompt(
-        "الإصدار",
-        "1.0"
-    );
-
-    let status = prompt(
-        "الحالة",
-        "جديد"
-    );
-
-    let email = prompt(
-        "بريدك للتواصل (اختياري)"
-    );
-
-    let whatsapp = prompt(
-        "رابط واتساب (اختياري)"
-    );
-
-    let facebook = prompt(
-        "رابط فيسبوك (اختياري)"
-    );
-
-    let instagram = prompt(
-        "رابط إنستجرام (اختياري)"
-    );
-
-    let card =
-        document.createElement("div");
-
-    card.className =
-        "card project-card";
-
-    card.innerHTML = `
-        <span class="status">
-            🆕 ${status || "جديد"}
-        </span>
-
-        <img src="project.png" class="project-img">
-
-        <h2>${name}</h2>
-
-        <p>
-            <strong>الإصدار:</strong>
-            ${version || "1.0"}
-        </p>
-
-        <p>
-            تمت إضافته بواسطة أحد مستخدمي ASEM.
-        </p>
-
-        <div class="buttons">
-            ${
-                email
-                ? `<a href="mailto:${email}">📧 إيميل</a>`
-                : ""
             }
+        );
 
-            ${
-                whatsapp
-                ? `<a href="${whatsapp}" target="_blank">💬 واتساب</a>`
-                : ""
+        document.body.appendChild(
+            badge
+        );
+
+    }
+
+
+    /* ========================================================
+       PUBLIC API
+       ======================================================== */
+
+    window.ASEM = {
+
+        config:
+            CONFIG,
+
+        demo:
+            DEMO_DATA,
+
+        loadTourism,
+
+        loadBusinesses,
+
+        loadProducts,
+
+        loadProjects,
+
+        openPortfolio,
+
+        openSection,
+
+        focusSearch,
+
+        search,
+
+        applyTheme,
+
+        applyLanguage
+
+    };
+
+
+    /* ========================================================
+       STARTUP
+       ======================================================== */
+
+    function initialize() {
+
+        initializeTheme();
+
+        initializeThemeEvents();
+
+        initializeLanguageEvents();
+
+        initializeClicks();
+
+        initializeKeyboard();
+
+        initializeNavigation();
+
+        initializeSearch();
+
+        initializeScrollTop();
+
+        initializeResults();
+
+        initializeDemoIndicator();
+
+
+        console.info(
+            "ASEM Global Platform READY"
+        );
+
+        console.info(
+            `ASEM Mode: ${CONFIG.mode.toUpperCase()}`
+        );
+
+    }
+
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize,
+            {
+                once: true
             }
+        );
 
-            ${
-                facebook
-                ? `<a href="${facebook}" target="_blank">📘 فيسبوك</a>`
-                : ""
-            }
+    } else {
 
-            ${
-                instagram
-                ? `<a href="${instagram}" target="_blank">📸 إنستجرام</a>`
-                : ""
-            }
-        </div>
-    `;
+        initialize();
 
-    document
-        .getElementById("projectsGrid")
-        .prepend(card);
-window.addProject =
-    addProject;
-}
+    }
+
+})();
 
 
-
-
-/* ========================================================
-   STARTUP
-======================================================== */
-
-function initialize() {
-
-    initializeTheme();
-
-    initializeLanguage();
-
-    initializeThemeEvents();
-
-    initializeLanguageEvents();
-
-    initializeSearch();
-
-    initializeScrollTop();
-
-    initializeGPS();
-
-    initializeActionRouter();
-
-    initializeKeyboard();
-
-    initializeNavigation();
-
-    initializeCopyActions();
-
-    initializeRetryActions();
-
-    initializeAI();
-
-    console.info(
-        "ASEM Global Platform READY"
-    );
-}
-
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initialize,
-        {
-            once: true
-        }
-    );
-
-} else {
-
-    initialize();
-
-}
