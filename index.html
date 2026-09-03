@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ASEM Digital Solutions | Global Digital Platform</title>
-    <meta name="description" content="ASEM Digital Solutions — Global digital platform for software solutions, tourism, businesses, products and worldwide services.">
-    <meta name="keywords" content="ASEM, Digital Solutions, Software, Web Development, AI, Cloud, Tourism, Businesses, Products">
-    <meta name="author" content="ASEM Digital Solutions">
-    <meta name="theme-color" content="#00aeea">
-    <link rel="canonical" href="https://asemroot.github.io/http-asemroot.com/">
-    
+    <meta name="description" content="ASEM Digital Solutions — Global digital platform for software solutions, tourism, businesses, products and worldwide services." />
+    <meta name="keywords" content="ASEM, Digital Solutions, Software, Web Development, AI, Cloud, Tourism, Businesses, Products" />
+    <meta name="author" content="ASEM Digital Solutions" />
+    <meta name="theme-color" content="#00aeea" />
+    <link rel="canonical" href="https://asemroot.github.io/http-asemroot.com/" />
+
     <!-- Open Graph -->
-    <meta property="og:title" content="ASEM Digital Solutions">
-    <meta property="og:description" content="A global digital platform connecting technology, tourism, businesses and products.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://asemroot.github.io/http-asemroot.com/">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="ASEM Digital Solutions">
-    <meta name="twitter:description" content="A global digital platform connecting technology, tourism, businesses and products.">
-    
+    <meta property="og:title" content="ASEM Digital Solutions" />
+    <meta property="og:description" content="A global digital platform connecting technology, tourism, businesses and products." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://asemroot.github.io/http-asemroot.com/" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ASEM Digital Solutions" />
+    <meta name="twitter:description" content="A global digital platform connecting technology, tourism, businesses and products." />
+
     <!-- Security -->
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
     <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
-    
+    <link rel="stylesheet" href="./style.css" />
+
     <!-- Leaflet Map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
+
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -43,293 +43,359 @@
 </head>
 
 <body>
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="navbar" aria-label="Main Navigation">
+        <a href="index.html" class="logo" aria-label="ASEM Digital Solutions Home">
+            <span style="font-size: 24px; font-weight: bold;">🌍 ASEM</span>
+        </a>
 
-<!-- ===== NAVIGATION ===== -->
-<nav class="navbar" aria-label="Main Navigation">
-    <a href="index.html" class="logo" aria-label="ASEM Digital Solutions Home">
-        <span style="font-size: 24px; font-weight: bold;">🌍 ASEM</span>
-    </a>
-
-    <div class="nav-links" aria-label="Primary navigation">
-        <a href="#global-platform" data-i18n="platform">Global Platform</a>
-        <a href="#services" data-i18n="services">Services</a>
-        <a href="#projects" data-i18n="projects">Projects</a>
-        <a href="#portfolio" data-i18n="portfolio">Portfolio</a>
-        <a href="#about" data-i18n="about">About</a>
-        <a href="#contact" data-i18n="contact">Contact</a>
-    </div>
-
-    <div class="controls">
-        <!-- Search -->
-        <label class="sr-only" for="searchBox">Search the ASEM platform</label>
-        <input type="search" id="searchBox" class="search-box" placeholder="🔍 Search..." aria-label="Search the ASEM platform" autocomplete="off" spellcheck="false">
-
-        <!-- Language -->
-        <label class="sr-only" for="langSwitch">Select language</label>
-        <select id="langSwitch" aria-label="Language">
-            <option value="auto">Auto</option>
-            <option value="ar">العربية</option>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="it">Italiano</option>
-            <option value="es">Español</option>
-            <option value="nl">Nederlands</option>
-        </select>
-
-        <!-- Location -->
-        <button id="locationToggle" type="button" class="icon-button" data-platform-action="location" aria-label="Use my location" title="Use my location">
-            <span aria-hidden="true">📍</span>
-        </button>
-
-        <!-- Theme -->
-        <button id="themeToggle" type="button" class="icon-button" aria-label="Switch to dark mode" title="Switch theme">
-            <span aria-hidden="true">🌙</span>
-        </button>
-    </div>
-</nav>
-
-<!-- ===== LOCATION STATUS ===== -->
-<div id="locationStatus" class="location-status" role="status" aria-live="polite">
-    Location not enabled
-</div>
-
-<!-- ===== HERO ===== -->
-<header class="hero">
-    <h1 data-i18n="hero_title">🚀 ASEM Digital Solutions</h1>
-    <p data-i18n="hero_desc">Free digital projects and custom software solutions for individuals and companies worldwide.</p>
-    <div class="hero-actions">
-        <a class="btn" href="#projects" data-i18n="start_project">Start Your Free Project</a>
-        <a class="btn" href="#contact" data-i18n="contact">Contact Us</a>
-    </div>
-</header>
-
-<!-- ===== MAIN CONTENT ===== -->
-<main id="main-content">
-
-    <!-- ===== GLOBAL PLATFORM ===== -->
-    <section id="global-platform" aria-labelledby="global-platform-title">
-        <div class="section-header">
-            <h2 id="global-platform-title" data-i18n="global_platform">🌏 ASEM Global Platform</h2>
-            <p data-i18n="global_platform_desc">Explore tourism destinations, global businesses, products and digital services through one unified platform.</p>
+        <div class="nav-links" aria-label="Primary navigation">
+            <a href="#global-platform" data-i18n="platform">Global Platform</a>
+            <a href="#services" data-i18n="services">Services</a>
+            <a href="#projects" data-i18n="projects">Projects</a>
+            <a href="#portfolio" data-i18n="portfolio">Portfolio</a>
+            <a href="#about" data-i18n="about">About</a>
+            <a href="#contact" data-i18n="contact">Contact</a>
         </div>
 
-        <div class="cards platform-cards">
+        <div class="controls">
+            <!-- Search -->
+            <label class="sr-only" for="searchBox">Search the ASEM platform</label>
+            <input
+                type="search"
+                id="searchBox"
+                class="search-box"
+                placeholder="🔍 Search..."
+                aria-label="Search the ASEM platform"
+                autocomplete="off"
+                spellcheck="false"
+            />
 
-            <!-- TOURISM -->
-            <button type="button" class="card platform-card" data-platform-action="tourism" data-section="tourism-section" aria-controls="tourism-section">
-                <span class="platform-icon" aria-hidden="true">✈️</span>
-                <h3 data-i18n="tourism">Tourism</h3>
-                <p data-i18n="tourism_desc">Discover destinations, attractions and experiences around the world.</p>
+            <!-- Language -->
+            <label class="sr-only" for="langSwitch">Select language</label>
+            <select id="langSwitch" aria-label="Language">
+                <option value="auto">Auto</option>
+                <option value="ar">العربية</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="it">Italiano</option>
+                <option value="es">Español</option>
+                <option value="nl">Nederlands</option>
+            </select>
+
+            <!-- Location -->
+            <button
+                id="locationToggle"
+                type="button"
+                class="icon-button"
+                data-platform-action="location"
+                aria-label="Use my location"
+                title="Use my location"
+            >
+                <span aria-hidden="true">📍</span>
             </button>
 
-            <!-- BUSINESSES -->
-            <button type="button" class="card platform-card" data-platform-action="businesses" data-section="businesses-section" aria-controls="businesses-section">
-                <span class="platform-icon" aria-hidden="true">🏢</span>
-                <h3 data-i18n="businesses">Global Businesses</h3>
-                <p data-i18n="businesses_desc">Explore businesses, restaurants, services and organizations worldwide.</p>
+            <!-- Theme -->
+            <button
+                id="themeToggle"
+                type="button"
+                class="icon-button"
+                aria-label="Switch to dark mode"
+                title="Switch theme"
+            >
+                <span aria-hidden="true">🌙</span>
             </button>
+        </div>
+    </nav>
 
-            <!-- PRODUCTS -->
-            <button type="button" class="card platform-card" data-platform-action="products" data-section="products-section" aria-controls="products-section">
-                <span class="platform-icon" aria-hidden="true">🛍️</span>
-                <h3 data-i18n="products">Global Products</h3>
-                <p data-i18n="products_desc">Discover products and offerings from businesses around the world.</p>
-            </button>
+    <!-- ===== LOCATION STATUS ===== -->
+    <div id="locationStatus" class="location-status" role="status" aria-live="polite">
+        Location not enabled
+    </div>
 
-            <!-- PROJECTS -->
-            <button type="button" class="card platform-card" data-platform-action="projects" data-section="projects" aria-controls="projects">
-                <span class="platform-icon" aria-hidden="true">📊</span>
-                <h3 data-i18n="projects">Projects</h3>
-                <p data-i18n="projects_desc">Explore ASEM digital projects and software solutions.</p>
-            </button>
+    <!-- ===== HERO ===== -->
+    <header class="hero">
+        <h1 data-i18n="hero_title">🚀 ASEM Digital Solutions</h1>
+        <p data-i18n="hero_desc">Free digital projects and custom software solutions for individuals and companies worldwide.</p>
+        <div class="hero-actions">
+            <a class="btn" href="#projects" data-i18n="start_project">Start Your Free Project</a>
+            <a class="btn" href="#contact" data-i18n="contact">Contact Us</a>
+        </div>
+    </header>
 
-            <!-- PORTFOLIO -->
-            <button type="button" class="card platform-card" data-platform-action="portfolio" data-section="portfolio" aria-controls="portfolio">
-                <span class="platform-icon" aria-hidden="true">💼</span>
-                <h3 data-i18n="portfolio">Portfolio</h3>
-                <p data-i18n="portfolio_desc">Discover selected ASEM digital solutions.</p>
-            </button>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main id="main-content">
+        <!-- ===== GLOBAL PLATFORM ===== -->
+        <section id="global-platform" aria-labelledby="global-platform-title">
+            <div class="section-header">
+                <h2 id="global-platform-title" data-i18n="global_platform">🌏 ASEM Global Platform</h2>
+                <p data-i18n="global_platform_desc">Explore tourism destinations, global businesses, products and digital services through one unified platform.</p>
+            </div>
 
-            <!-- SERVICES -->
-            <button type="button" class="card platform-card" data-platform-action="services" data-section="services" aria-controls="services">
-                <span class="platform-icon" aria-hidden="true">⚙️</span>
-                <h3 data-i18n="services">Services</h3>
-                <p data-i18n="services_desc">Explore web development, AI, automation and cloud services.</p>
-            </button>
+            <div class="cards platform-cards">
+                <!-- TOURISM -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="tourism"
+                    data-section="tourism-section"
+                    aria-controls="tourism-section"
+                >
+                    <span class="platform-icon" aria-hidden="true">✈️</span>
+                    <h3 data-i18n="tourism">Tourism</h3>
+                    <p data-i18n="tourism_desc">Discover destinations, attractions and experiences around the world.</p>
+                </button>
 
-            <!-- CONTACT -->
-            <button type="button" class="card platform-card" data-platform-action="contact">
-                <span class="platform-icon" aria-hidden="true">📧</span>
-                <h3 data-i18n="contact">Contact</h3>
-                <p data-i18n="contact_desc">Contact ASEM Digital Solutions.</p>
-            </button>
+                <!-- BUSINESSES -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="businesses"
+                    data-section="businesses-section"
+                    aria-controls="businesses-section"
+                >
+                    <span class="platform-icon" aria-hidden="true">🏢</span>
+                    <h3 data-i18n="businesses">Global Businesses</h3>
+                    <p data-i18n="businesses_desc">Explore businesses, restaurants, services and organizations worldwide.</p>
+                </button>
+
+                <!-- PRODUCTS -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="products"
+                    data-section="products-section"
+                    aria-controls="products-section"
+                >
+                    <span class="platform-icon" aria-hidden="true">🛍️</span>
+                    <h3 data-i18n="products">Global Products</h3>
+                    <p data-i18n="products_desc">Discover products and offerings from businesses around the world.</p>
+                </button>
+
+                <!-- PROJECTS -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="projects"
+                    data-section="projects"
+                    aria-controls="projects"
+                >
+                    <span class="platform-icon" aria-hidden="true">📊</span>
+                    <h3 data-i18n="projects">Projects</h3>
+                    <p data-i18n="projects_desc">Explore ASEM digital projects and software solutions.</p>
+                </button>
+
+                <!-- PORTFOLIO -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="portfolio"
+                    data-section="portfolio"
+                    aria-controls="portfolio"
+                >
+                    <span class="platform-icon" aria-hidden="true">💼</span>
+                    <h3 data-i18n="portfolio">Portfolio</h3>
+                    <p data-i18n="portfolio_desc">Discover selected ASEM digital solutions.</p>
+                </button>
+
+                <!-- SERVICES -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="services"
+                    data-section="services"
+                    aria-controls="services"
+                >
+                    <span class="platform-icon" aria-hidden="true">⚙️</span>
+                    <h3 data-i18n="services">Services</h3>
+                    <p data-i18n="services_desc">Explore web development, AI, automation and cloud services.</p>
+                </button>
+
+                <!-- CONTACT -->
+                <button type="button" class="card platform-card" data-platform-action="contact">
+                    <span class="platform-icon" aria-hidden="true">📧</span>
+                    <h3 data-i18n="contact">Contact</h3>
+                    <p data-i18n="contact_desc">Contact ASEM Digital Solutions.</p>
+                </button>
+
+                <!-- AI ASSISTANT -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="ai"
+                    data-section="ai-section"
+                    aria-controls="ai-section"
+                >
+                    <span class="platform-icon" aria-hidden="true">🤖</span>
+                    <h3>AI Assistant</h3>
+                    <p>Ask ASEM AI for intelligent assistance.</p>
+                </button>
+
+                <!-- GLOBAL SEARCH -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="search"
+                    aria-controls="platform-search-results"
+                >
+                    <span class="platform-icon" aria-hidden="true">🔎</span>
+                    <h3 data-i18n="global_search">Global Search</h3>
+                    <p data-i18n="global_search_desc">Search across the ASEM platform.</p>
+                </button>
+
+                <!-- NEARBY -->
+                <button
+                    type="button"
+                    class="card platform-card"
+                    data-platform-action="nearby"
+                    aria-controls="platform-search-results"
+                >
+                    <span class="platform-icon" aria-hidden="true">📍</span>
+                    <h3>Nearby</h3>
+                    <p>Find nearby businesses, products and platform results.</p>
+                </button>
+            </div>
+
+            <!-- TOURISM RESULTS -->
+            <section id="tourism-section" class="platform-results" aria-labelledby="tourism-title" hidden>
+                <div class="section-header">
+                    <h3 id="tourism-title">🏝️ Global Tourism</h3>
+                    <p>Discover destinations and attractions around the world.</p>
+                </div>
+                <div id="tourismGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            </section>
+
+            <!-- BUSINESSES RESULTS -->
+            <section id="businesses-section" class="platform-results" aria-labelledby="businesses-title" hidden>
+                <div class="section-header">
+                    <h3 id="businesses-title">🌍 Global Businesses</h3>
+                    <p>Explore businesses, restaurants, services and organizations worldwide.</p>
+                </div>
+                <div id="businessesGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            </section>
+
+            <!-- PRODUCTS RESULTS -->
+            <section id="products-section" class="platform-results" aria-labelledby="products-title" hidden>
+                <div class="section-header">
+                    <h3 id="products-title">🛒 Global Products</h3>
+                    <p>Discover products and offerings from businesses around the world.</p>
+                </div>
+                <div id="productsGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            </section>
+
+            <!-- GLOBAL SEARCH RESULTS -->
+            <section id="platform-search-results" class="platform-results" aria-labelledby="platform-search-title" hidden>
+                <div class="section-header">
+                    <h3 id="platform-search-title">🔎 Global Search</h3>
+                    <p>Search across tourism, businesses, products and projects.</p>
+                </div>
+                <div id="searchGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            </section>
 
             <!-- AI ASSISTANT -->
-            <button type="button" class="card platform-card" data-platform-action="ai" data-section="ai-section" aria-controls="ai-section">
-                <span class="platform-icon" aria-hidden="true">🤖</span>
-                <h3>AI Assistant</h3>
-                <p>Ask ASEM AI for intelligent assistance.</p>
-            </button>
-
-            <!-- GLOBAL SEARCH -->
-            <button type="button" class="card platform-card" data-platform-action="search" aria-controls="platform-search-results">
-                <span class="platform-icon" aria-hidden="true">🔎</span>
-                <h3 data-i18n="global_search">Global Search</h3>
-                <p data-i18n="global_search_desc">Search across the ASEM platform.</p>
-            </button>
-
-            <!-- NEARBY -->
-            <button type="button" class="card platform-card" data-platform-action="nearby" aria-controls="platform-search-results">
-                <span class="platform-icon" aria-hidden="true">📍</span>
-                <h3>Nearby</h3>
-                <p>Find nearby businesses, products and platform results.</p>
-            </button>
-
-        </div>
-
-        <!-- TOURISM RESULTS -->
-        <section id="tourism-section" class="platform-results" aria-labelledby="tourism-title" hidden>
-            <div class="section-header">
-                <h3 id="tourism-title">🏝️ Global Tourism</h3>
-                <p>Discover destinations and attractions around the world.</p>
-            </div>
-            <div id="tourismGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            <section id="ai-section" class="platform-results" aria-labelledby="ai-title" hidden>
+                <div class="section-header">
+                    <h3 id="ai-title">🤖 AI Assistant</h3>
+                    <p>Ask ASEM AI for assistance.</p>
+                </div>
+                <div id="ai-chat" class="cards" aria-live="polite"></div>
+            </section>
         </section>
 
-        <!-- BUSINESSES RESULTS -->
-        <section id="businesses-section" class="platform-results" aria-labelledby="businesses-title" hidden>
+        <!-- ===== SERVICES ===== -->
+        <section id="services" aria-labelledby="services-title">
             <div class="section-header">
-                <h3 id="businesses-title">🌍 Global Businesses</h3>
-                <p>Explore businesses, restaurants, services and organizations worldwide.</p>
+                <h2 id="services-title" data-i18n="services">Our Services</h2>
             </div>
-            <div id="businessesGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            <div class="cards">
+                <article class="card">
+                    <span class="platform-icon" aria-hidden="true">🌐</span>
+                    <h3 data-i18n="web_dev">Web Development</h3>
+                    <p data-i18n="web_dev_desc">Modern, fast, secure websites and digital platforms.</p>
+                </article>
+                <article class="card">
+                    <span class="platform-icon" aria-hidden="true">🤖</span>
+                    <h3 data-i18n="ai_auto">AI & Automation</h3>
+                    <p data-i18n="ai_auto_desc">Smart solutions powered by modern artificial intelligence and automation.</p>
+                </article>
+                <article class="card">
+                    <span class="platform-icon" aria-hidden="true">☁️</span>
+                    <h3 data-i18n="cloud">Cloud Solutions</h3>
+                    <p data-i18n="cloud_desc">Scalable and reliable cloud infrastructure for modern organizations.</p>
+                </article>
+            </div>
         </section>
 
-        <!-- PRODUCTS RESULTS -->
-        <section id="products-section" class="platform-results" aria-labelledby="products-title" hidden>
+        <!-- ===== PROJECTS ===== -->
+        <section id="projects" aria-labelledby="projects-title">
             <div class="section-header">
-                <h3 id="products-title">🛒 Global Products</h3>
-                <p>Discover products and offerings from businesses around the world.</p>
+                <h2 id="projects-title" data-i18n="projects">Projects</h2>
+                <p data-i18n="projects_desc">Explore ASEM digital projects and software solutions.</p>
             </div>
-            <div id="productsGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            <div id="projectsGrid" class="cards" aria-live="polite" aria-busy="false"></div>
         </section>
 
-        <!-- GLOBAL SEARCH RESULTS -->
-        <section id="platform-search-results" class="platform-results" aria-labelledby="platform-search-title" hidden>
+        <!-- ===== PORTFOLIO ===== -->
+        <section id="portfolio" aria-labelledby="portfolio-title">
             <div class="section-header">
-                <h3 id="platform-search-title">🔎 Global Search</h3>
-                <p>Search across tourism, businesses, products and projects.</p>
+                <h2 id="portfolio-title" data-i18n="portfolio">Portfolio</h2>
+                <p data-i18n="portfolio_desc">A selection of our global digital solutions.</p>
             </div>
-            <div id="searchGrid" class="cards" aria-live="polite" aria-busy="false"></div>
+            <div id="portfolioGrid" class="portfolio-grid" aria-live="polite"></div>
         </section>
 
-        <!-- AI ASSISTANT -->
-        <section id="ai-section" class="platform-results" aria-labelledby="ai-title" hidden>
+        <!-- ===== WHY ASEM ===== -->
+        <section id="why" aria-labelledby="why-title">
             <div class="section-header">
-                <h3 id="ai-title">🤖 AI Assistant</h3>
-                <p>Ask ASEM AI for assistance.</p>
+                <h2 id="why-title" data-i18n="why_asem">Why Choose ASEM</h2>
             </div>
-            <div id="ai-chat" class="cards" aria-live="polite"></div>
+            <ul>
+                <li data-i18n="secure">✅ Enterprise-grade security</li>
+                <li data-i18n="modern_tech">✅ Modern technologies</li>
+                <li data-i18n="full_solutions">✅ Complete digital solutions</li>
+                <li data-i18n="trusted_world">✅ Global digital platform</li>
+            </ul>
         </section>
 
-    </section>
+        <!-- ===== GLOBAL REACH ===== -->
+        <section id="trusted" aria-labelledby="trusted-title">
+            <div class="section-header">
+                <h2 id="trusted-title" data-i18n="trusted_world">Trusted Worldwide</h2>
+                <p data-i18n="trusted_desc">ASEM is building a global digital ecosystem connecting people, businesses, services, tourism and technology.</p>
+            </div>
+            <div id="map" style="width: 100%; height: 400px; border-radius: 10px; margin-top: 20px;"></div>
+        </section>
+    </main>
 
-    <!-- ===== SERVICES ===== -->
-    <section id="services" aria-labelledby="services-title">
-        <div class="section-header">
-            <h2 id="services-title" data-i18n="services">Our Services</h2>
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="social" aria-label="Social media">
+            <a href="https://github.com/asemroot" target="_blank" rel="noopener noreferrer" aria-label="ASEM GitHub">
+                <span aria-hidden="true">💻</span> GitHub
+            </a>
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <span aria-hidden="true">📘</span> Facebook
+            </a>
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <span aria-hidden="true">📺</span> YouTube
+            </a>
+            <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <span aria-hidden="true">𝕏</span> Twitter
+            </a>
+            <a href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <span aria-hidden="true">💬</span> WhatsApp
+            </a>
         </div>
-        <div class="cards">
-            <article class="card">
-                <span class="platform-icon" aria-hidden="true">🌐</span>
-                <h3 data-i18n="web_dev">Web Development</h3>
-                <p data-i18n="web_dev_desc">Modern, fast, secure websites and digital platforms.</p>
-            </article>
-            <article class="card">
-                <span class="platform-icon" aria-hidden="true">🤖</span>
-                <h3 data-i18n="ai_auto">AI & Automation</h3>
-                <p data-i18n="ai_auto_desc">Smart solutions powered by modern artificial intelligence and automation.</p>
-            </article>
-            <article class="card">
-                <span class="platform-icon" aria-hidden="true">☁️</span>
-                <h3 data-i18n="cloud">Cloud Solutions</h3>
-                <p data-i18n="cloud_desc">Scalable and reliable cloud infrastructure for modern organizations.</p>
-            </article>
-        </div>
-    </section>
+        <p>© 2026 ASEM Digital Solutions. All rights reserved.</p>
+    </footer>
 
-    <!-- ===== PROJECTS ===== -->
-    <section id="projects" aria-labelledby="projects-title">
-        <div class="section-header">
-            <h2 id="projects-title" data-i18n="projects">Projects</h2>
-            <p data-i18n="projects_desc">Explore ASEM digital projects and software solutions.</p>
-        </div>
-        <div id="projectsGrid" class="cards" aria-live="polite" aria-busy="false"></div>
-    </section>
+    <!-- ===== SCROLL TO TOP ===== -->
+    <button id="scrollTop" type="button" aria-label="Scroll to top" title="Scroll to top" hidden>
+        <span aria-hidden="true">↑</span>
+    </button>
 
-    <!-- ===== PORTFOLIO ===== -->
-    <section id="portfolio" aria-labelledby="portfolio-title">
-        <div class="section-header">
-            <h2 id="portfolio-title" data-i18n="portfolio">Portfolio</h2>
-            <p data-i18n="portfolio_desc">A selection of our global digital solutions.</p>
-        </div>
-        <div id="portfolioGrid" class="portfolio-grid" aria-live="polite"></div>
-    </section>
-
-    <!-- ===== WHY ASEM ===== -->
-    <section id="why" aria-labelledby="why-title">
-        <div class="section-header">
-            <h2 id="why-title" data-i18n="why_asem">Why Choose ASEM</h2>
-        </div>
-        <ul>
-            <li data-i18n="secure">✅ Enterprise-grade security</li>
-            <li data-i18n="modern_tech">✅ Modern technologies</li>
-            <li data-i18n="full_solutions">✅ Complete digital solutions</li>
-            <li data-i18n="trusted_world">✅ Global digital platform</li>
-        </ul>
-    </section>
-
-    <!-- ===== GLOBAL REACH ===== -->
-    <section id="trusted" aria-labelledby="trusted-title">
-        <div class="section-header">
-            <h2 id="trusted-title" data-i18n="trusted_world">Trusted Worldwide</h2>
-            <p data-i18n="trusted_desc">ASEM is building a global digital ecosystem connecting people, businesses, services, tourism and technology.</p>
-        </div>
-        <div id="map" style="width: 100%; height: 400px; border-radius: 10px; margin-top: 20px;"></div>
-    </section>
-
-</main>
-
-<!-- ===== FOOTER ===== -->
-<footer>
-    <div class="social" aria-label="Social media">
-        <a href="https://github.com/asemroot" target="_blank" rel="noopener noreferrer" aria-label="ASEM GitHub">
-            <span aria-hidden="true">💻</span> GitHub
-        </a>
-        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <span aria-hidden="true">📘</span> Facebook
-        </a>
-        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-            <span aria-hidden="true">📺</span> YouTube
-        </a>
-        <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <span aria-hidden="true">𝕏</span> Twitter
-        </a>
-        <a href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-            <span aria-hidden="true">💬</span> WhatsApp
-        </a>
-    </div>
-    <p>© 2026 ASEM Digital Solutions. All rights reserved.</p>
-</footer>
-
-<!-- ===== SCROLL TO TOP ===== -->
-<button id="scrollTop" type="button" aria-label="Scroll to top" title="Scroll to top" hidden>
-    <span aria-hidden="true">↑</span>
-</button>
-
-<!-- ===== MAIN APP SCRIPT ===== -->
-<script defer src="app.js"></script>
-
+    <!-- ===== MAIN APP SCRIPT ===== -->
+    <script defer src="./app.js"></script>
 </body>
 </html>
