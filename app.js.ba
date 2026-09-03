@@ -1203,7 +1203,7 @@ function addProject() {
   card.className = "card project-card";
   card.innerHTML = `
     <span class="status">🆕 ${escapeHTML(status || "new")}</span>
-    <img src="assets/logos/asem-logo.png" class="project-img" alt="Project image">
+    <img src="project.png" class="project-img" alt="Project image">
     <h2>${escapeHTML(name)}</h2>
     <p><strong>Version:</strong> ${escapeHTML(version || "1.0")}</p>
     <p>Added by an ASEM user.</p>
